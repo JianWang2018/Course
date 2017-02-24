@@ -1,0 +1,35 @@
+%Final Project
+load('final_train.mat');
+
+[M,c] = size(rate);
+[M,d] = size(kin);
+
+%center data
+kin = kin-ones(M,1)*mean(kin);
+
+%with MLE to find A and W;
+X_a = kin(2:M,:)';
+X_b = kin(1:M-1,:)';
+
+A = X_a*X_b'*inv(X_b*X_b');
+W = (X_a-A*X_b)*(X_a-A*X_b)'/(M-1);
+
+%Inhomogeneous Possion process
+kin=[ones(M,1),kin];
+
+for i=1:c
+    alpha_o = zeros(d+1,1);
+    alpha_n = alpha_o + 1; 
+    
+    
+    %use Newton-Raphson method to solve MLE
+    while(norm(alpha_n-alpha_o)>1e-2)
+        alpha_old =alpha_new;
+        fdd=kin'*rate(:,i)-kin'*exp(kin*alpha_old); %first
+        sdd = -kin'.*(ones(d+1, 1)* exp(kin * alpha_old)')*kin; %second;
+        
+        alpha_new = alpha_old - fdd/sdd;
+        
+    end;
+    
+end;

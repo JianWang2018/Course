@@ -1,0 +1,18 @@
+%Homework 8 
+%Problem 2
+clear all;
+close all;
+
+x = [1 2 3.5 4 7 7.3 8.6 12.4 13.8 18.1];
+
+x_sort = sort(x);
+
+x_trimmed = x_sort(3:8);
+
+mean_trim = mean(x_trimmed);
+
+%do bootstrap
+B = 25
+
+for i=1:B
+    

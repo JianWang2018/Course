@@ -1,0 +1,19 @@
+%answer for HW7
+%problem 1
+clear all;
+close all;
+ 
+T = 1;
+
+a = 1.0;
+s = a*sqrt(T)
+
+N = 10/T;
+walk(1) = 0;
+for i=2:N
+   
+    U = rand;
+    if ( U>0.5)
+        walk(i) = walk
+    
+end;

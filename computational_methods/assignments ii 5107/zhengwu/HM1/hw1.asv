@@ -1,0 +1,49 @@
+% for homework 1
+
+clear; close all;
+
+PI = [0.2 0.2 0.5 0.1; 0.2 0.3 0.4 0.1; 0.4 0.2 0.3 0.1; 0.1 0 0 0.9];  % transition matrix
+  
+M = 3;      % number of chains
+N = 4;      % number of states
+K = 200;    % number of time steps in each chain
+
+for m = 1:M
+    x(1,m) = ceil(N*rand);  % random initial
+    for k = 2:K
+        % generate a chain
+        P = PI(x(k-1,m),:); %pick i-th row
+        U = rand;
+        if U < P(1)
+            x(k,m) = 1;
+            
+        else if (P(1)>U&&U<P(1)+P(2))
+            x(k,m) = 2;
+            else if
+        else
+            x(k,m) = N; 
+        end
+    end
+end
+
+figure(1);
+for m = 1:M
+    subplot(3,1,m);
+    plot(x(:,m));
+    ylim([0 3]);
+end
+
+% compute the simulated probability
+for m = 1:M
+    for n = 1:N
+        p(m,n) = sum(x(:,m)==n);
+    end
+end
+p = p/K;  % normalization
+
+% compute the true probability
+[V, D] = eig(PI');     % compute eigenvalues
+ind = find(abs(diag(D)-1)< 1e-6); % find the eigenvalue 1
+P = V(:,ind)/sum(V(:,ind)); % rescale the eigenvector
+
+
