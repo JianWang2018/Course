@@ -1,0 +1,7 @@
+CC = suncc
+F95 = sunf95
+
+COFLAGS = -xinline=no -xarch=native -g
+FOFLAGS = -inline=no -xarch=native -g
+CMFLAGS = -DUSE_TIMES  -DUSE_SUNPERF
+LDFLAGS = -xlic_lib=sunperf
