@@ -1,0 +1,30 @@
+>> summary
+Elapsed time is 3.213825 seconds.
+>> summary
+Elapsed time is 3.268470 seconds.
+>> summary
+Elapsed time is 5.603745 seconds.
+>> summary
+Elapsed time is 10.716801 seconds.
+>> summary
+Elapsed time is 20.844320 seconds.
+>> summary
+Elapsed time is 45.651938 seconds.
+>> summary
+Elapsed time is 17.182410 seconds.
+>> summary
+Elapsed time is 29.245583 seconds.
+>> summary
+Elapsed time is 48.744667 seconds.
+>> summary
+Elapsed time is 87.875921 seconds.
+>> summary
+Elapsed time is 152.364333 seconds.
+
+&CPU time (S) &
+Time mesh&Stock mesh 128x128&Stock mesh 256 x256
+40&3.26847&17.18241\\
+80&5.603745&29.245583\\
+160&10.716801&48.744667\\
+320&20.84432&87.875921\\
+640&45.651938&152.364333\\

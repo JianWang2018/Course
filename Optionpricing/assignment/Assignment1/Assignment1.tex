@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,graphicx,enumitem}
+\usepackage[parfill]{parskip}
+\usepackage{color}
+\usepackage{float}
+\usepackage[]{algorithm2e}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\usepackage[top=1in,bottom=1in,left=1.4in,right=1.4in]{geometry}
+
+\title{ \vspace{-5mm}
+        PDE methods for option pricing}         % <-- Edit Homework Number
+\author{\Large{Jian Wang}\\      % <-- Edit Name
+\\
+FSU ID: jw09r}        % <-- Edit Andrew Id
+
+\begin{document}
+\maketitle
+\section*{Problem }
+\large{
+\textbf{[Summary]}
+
+\begin{algorithm}[H]
+ \KwData{this text}
+ \KwResult{how to write algorithm with \LaTeX2e }
+ initialization\;
+ \While{not at end of this document}{
+  read current\;
+  \eIf{understand}{
+   go to next section\;
+   current section becomes this one\;
+   }{
+   go back to the beginning of current section\;
+  }
+ }
+ \caption{How to write algorithms}
+\end{algorithm}
+
+\textbf{[Statement of the problem]}\\
+1.Compute the values of the European vanilla put for $E^*=\$10$, $r^*=0.05/yr$, $\sigma^*=0.20/yr$ and with a six month expiry with and without Rannacher smoothing. Report the error as a function of $\Delta S$ and $\Delta \tau$. Compute the greeks, $\Delta$ and $\Gamma$ and their errors. Propose and implement a technique to compute the $v= \partial V/\partial \sigma$ and report on its performance. Test the effects of the outer boundary on the solution in the range $[0,K]$.\\
+2. Redo the previous task for the European binary put. In particular, examine the solution for large $\Delta \tau$ and no smoothing\\
+
+\textbf{[Mathematics Tools]}\\
+The BSM and boundary condition for European put option is:\\
+
+$\left \{
+\begin{tabular}{l}
+$V_t+\frac{\sigma^2S^2}{2}V_{SS}+rSV_s - rV=0$\\
+
+$V(0,t)=Ke^{-r(T-t)}$\\
+
+$V(\infty,t)=0$\\
+
+$V(S,T)=max(K-S,0)$
+\end{tabular}
+\right.$
+
+(1)We use backward Euler for a few n>=2 time steps\\
+(2)Use Crank-Nicolson after that: given second order accuracy \\
+
+combine : $\delta_t^+V_j^n +L_h[\alpha V_j^{n+1}+(1-\alpha)V_j^n]=0$\\
+          $\alpha =1$ : Back Euler\\
+          $\alpha=\frac{1}{2}$ : Crank-Nicolson method
+
+Crank-Nicolson method:\\
+
+
+\begin{flalign*}
+&\frac{f_{ij}-f_{i,j-1}}{\Delta t}+\frac{ri\Delta S}{2}+(\frac{f_{i+1,j-1}-f_{i-1,j-1}}{2\Delta S}+\frac{ri\Delta S}{2}(\frac{f
+_{i+1,j}-f_{i-1,j}}{2\Delta S})+\\
+&\frac{\sigma^2 i^2 (\Delta S)^2}{4}(\frac{f_{i+1,j-1}-2f_{i,j-1}+f_{i-1,j-1}}{(\Delta S)^2})+\\
+&\frac{\sigma^2 i^2 (\Delta S)^2}{4}(\frac{f_{i+1,j}-2f_{i,j}+f_{i-1,j}}{(\Delta S)^2})=\frac{r}{2}f_{i,j-1}+\frac{r}{2}f_{ij}&&
+\end{flalign*}
+
+We can  rewrite the above equation as:\\
+\begin{flalign*}
+-\alpha_i f_{i-1,j-1}+(1-\beta_i)f_{i,j-1}-\gamma_{i}f_{i+1,j-1}=\alpha_i f_{i-1,j}+(1+\beta_i)f_{i,j}+\gamma_{i}f_{i+1,j}
+\end{flalign*}
+Where: \\
+\begin{flalign*}
+\quad\quad &\alpha_i=\frac{\Delta t}{4}(\sigma^2i^2-ri)\\
+&\beta_i=-\frac{\Delta t}{2}(\sigma^2i^2+r)\\
+&\gamma_i=\frac{\Delta t}{4}(\sigma^2i^2+ri)
+\end{flalign*}
+
+}
+\end{document} 

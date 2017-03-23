@@ -1,0 +1,7 @@
+CC = suncc
+F95 = sunf95
+
+COFLAGS = -fast -xinline=no -xarch=native -g
+FOFLAGS = -fast -inline=no -xarch=native -g
+CMFLAGS = -DUSE_GETTIMEOFDAY
+FMFLAGS = -DUSE_GETTIMEOFDAY

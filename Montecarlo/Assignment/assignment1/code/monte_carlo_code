@@ -1,0 +1,6 @@
+1) make std
+
+2) gcc -O3 -DSFMT_MEXP=607 -o sample1 SFMT.c sample1.c
+
+3) ./sample1 7 >>out.txt
+

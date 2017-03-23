@@ -1,0 +1,447 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Programming/Coding Assignment
+% LaTeX Template
+%
+% This template has been downloaded from:
+% http://www.latextemplates.com
+%
+% Original author:
+% Ted Pavlic (http://www.tedpavlic.com)
+%
+% Note:
+% The \lipsum[#] commands throughout this template generate dummy text
+% to fill the template out. These commands should all be removed when
+% writing assignment content.
+%
+% This template uses a Perl script as an example snippet of code, most other
+% languages are also usable. Configure them in the "CODE INCLUSION
+% CONFIGURATION" section.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage{fancyhdr} % Required for custom headers
+\usepackage{lastpage} % Required to determine the last page for the footer
+\usepackage{extramarks} % Required for headers and footers
+\usepackage[usenames,dvipsnames]{color} % Required for custom colors
+\usepackage{graphicx} % Required to insert images
+\usepackage{listings} % Required for insertion of code
+\usepackage{courier} % Required for the courier font
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,graphicx,enumitem,algorithm,algorithmic}
+\usepackage[parfill]{parskip}
+\usepackage{color}
+\usepackage{float}
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1} % Line spacing
+
+% Set up the header and footer
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName} % Top left header
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle} % Top center head
+\rhead{\firstxmark} % Top right header
+\lfoot{\lastxmark} % Bottom left footer
+\cfoot{} % Bottom center footer
+\rfoot{Page\ \thepage\ of\ \protect\pageref{LastPage}} % Bottom right footer
+\renewcommand\headrulewidth{0.4pt} % Size of the header rule
+\renewcommand\footrulewidth{0.4pt} % Size of the footer rule
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+%----------------------------------------------------------------------------------------
+%	CODE INCLUSION CONFIGURATION
+%----------------------------------------------------------------------------------------
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0} % This is the color used for comments
+\lstloadlanguages{Perl} % Load Perl syntax for listings, for a list of other languages supported see: ftp://ftp.tex.ac.uk/tex-archive/macros/latex/contrib/listings/listings.pdf
+\lstset{language=Perl, % Use Perl in this example
+        frame=single, % Single frame around code
+        basicstyle=\small\ttfamily, % Use small true type font
+        keywordstyle=[1]\color{Blue}\bf, % Perl functions bold and blue
+        keywordstyle=[2]\color{Purple}, % Perl function arguments purple
+        keywordstyle=[3]\color{Blue}\underbar, % Custom functions underlined and blue
+        identifierstyle=, % Nothing special about identifiers
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small, % Comments small dark green courier font
+        stringstyle=\color{Purple}, % Strings are purple
+        showstringspaces=false, % Don't put marks in string spaces
+        tabsize=5, % 5 spaces per tab
+        %
+        % Put standard Perl functions not included in the default language here
+        morekeywords={rand},
+        %
+        % Put Perl function parameters here
+        morekeywords=[2]{on, off, interp},
+        %
+        % Put user defined functions here
+        morekeywords=[3]{test},
+       	%
+        morecomment=[l][\color{Blue}]{...}, % Line continuation (...) like blue comment
+        numbers=left, % Line numbers on left
+        firstnumber=1, % Line numbers start with line 1
+        numberstyle=\tiny\color{Blue}, % Line numbers are blue and small
+        stepnumber=5 % Line numbers go in steps of 5
+}
+
+% Creates a new command to include a perl script, the first parameter is the filename of the script (without .pl), the second parameter is the caption
+\newcommand{\perlscript}[2]{
+\begin{itemize}
+\item[]\lstinputlisting[caption=#2,label=#1]{#1.pl}
+\end{itemize}
+}
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT STRUCTURE COMMANDS
+%	Skip this unless you know what you're doing
+%----------------------------------------------------------------------------------------
+
+% Header and footer for when a page split occurs within a problem environment
+\newcommand{\enterProblemHeader}[1]{
+\nobreak\extramarks{#1}{#1 continued on next page\ldots}\nobreak
+\nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+}
+
+% Header and footer for when a page split occurs between problem environments
+\newcommand{\exitProblemHeader}[1]{
+\nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak
+\nobreak\extramarks{#1}{}\nobreak
+}
+
+\setcounter{secnumdepth}{0} % Removes default section numbers
+\newcounter{homeworkProblemCounter} % Creates a counter to keep track of the number of problems
+
+\newcommand{\homeworkProblemName}{}
+\newenvironment{homeworkProblem}[1][Problem \arabic{homeworkProblemCounter}]{ % Makes a new environment called homeworkProblem which takes 1 argument (custom name) but the default is "Problem #"
+\stepcounter{homeworkProblemCounter} % Increase counter for number of problems
+\renewcommand{\homeworkProblemName}{#1} % Assign \homeworkProblemName the name of the problem
+\section{\homeworkProblemName} % Make a section in the document with the custom problem count
+\enterProblemHeader{\homeworkProblemName} % Header and footer within the environment
+}{
+\exitProblemHeader{\homeworkProblemName} % Header and footer after the environment
+}
+
+\newcommand{\problemAnswer}[1]{ % Defines the problem answer command with the content as the only argument
+\noindent\framebox[\columnwidth][c]{\begin{minipage}{0.98\columnwidth}#1\end{minipage}} % Makes the box around the problem answer and puts the content inside
+}
+
+\newcommand{\homeworkSectionName}{}
+\newenvironment{homeworkSection}[1]{ % New environment for sections within homework problems, takes 1 argument - the name of the section
+\renewcommand{\homeworkSectionName}{#1} % Assign \homeworkSectionName to the name of the section from the environment argument
+\subsection{\homeworkSectionName} % Make a subsection with the custom name of the subsection
+\enterProblemHeader{\homeworkProblemName\ [\homeworkSectionName]} % Header and footer within the environment
+}{
+\enterProblemHeader{\homeworkProblemName} % Header and footer after the environment
+}
+
+%----------------------------------------------------------------------------------------
+%	NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Assignment\ \#1} % Assignment title
+\newcommand{\hmwkDueDate}{Monday,\ January\ 1,\ 2012} % Due date
+\newcommand{\hmwkClass}{COMPSCI\ 101} % Course/class
+\newcommand{\hmwkClassTime}{10:30am} % Class/lecture time
+\newcommand{\hmwkClassInstructor}{Jones} % Teacher/lecturer
+\newcommand{\hmwkAuthorName}{John Smith} % Your name
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+\vspace{2in}
+\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
+\vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+\vspace{3in}
+}
+
+\author{\textbf{\hmwkAuthorName}}
+\date{} % Insert date here if you want it to appear below your name
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+%\setcounter{tocdepth}{1} % Uncomment this line if you don't want subsections listed in the ToC
+
+\newpage
+\tableofcontents
+\newpage
+
+%% insert the programming code
+%\begin{homeworkProblem}
+%Listing \ref{homework_example} shows a Perl script.
+%
+%\perlscript{homework_example}{Sample Perl Script With Highlighting}
+%
+%\lipsum[1]
+%\end{homeworkProblem}
+
+%% insert the chart 
+%\begin{homeworkProblem}
+%\lipsum[2]
+%
+%\problemAnswer{
+%\begin{center}
+%\includegraphics[width=0.75\columnwidth]{example_figure} % Example image
+%\end{center}
+%\lipsum[3-5]
+%}
+%\end{homeworkProblem}
+%% Example of list array and emurate
+%\begin{homeworkProblem}
+%
+%\begin{flalign}
+%A =
+%\begin{bmatrix}
+%A_{11} & A_{21} \\
+%A_{21} & A_{22}
+%\end{bmatrix}
+%\end{flalign}
+%
+%\begin{itemize}
+%	\item First item in a list
+%		\begin{itemize}
+%		\item First item in a list
+%			\begin{itemize}
+%			\item First item in a list
+%			\item Second item in a list
+%			\end{itemize}
+%		\item Second item in a list
+%		\end{itemize}
+%	\item Second item in a list
+%\end{itemize}
+%
+%\begin{enumerate}
+%\item First item in a list
+%\item Second item in a list
+%\item Third item in a list
+%\end{enumerate}
+%\end{homeworkProblem}
+%----------------------------------------------------------------------------------------
+
+\begin{homeworkProblem}
+\section*{[Summary]}
+
+\section*{[Statement of the problem]}
+
+1.Compute the values of the European vanilla put for $E^*=\$10$, $r^*=0.05/yr$, $\sigma^*=0.20/yr$ and with a six month expiry with and without Rannacher smoothing. Report the error as a function of $\delta S$ and $\delta \tau$. Compute the greeks, $\delta$ and $\Gamma$ and their errors. Propose and implement a technique to compute the $v= \partial V/\partial \sigma$ and report on its performance. Test the effects of the outer boundary on the solution in the range $[0,K]$.\\
+
+2. Redo the previous task for the European binary put. In particular, examine the solution for large $\delta \tau$ and no smoothing\\
+
+\section*{[Description of The Mathematics]}
+The BSM and boundary condition for European put option is:\\
+
+$\left \{
+\begin{tabular}{l}
+$V_t+\frac{\sigma^2S^2}{2}V_{SS}+rSV_s - rV=0$\\
+
+$V(0,t)=Ke^{-r(T-t)}$\\
+
+$V(\infty,t)=0$\\
+
+$V(S,T)=max(K-S,0)$
+\end{tabular}
+\right.$
+\\
+combine : $\delta_t^+V_j^n +L_h[\alpha V_j^{n+1}+(1-\alpha)V_j^n]=0$\\
+          $\alpha =1$ : Back Euler\\
+          $\alpha=\frac{1}{2}$ : Crank-Nicolson method
+\\
+
+\textbf{Backward Euler method:}\\
+The scheme for the Backward Euler method is given by:\\
+
+\begin{flalign*}
+\frac{V_{i,j}-V_{i,j-1}}{\delta t}+\frac{1}{2}\sigma^2(i\delta S)^2\frac{V_{i+1,j-1}-2V_{i,j-1}+V_{i-1,j-1}}{\delta S^2}+r(i\delta S)\frac{V_{i+1,j-1}-V_{i-1}{j-1}}{2\delta S)}-rV_{i,j-1}=0\\
+\end{flalign*}
+we can rewrite it as:\\
+
+\begin{flalign*}
+V_{i,j}=A_{i}V_{i-1,j-1}+B_iV_{i,j-1}+C_iV_{i+1,j-1}
+\end{flalign*}
+
+where:\\
+
+\begin{flalign*}
+A_i=\frac{1}{2}\delta t (r_i-\sigma^2i^2), B_i=1+(\sigma^2i^2+r)\delta t, C_i=-\frac{1}{2}\delta t(ri+\sigma^2i^2)\\
+\end{flalign*}
+
+\textbf{Crank-Nicolson method:}\\
+
+\begin{flalign*}
+&\frac{V_{ij}-V_{i,j-1}}{\delta t}+\frac{ri\delta S}{2}+(\frac{V_{i+1,j-1}-V_{i-1,j-1}}{2\delta S}+\frac{ri\delta S}{2}(\frac{V
+_{i+1,j}-V_{i-1,j}}{2\delta S})+\\
+&\frac{\sigma^2 i^2 (\delta S)^2}{4}(\frac{V_{i+1,j-1}-2V_{i,j-1}+V_{i-1,j-1}}{(\delta S)^2})+\\
+&\frac{\sigma^2 i^2 (\delta S)^2}{4}(\frac{V_{i+1,j}-2V_{i,j}+V_{i-1,j}}{(\delta S)^2})=\frac{r}{2}V_{i,j-1}+\frac{r}{2}V_{ij}&&
+\end{flalign*}
+
+We can  rewrite the above equation as:\\
+\begin{flalign*}
+-\alpha_i V_{i-1,j-1}+(1-\beta_i)V_{i,j-1}-\gamma_{i}V_{i+1,j-1}=\alpha_i V_{i-1,j}+(1+\beta_i)V_{i,j}+\gamma_{i}V_{i+1,j}
+\end{flalign*}
+
+Where: \\
+
+\begin{flalign*}
+\quad\quad &\alpha_i=\frac{\Delta t}{4}(\sigma^2i^2-ri)\\
+&\beta_i=-\frac{\Delta t}{2}(\sigma^2i^2+r)\\
+&\gamma_i=\frac{\Delta t}{4}(\sigma^2i^2+ri)
+\end{flalign*}
+
+\textbf{Ranacher Smooth methods}
+
+(1)We use backward Euler for a few n $\ge$ 2 time steps\\
+
+(2)Use Crank-Nicolson after that: given second order accuracy \\
+
+\textbf{Close form Black Scholes formula}
+To test the result for the SDE model of the option pricing, we also need to know the close form solution of the Black -Scholes assumptions, which is the famous Black- Scholes formula. \\
+For the European put options:\\
+\begin{flalign*}
+P(S,t)=Ke^{-r(T-t)}N(-d_2)-SN(-d_1)
+\end{flalign*}\\
+
+where:\\
+
+\begin{flalign*}
+d_1=\frac{log\frac{S}{K}+(r+\frac{1}{2}\sigma^2)(T-t)}{\sigma\sqrt{T-t}}\\
+d_2=\frac{log\frac{S}{K}+(r-\frac{1}{2}\sigma^2)(T-t)}{\sigma\sqrt{T-t}}\\
+N(x)=\frac{1}{\sqrt{2\pi}}\int_{-\infty}{x}e^{-\frac{1}{2}S^2}ds
+\end{flalign*}
+
+\textbf{Delta for Vanilla put option:}
+\begin{flalign*}
+-e^{-q \tau} \Phi(-d_1)
+\end{flalign*}
+
+\textbf{Gamma for Vanilla put option:}\\
+\begin{flalign*}
+-e^{-q \tau} \frac{\Phi(d_1)}{S\sigma \sqrt{\tau}}
+\end{flalign*}
+
+\textbf{Vega for Vanilla put option:}\\
+\begin{flalign*}
+Se^{-q \tau}\phi(d_1)\sqrt{\tau}=Ke^{-r\tau}\phi(d_2)\sqrt{\tau}
+\end{flalign*}
+
+where q here is the dividend rate which is equal to 0 in our problem.\\
+\textbf{Binary put option:}\\
+The binary put option is that the payoff will be 1 if the maturity time stock price is lower than the strike price,otherwise it will be 0;\\
+All the other assumptions are same with the vanilla put option.So we can rewrite the formula as follows:\\\\
+Note that the boundary conditions changed.
+$\left \{
+\begin{tabular}{l}
+$V_t+\frac{\sigma^2S^2}{2}V_{SS}+rSV_s - rV=0$\\
+
+$V(0,t)=e^{-r(T-t)}$\\
+
+$V(\infty,t)=0$\\
+
+$V(S,T)=I_{\{S\leq K\}}$
+\end{tabular}
+\right.$
+
+
+
+\section*{[Results]}
+
+We used $E^*=\$10$, $r^*=0.05/yr$, $\sigma^*=0.20/yr$ T=0.5 as the example to build our model. \\
+First, for the regular vanilla put option:\\
+
+We run the models with different time and stock price steps, and the following is are results when we choose the number of time steps and the number of stock price steps both equal to 640.\\
+\textbf{Option price}\\
+
+The surface of option price under Backward Euler Methods:\\
+$\includegraphics[height=3.5in,width=5in]{v_be.jpg}$\\
+
+The surface of option price under Crank Nicolson Methods:\\
+$\includegraphics[height=3.5in,width=5in]{v_cn.jpg}$\\
+
+The surface of option price under Ranacher Smooth Methods:\\
+$\includegraphics[height=3.5in,width=5in]{v_rs.jpg}$\\
+
+The option price under different stock prices of Backward Euler method:\\
+$\includegraphics[height=3.5in,width=5in]{option_price_be.jpg}$\\
+
+The option price under different stock prices of Crank Nicolson method:\\
+$\includegraphics[height=3.5in,width=5in]{option_price_cn.jpg}$\\
+
+The option price under different stock prices of Ranacher Smooth method:\\
+$\includegraphics[height=3.5in,width=5in]{option_price_rs.jpg}$\\
+
+The option price under different stock prices of Ranacher Smooth method:\\
+$\includegraphics[height=3.5in,width=5in]{option_price_bs.jpg}$\\
+
+
+
+
+\textbf{Error Test}\\
+First set the $N_x$ equal to 640 and see the error change based on the change of $N_t$\\
+
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$N_t$&Backward&Rate& Crank Nicolson& Rate&Ranacher Smooth&Rate\\
+\hline
+20&	0.003594387&&	0.001567487&&		0.012230367& \\	
+40&	0.001867687	&1.92& 	0.000132867&	11.80& 	0.006112979&	2.00\\
+80	&0.00100197	&1.86 &	0.000135258	&0.98 	&0.003055939&	2.00\\
+160	&0.000568873&	1.76& 	0.000137234&	0.99& 	0.001527832&	2.00\\
+320	&0.000352555&	1.61 &	0.000137727	&1.00 &	0.000763881	&2.00\\
+640	&0.000244465&	1.44 &	0.000137851	&1.00 	&0.000396422&	1.93\\
+\hline
+\end{tabular}
+
+Next set the $N_t$ equal to 640 and see the error change based on the change of $N_x$\\
+
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$N_x$&Backward&Rate& Crank Nicolson& Rate&Ranacher Smooth&Rate\\
+\hline
+20	&0.163436618	&&	0.163344756	&&	0.163662174	& \\
+40	&0.040302554&	4.06& 	0.040159448&	4.07 &	0.040454358	&4.05\\
+80	&0.009109848&	4.42 &	0.008996653&	4.46& 	0.009257477	&4.37\\
+160	&0.00231537	&3.93 	&0.002206775&	4.08 	&0.00246187	&3.76\\
+320	&0.00065681	&3.53 	&0.000552129&	4.00 	&0.000802989&	3.07\\
+640	&0.000244465&	2.69 &	0.000137851&	4.01 &	0.000396422	&2.03\\
+\hline
+\end{tabular}
+
+Finally change both $N_t$ and $N_s$\\
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+$N_x$&$N_t$&Backward&Rate& Crank Nicolson& Rate&Ranacher Smooth&Rate\\
+\hline
+20 &20&	0.166238921	&&	0.163327854&&	0.173703389&	\\
+40&40	&0.042442619&	3.92 	&0.040143068&	4.07 &	0.044943594	&3.86\\
+80	&80&0.009901673	&4.29 	&0.008993691	&4.46 	&0.011095262	&4.05\\
+160	&160&0.002640911&	3.75 &	0.002206118	&4.08 	&0.003229567	&3.44\\
+320	&320&0.000764333&	3.46 &	0.000552005	&4.00 	&0.001062514	&3.04\\
+640	&640&0.000244465&	3.13 &	0.000137851	&4.00 	&0.000396422	&2.68\\
+\hline
+\end{tabular}
+We can see that both the three methods are first order converge on $N_t$ and second order converge on $N_x$.
+When both $N_t$ and $N_x$ change, the three methods are second order converge.\\
+\end{homeworkProblem}
+
+
+\end{document} 
