@@ -1,0 +1,24 @@
+COP 5570 Project No. 4: Online Tic-tac-toe Server
+Soheila Abrishami & Peyman Faizian
+
+---------------------------------------------------------------------------
+
+Project folder contents:
+
+-README:		this file
+-MAKEFILE:		makefile with clean
+-global.h		couple of global variables and dependencies
+-function.h		header file for the set of functions used
+-function.c		definition of functions used
+-main.c			the main program which is responsible for calling the right function at the right time
+userdb.txt		our database to store user info
+
+There is also a folder named mail which contains the mail boxes for each user.
+
+---------------------------------------------------------------------------
+
+To compile simply run make in the project folder. You can also run make demo to compile and run the executable file.
+
+--------------------------------------------------------------------------
+
+There are no currently known bugs in our program and it runs perfectly under a normal user behavior. We tried our best to simulate the sample program behavior.

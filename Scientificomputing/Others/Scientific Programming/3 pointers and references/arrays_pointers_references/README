@@ -1,0 +1,13 @@
+Codes: 
+
+arrays1d_and_pointers.cpp
+  - We experiment with the meaning of pointers for arrays of different types. 
+
+pointer_arithmetic.cpp
+  - What kind of arithmetic operations are possible on pointers? 
+
+twod_arrays.cpp
+  - We experiment with the meaning of pointers for 2D arrays of different types. 
+
+use_of_references.cpp
+  - How to use a reference to simplify notation

@@ -1,0 +1,1 @@
+We will go over const and operators

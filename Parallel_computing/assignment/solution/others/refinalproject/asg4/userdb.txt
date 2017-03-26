@@ -1,0 +1,7 @@
+xxx 0000 8 10 2 xinfo
+ccc 23 4 4 0 hello
+ooo 5678 1 0 0 oinfo
+pp 22 8 6 2 chakere
+tt 55 0 0 0 <none>
+peyman 1 1 0 0 <none>
+wickus 12 2 4 0 <none>

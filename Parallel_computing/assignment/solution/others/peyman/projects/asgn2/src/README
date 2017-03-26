@@ -1,0 +1,31 @@
+COP 5570
+Assignment 2: A simplified Make Program
+By: Peyman Faizian
+
+##############################################################
+How to compile the program:
+
+To compile all the necessary source files just run the make command in the src directory. The included Makefile will create all object files and the executable file named mymake. You can also use "make demo" to run the executable mymake after compiling the source files.
+
+#############################################################
+
+Program Behavior
+
+You can simply run the program by running the executable file "mymake". You can also use the "-f" flag to specify a makefile to be processed by the program. If you do not specify a target, the program will automattically execute the commands attached to the first rule in the makefile. Otherwise it will make all targets specified in order.
+
+Here is a list of source files in the project and a brief description of each:
+
+scanner.c:	works as a lexer. reads makefile content and tokenize it.
+compile.c:	the actual parser. Parses the makefile and creates a rules graph.
+symbol.c:	contains functions to lookup and insert symbols in rules graph.
+init.c:		initializes the symbol table.
+error.c:	a small error handler
+execute.c:	exeecutes the commands associated with each target
+main.c		program entry point. reads commandline args and calls execute.
+
+
+At the moment, the items mentioned below are not implemented as in Make:
+1. Use of wildcard characters.
+2. Use of .SUFFIX variable.
+
+Besides please set the environment variable MYMAKEPATH before starting the program because otherwiese it will return an error.

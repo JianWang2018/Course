@@ -1,0 +1,11 @@
+Using Newton's method to get the root of our functions:
+
+SinFunction: f(x)=sin(x)
+
+result: x = 3.14159
+
+MyFunction: f(x)=x^2-1
+
+result: x = 1
+
+By using Newton's method, we set the initial value x0=2.0.

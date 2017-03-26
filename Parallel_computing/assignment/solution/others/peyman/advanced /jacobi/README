@@ -1,0 +1,24 @@
+Project 1
+Soheila Abrishami
+Peyman Faizian
+
+
+
+
+jmpi: MPI Version
+to compile: make jmpi jlin
+source: jmpi.c
+executable: jmpi(mpi program), jlin(linear code)
+speedup: > 2
+to compare the results use cmp mpi.output lin.output
+*----------------------------------------------------*
+
+jcuda: Cuda Version 
+to compile: make jcuda jlinear
+source: jcuda.cu
+executables: jcuda(cuda program), jlinear(linear code)
+speedup: > 2
+desired input: block size = 64
+due to some precision point problems we had to change the output to text format to print floats to up to 10 digits of precision which works perfect.
+to compare the results use cmp linear.output cuda.output
+*---------------------------------------------------*

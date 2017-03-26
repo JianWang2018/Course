@@ -1,0 +1,13 @@
+This is a slimmed version of an interconnect flow-level simulator.
+It handles only the xgft topology, to compile the program:
+
+make
+
+to run the program:
+
+./a.out xgft 2 12 24 1 12 10000 10000 DMODK 100 1000 d40
+
+This simulation read data from file d40 and produce output file sim_result
+
+The program that needs to be parallelized are in sim_engine_v3.c
+

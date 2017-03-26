@@ -1,0 +1,19 @@
+To compile: 
+
+g++ home2.cpp
+
+To execute: 
+
+    ./a.out 
+
+or  
+
+   make go
+
+You will be asked to input a interval used to integration.
+The results will be print into file called "home1.txt" and total timer will be given at the end of the file.
+
+To clean executable (a.out) file, 
+
+   make clean
+----------------------------------------------------------------------

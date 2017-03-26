@@ -1,0 +1,18 @@
+To compile: 
+
+make all
+
+To execute: 
+
+    make go
+
+You will be asked to input a integer used to count on the screen.
+The count number will output on the screen and timer will be given at the end of the output as following format:
+ 
+Count  	N	Total	    Mean	 
+
+
+To clean executable (a.out) file, 
+
+   make clean
+----------------------------------------------------------------------

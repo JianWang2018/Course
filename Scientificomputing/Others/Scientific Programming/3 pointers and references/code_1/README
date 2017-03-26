@@ -1,0 +1,14 @@
+----------------------------------------------------------------------
+pointer.cpp
+- difference between signed (%d) and unsigned (%u)
+- hex format (%x)
+----------------------------------------------------------------------
+object_reference_size.cpp
+- demonstrate the size of a pointer to an object
+- demonstrate the size of a reference to an object 
+     (equivalent to the object itself)
+----------------------------------------------------------------------
+reference.cpp
+- demonstrate how once a reference points to a variable, 
+  this cannot be changed (contrary to Java)
+----------------------------------------------------------------------

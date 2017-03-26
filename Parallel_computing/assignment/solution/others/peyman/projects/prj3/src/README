@@ -1,0 +1,26 @@
+Project 3
+Peyman Faizian
+
+My program can be compiled using make and it produces four executables named jlin, jomp, jmt, jmp. A brief description of each is as followd:
+
+
+jomp: OpenMP Version
+source: jomp.c
+executable: jomp
+speedup: > 4.1
+desired input: 12 threads, MATRIX : NN = 1024, MAXDIFF = 0.1
+*----------------------------------------------------*
+
+jmt: Multi Thread Version 
+source: jmt.c
+exec: jmt
+speedup: > 2
+desired input: 4 threads , MATRIX: NN = 2048, MAXDIFF = 0.8
+
+*---------------------------------------------------*
+
+jmp: Multi process version
+Source: jmp.c
+exec: jmp
+speedup: 1-2 times the linear version
+desired Input: 5 Processes

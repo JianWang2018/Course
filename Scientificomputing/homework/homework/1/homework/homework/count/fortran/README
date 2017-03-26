@@ -1,0 +1,18 @@
+To compile: 
+
+make all
+
+To execute: 
+
+ make go
+
+You could change the count number in main.f90, the value of n.
+The count number will output on the screen and timer will be given at the end of the output as following format:
+ 
+Count  	N	Total	    Mean	 
+
+
+To clean executable (a.out) file, 
+
+   make clean
+----------------------------------------------------------------------

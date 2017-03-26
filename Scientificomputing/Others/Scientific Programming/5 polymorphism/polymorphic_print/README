@@ -1,0 +1,49 @@
+Error
+
+Array3D constructor
+Array2D constructor
+Array2D::in operator()
+arr= 11.000000
+Array2D::in operator()
+inside Array2D destructor
+inside Array2D destructor
+a.out(12618) malloc: *** error for object 0x100100080: pointer being freed was not allocated
+*** set a breakpoint in malloc_error_break to debug
+
+REASON: shallow copy for the copy constructor and/or assignment operator. 
+I should define my own, unless I wish all copies to be shallow. In that case, 
+I should do reference counting so that float* data is deleted automatically. 
+----------------------------------------------------------------------
+
+When calling 2D destructor, 
+the destructor of the base class is called first (that should not happen!)
+
+I do not really understands how destructors work!
+----------------------------------------------------------------------
+copy constructor and assignment operator are not used in this code. 
+----------------------------------------------------------------------
+
+The 2D constructor uses the 3D constructor
+The 2D operator= (assignment) does NOT use the 3D operator=
+(the assumption, is that the 2D version is more efficient? 
+Ideally, the base version (which is often simpler) should be called first, 
+and the additions specific to 2D should be added after. 
+----------------------------------------------------------------------
+assignment_operator/
+
+Note that assignment operator not called yet
+Note that when destroying 2D array, it calls 3D (parent) destructor. 
+  (I did not explicitely call it). 2D destructor called first, 
+  3D destructor then called. First delete more detailed info, then 
+  delete parent. Container (parent) is destroyed last. 
+  Pyramid: subclass is built on top of class. Destroy higher levels of pyramid
+  first. 
+When constructing, construct base of pyramid (i.e., parent) first. 
+----------------------------------------------------------------------
+3D constructor is called first, EVEN if I do not call it explitely (the 
+default constructor would then be called). Demonstrate this. 
+----------------------------------------------------------------------
+
+polymorphic_print/
+
+Define virtual in base class. 

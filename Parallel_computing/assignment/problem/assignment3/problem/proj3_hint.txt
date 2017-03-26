@@ -1,0 +1,165 @@
+The multi-process implementation of the program has the flavor of the 
+implementation for distributed memory systems since processes do not share
+memory. In fact, if you use the programming paradigm for distributed memory
+machines (e.g. Message Passing Interface), the program logic 
+will be exactly the same as the multi-process implementation,
+only with a cleaner message exchange mechanism. Programming for distributed 
+memory architectures is inherently difficult as you will see in this project. 
+This document is to alert you with potential issues that you have handled 
+correctly in order for the code to work correctly, as well as possible 
+techniques that you can use to deal with the issues. Once you get used 
+to the distributed memory programming thinking, it becomes fairly 
+easy to do. But it will be difficult for beginners.
+
+I will use a global world w[8][3] running on 4 processes as an example 
+in the explanation. You need to extend it for any w_X and w_Y.
+ 
+In the program with init1(), the world is initialized as
+
+1 1 1
+1 0 0
+1 0 0
+1 0 0
+1 0 0
+1 0 0
+1 0 0
+1 0 0
+
+The first choice to make is how to partition the domain. We know 
+from the thread/OpenMP implementation that different processes should 
+work on different part of the 2 dimensional array. Logically, we can 
+partition the domain as follows:
+
+Global row 0:    1 1 1
+Global row 1:    1 0 0    P0
+                 -----------
+Global row 2:    1 0 0
+Global row 3     1 0 0    P1
+                 -----------
+Global row 4:    1 0 0
+Global row 5:    1 0 0    P2
+                 -----------
+Global row 6:    1 0 0
+Global row 7:    1 0 0    P3
+
+Each process computes for w_Y/P rows. w_Y=8, P=4, so each have 8/4=2 rows 
+to compute. In your code, you need to make sure that the code works for any
+w_Y and P (e.g. w_Y < P or w_Y is not a multiple of P cases). 
+In our example, P0 will compute the new world for global row 0 and global 
+row 1; P1 will compute the new world for rows 2, 3; etc. 
+
+In distributed 
+memory programming, the values computed by a process must also store
+in the process. Hence, in theory each process can have an array of 
+size w[w_Y/P][w_X] to store the world (here we assume w_Y is a multiple 
+of P). And there is the local index to global index mapping. For example, 
+w[0][0] on process myid=2 is the global w[w_Y/P*myid + 0][0]. When you 
+design the program, you need to have the mapping in mind.
+
+In the calculation of new world, to compute the state of a cell, 
+its 8 neighbors need to be examined. As such, to compute the new world value 
+of w[0][0] on process myid=2, which is the global w[4][0], you will need
+to know the value of w[3][0], which is in process myid=1. In general,
+before the calculation, all information needed for the compuation must also 
+be local to each process. The technique that you can use here is to add 
+two ghost rows, where a process only uses the value, but not updates the value.
+For the row partitioning, each process maintains two additional rows (one above
+its domain and one below): each process maintains instead an array 
+of w[w_Y/P][w_X], it maintains an array of w[w_Y/P+2][w_X].
+In w[8][3] example: 
+
+
+P0 memory:
+
+                 0 0 0   local row 0 <-- not exist, put all 0 in there
+                 -----
+Global row 0:    1 1 1   local row 1
+Global row 1:    1 0 0   local row 2  -- P0 only computes its rows 1 and 2  
+                 -----
+Global row 2:    1 0 0   local row 3 <-- value computed by P1
+
+
+P1 memory:
+
+Global row 1:    1 0 0   local row 0 <-- value computed by P0
+                 -----
+Global row 2:    1 0 0   local row 1  -- P1 computes its local rows 1 and 2
+Global row 3:    1 0 0   local row 2     (global rows 2 and 3)
+                 -----
+Global row 2:    1 0 0   local row 3 <-- value computed by P2
+
+If you make sure that the data (including ghost rows) are correct before 
+the iteration, 
+all processes can process with one iteration. At the end of an iteration, 
+the values at the ghost rows may be updated by different processes. 
+As a result, before the next
+iteration, each process needs to send it border rows to its neighbors to update
+their ghost rows. For example: the results after one iteration will be 
+
+P0 memory:
+
+                 0 0 0   local row 0 <-- not exist, put all 0 in there
+                 -----
+Global row 0:    1 1 0   local row 1
+Global row 1:    1 0 1   local row 2  -- P0 only computes its rows 1 and 2  
+                 -----
+Global row 2:    1 0 0   local row 3 <-- value computed by P1, outdated!!!
+
+
+P1 memory:
+
+Global row 1:    1 0 0   local row 0 <-- value computed by P0, outdated!!!
+                 -----
+Global row 2:    1 1 0   local row 1  -- P1 computes its local rows 1 and 2
+Global row 3:    1 1 0   local row 2     (global rows 2 and 3)
+                 -----
+Global row 2:    1 0 0   local row 3 <-- value computed by P2
+
+After one iteration, P0 needs to send its logcal row 2 (global row 1) to 
+P1 so that P1's local row 0 can be made up to date; and P1 needs to send 
+its local row 1 (global row 2) to P0 so that P0's local row 1 can be updated.
+Hence, you should have the following communications in each iteration:
+
+P0 sends its last row to P1
+P1 sends its last row to P2
+P2 sends its last row to P3
+
+P1 sends its first row to P0
+P2 sends its first row to P1
+P3 sends its first row to P2
+
+to realize the communications, you will need one or two pipes between each 
+pair of process i and process i+1. To avoid communication deadlock, when some
+process is sending (write), the receiving process must be receiving (read) 
+(if all processes write and no read, if the pipe buffer is full, the program
+will have deadlock).
+
+--------------------------------
+
+For the second loop, the program copies the code from neww[][] to w[][].
+If the ghost rows are already set up correctly, it is just a straight-forward
+copy without communication. 
+However, there is a global population count that needs to be computed. 
+Now, each process can compute the local population count. You will need to 
+implement some communication to compute the global count. Logically, you can
+have all processes send its local count to process 0, process 0 receives all 
+local counts from all other processes and compute the global count, 
+and then send the global counts to all other processes. This is an option, 
+it requires pipes to be set up between process 0 and all other processes. 
+
+Another option is to just reuse the pipe between process i and process i+1. 
+You just need to find a way that works for you.
+
+--------------------------------
+
+Input and output
+
+Input: for the world is generated using init1(), it can be easily rewritten
+for different processes, by setting the values in the local w array.
+Not much here.
+
+Output: Now, no process has the whole array. So you need to write a distributed
+mechanism to collaborate the output among processes. To make it easy, you 
+want to partition the global array in such a way that a process can write out
+all of it content before other processes need to be involved. With the 
+partition, you can use pipe as the signal to coordinate the file output.
