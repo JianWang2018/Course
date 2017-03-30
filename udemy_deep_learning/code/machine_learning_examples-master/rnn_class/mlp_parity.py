@@ -4,7 +4,7 @@ import numpy as np
 import theano
 import theano.tensor as T
 import matplotlib.pyplot as plt
-
+import time
 from util import init_weight, all_parity_pairs
 from sklearn.utils import shuffle
 
@@ -98,7 +98,7 @@ class ANN(object):
                 if j % print_period == 0:
                     costs.append(c)
                     e = np.mean(Ybatch != p)
-                    print ("i:", i, "j:", j, "nb:", n_batches, "cost:", c, "error rate:", e)
+                    #print ("i:", i, "j:", j, "nb:", n_batches, "cost:", c, "error rate:", e)
         
         if show_fig:
             plt.plot(costs)
@@ -127,5 +127,7 @@ def deep():
     model.fit(X, Y, learning_rate=10e-4, print_period=10, epochs=100, show_fig=True)
 
 if __name__ == '__main__':
+    t_s=time.time()
     wide()
+    print("the cpu time is :",time.time()-t_s)
     # deep()

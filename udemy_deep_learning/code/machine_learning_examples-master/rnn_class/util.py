@@ -18,10 +18,10 @@ def all_parity_pairs(nbit):
     Ntotal = N + remainder
     X = np.zeros((Ntotal, nbit))
     Y = np.zeros(Ntotal)
-    for ii in xrange(Ntotal):
+    for ii in range(Ntotal):
         i = ii % N
         # now generate the ith sample
-        for j in xrange(nbit):
+        for j in range(nbit):
             if i % (2**(j+1)) != 0:
                 i -= 2**j
                 X[ii,j] = 1
@@ -34,9 +34,9 @@ def all_parity_pairs_with_sequence_labels(nbit):
 
     # we want every time step to have a label
     Y_t = np.zeros(X.shape, dtype=np.int32)
-    for n in xrange(N):
+    for n in range(N):
         ones_count = 0
-        for i in xrange(t):
+        for i in range(t):
             if X[n,i] == 1:
                 ones_count += 1
             if ones_count % 2 == 1:
