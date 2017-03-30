@@ -83,13 +83,13 @@ class ANN(object):
             updates=updates,
         )
 
-        n_batches = N / batch_sz
+        n_batches = int(N / batch_sz)
         # print "N:", N, "batch_sz:", batch_sz
         # print "n_batches:", n_batches
         costs = []
-        for i in xrange(epochs):
+        for i in range(epochs):
             X, Y = shuffle(X, Y)
-            for j in xrange(n_batches):
+            for j in range(n_batches):
                 Xbatch = X[j*batch_sz:(j*batch_sz+batch_sz)]
                 Ybatch = Y[j*batch_sz:(j*batch_sz+batch_sz)]
 
@@ -98,7 +98,7 @@ class ANN(object):
                 if j % print_period == 0:
                     costs.append(c)
                     e = np.mean(Ybatch != p)
-                    print "i:", i, "j:", j, "nb:", n_batches, "cost:", c, "error rate:", e
+                    print ("i:", i, "j:", j, "nb:", n_batches, "cost:", c, "error rate:", e)
         
         if show_fig:
             plt.plot(costs)
