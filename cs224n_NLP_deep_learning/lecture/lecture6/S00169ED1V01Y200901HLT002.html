@@ -1,0 +1,915 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+    <head>
+        <style>
+
+        </style>
+        <link href="/bundles/core.css" rel="stylesheet" type="text/css" />
+
+
+        
+        <title>Dependency Parsing | Synthesis Lectures on Human Language Technologies</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="SHORTCUT ICON" href="/templates/jsp/_midtier/_mcp/favicon.ico" />
+        
+<meta name="robots" content="noarchive" />
+
+
+
+
+
+
+
+
+
+<link rel="schema.DC" href="http://purl.org/DC/elements/1.0/" /><meta name="dc.Title" content=" Dependency Parsing " /><meta name="dc.Creator" content=" Sandra &#xA; Kübler " /><meta name="dc.Creator" content=" Ryan &#xA; McDonald " /><meta name="dc.Creator" content=" Joakim &#xA; Nivre " /><meta name="dc.Subject" content="parsing; syntax; dependency parsing; dependency grammar" /><meta name="dc.Description" content="Abstract Dependency-based methods for syntactic parsing have become increasingly popular in natural language processing in recent years. This book gives a thorough introduction to the methods that are most widely used today. After an introduction to dependency grammar and dependency parsing, followed by a formal characterization of the dependency parsing problem, the book surveys the three major classes of parsing models that are in current use: transition-based, graph-based, and grammar-based models. It continues with a chapter on evaluation and one on the comparison of different methods, and it closes with a few words on current trends and future prospects of dependency parsing. The book presupposes a knowledge of basic concepts in linguistics and computer science, as well as some knowledge of parsing methods for constituency-based representations. Table of Contents: Introduction / Dependency Parsing / Transition-Based Parsing / Graph-Based Parsing / Grammar-Based Parsing / Evaluation / Comparison / Fin..." /><meta name="dc.Publisher" content=" Morgan &amp; Claypool Publishers " /><meta name="dc.Date" scheme="WTN8601" content="2008-12-18" /><meta name="dc.Type" content="other" /><meta name="dc.Format" content="text/HTML" /><meta name="dc.Identifier" scheme="doi" content="10.2200/S00169ED1V01Y200901HLT002" /><meta name="dc.Source" content="http://dx.doi.org/ 10.2200/S00169ED1V01Y200901HLT002 " /><meta name="dc.Language" content="en" /><meta name="dc.Coverage" content="world" /><meta name="dc.Rights" content="Copyright © 2009 by Morgan &amp; Claypool" /><meta name="keywords" content="parsing, syntax, dependency parsing, dependency grammar" />
+        
+        
+
+        
+            <link rel="meta" type="application/atom+xml" href="https://doi.org/10.2200%2FS00169ED1V01Y200901HLT002" />
+            <link rel="meta" type="application/rdf+json" href="https://doi.org/10.2200%2FS00169ED1V01Y200901HLT002" />
+            <link rel="meta" type="application/unixref+xml" href="https://doi.org/10.2200%2FS00169ED1V01Y200901HLT002" />
+        
+    
+<meta name="MSSmartTagsPreventParsing" content="true"/>
+
+<link rel="meta" type="application/atom+xml" href="https://doi.org/10.2200%2FS00169ED1V01Y200901HLT002"/>
+<link rel="meta" type="application/rdf+json" href="https://doi.org/10.2200%2FS00169ED1V01Y200901HLT002"/>
+<link rel="meta" type="application/unixref+xml" href="https://doi.org/10.2200%2FS00169ED1V01Y200901HLT002"/>
+
+
+
+
+
+
+
+
+    
+        
+    
+
+
+
+
+
+
+
+
+            
+        <link href="/templates/jsp/style.css" rel="stylesheet" type="text/css" />
+<link href="/templates/jsp/_midtier/style.css" rel="stylesheet" type="text/css" />
+<link href="/templates/jsp/_midtier/_mcp/style.css" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript"  src="/templates/jsp/script.js"></script>
+<script type="text/javascript"  src="/templates/jsp/_midtier/script.js"></script>
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        
+
+
+
+
+
+        
+<link rel="alternate" type="application/rss+xml" title="RSS - eTOC alert for Synthesis Lectures on Human Language Technologies" href="http://www.morganclaypool.com/action/showFeed?ui=0&amp;mi=60s4bu&amp;ai=v5&amp;jc=hlt&amp;type=etoc&amp;feed=rss" />
+<link rel="alternate" type="application/rss+xml" title="RSS - Cited articles" href="http://www.morganclaypool.com/action/showFeed?ui=0&amp;mi=60s4bu&amp;ai=xp&amp;doi=10.2200%2FS00169ED1V01Y200901HLT002&amp;type=citrack&amp;feed=rss" />
+
+            
+    </head>
+    <body onload="onLoadAction()" onresize="onResizeAction()" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
+    <div id="container">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+<table class="headerLogo" width="775" cellpadding="0" cellspacing="0" border="0">
+ <tr>
+  <td align="left" valign="top">
+   <img src="/templates/jsp/_midtier/_mcp/images/logo.gif" alt="Morgan &amp; Claypool Publishers logo" width="775" height="106" align="left" border="0" hspace="0" />
+  </td>
+
+ </tr>
+</table>
+
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+<table class="identitiesBar" width="775" cellpadding="0" cellspacing="0" border="0">
+ <tr>
+  
+    <td align="left">
+        Hello. <a href="/action/showLogin"> Sign in </a> to personalize your visit.  New user? <a href="/action/registration">Register now</a>.
+        <span class="identitiesName">Florida State University Libraries</span>
+    </td>
+    <td align="right">
+     
+     
+     
+     
+     &nbsp;
+    </td>
+   
+ </tr>
+</table>
+
+
+
+    
+
+    <div class="menu-container">
+        
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+    
+
+
+
+    <ul class="dropDownNav linkList menu">
+        
+            <li class="">
+                <a href="/">Home</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/synthesis">Synthesis</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="/page/browseLbS.jsp">Subject Areas</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/ForthcomingSynthesisLectures">Recent & Forthcoming Titles</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/coll_one">Complete Collections</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/Pricing">Institutional Pricing</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/aboutSynthesis.jsp">About</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/LSindex">Colloquium</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="/page/browseCbS">Subject Areas</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/colloquium_four">Recent & Forthcoming Titles</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/colloquium_one">Complete Collections</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/mcls_pricing">Institutional Pricing</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/colloquium">About</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="/search/simple">Search</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="/search/simple">Simple Search</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/search/advanced">Advanced Search</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/help?context=search">Help</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="">Profile</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="/action/showPreferences?menuTab=Journals&type=favorite&type=subscribed">Series</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/action/showPreferences?menuTab=Alerts">Sign Up For E-Alerts</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/action/showPreferences?menuTab=AccountInfo">Account Info</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/authors.jsp">Author</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/help?context=main">Help</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="">About</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="/page/aboutSynthesis.jsp">Synthesis</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/colloquium">Colloquium</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/page/aboutMcp.jsp">Morgan & Claypool Publishers</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="/feedback/show">Contact</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="http://www.morganclaypoolpublishers.com/">Bookstore</a>
+                
+            </li>
+        
+    </ul>
+
+
+    </div>
+
+    
+    <table width="775" cellpadding="0" cellspacing="0" border="0">
+        <tr><td>
+            <br />
+            <br />
+            
+
+
+
+
+<div id="cartinfo">
+    
+</div>
+        </td></tr>
+    </table>
+    
+
+
+
+<table width="775" border="0" style="quickSearch">
+    <tr><td><div style="display:inline">
+        <form action="/action/doSearch" name="quickSearchLineForm" class="quickSearch" method="get"><table border="0" cellspacing="1" width="100%"><tr><td align="left" valign="top" style="vertical-align: top"><table><tr>
+                <td> &nbsp; <label for="QSFSearchText" accesskey="t">Quick search:</label></td>
+                <td><input id="QSFSearchText" class="textInput" type="text" name="AllField" value="" size="" onfocus="javascript:if(this.value=='Enter keyword'){this.value='';}" placeholder="Enter keyword" /></td>
+                <td><label for="QSFSearchFilter" accesskey="f">within:</label></td>
+                <td nowrap="nowrap"><select id="QSFSearchFilter" class="textInput">
+
+                    <option value="issue">This issue</option>
+                    <option value="single">This series</option>
+                    <option value="">All series</option>
+                </select>
+</td>
+                <td><input onclick="return checkAndAddValues(QSFSearchText.value, 'Enter keyword', 'Please enter search terms', '2','2009','1','hlt');" type="image" value="" src="/templates/jsp/_midtier/_mcp/images/goButton.gif" alt="Go" border="0" /></td></tr></table></td>
+                <td valign="top" align="right">&nbsp;
+                </td></tr></table></form>
+    </div></td></tr>
+    <tr height="1" ><td class="hr"><img src="/templates/jsp/images/singlePixel.gif" border="0" /></td></tr>
+</table>
+
+
+    
+    <table class="pageBody" width="775" cellpadding="0" cellspacing="0" border="0">
+    <tr><td class="pageBody">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+<!-- // hide it from old browsers
+
+var anyDbId = -1;
+var sideParts = {
+    citation: "<tr><td class=\"black9pt\" width=\"15\" valign=\"top\">&nbsp;&bull;&nbsp;<\/td><td class=\"black9pt\" valign=\"top\"><a href=\"javascript:newWindow('{$linkoutUrl}')\">{$display}<\/a><\/td><\/tr>",
+    citingIsi: "<tr><td class=\"black9pt\" width=\"15\" valign=\"top\">&nbsp;&bull;&nbsp;<\/td><td class=\"black9pt\" valign=\"top\">Search for citing articles in:<br/>&nbsp;<a href=\"javascript:newWindow('/servlet/linkout?suffix=s0&dbid=128&doi={$doi}&url={$urlEnc}')\">ISI Web of Science<\/a> ({$citNum} or more)<\/a><\/td><\/tr>",
+    citingCrossref: "<tr><td class=\"black9pt\" width=\"15\" valign=\"top\">&nbsp;&bull;&nbsp;<\/td><td class=\"black9pt\" valign=\"top\"><a href=\"{$url}\">Citing articles in Crossref<\/a><\/td><\/tr>",
+    quicksearch: "<option value=\"{$value}\">{$display}<\/option>",
+    related: ", <a href=\"javascript:newWindow('{$linkoutUrl}')\">{$display}<\/a>"
+};
+
+function genSide(part, dbid, linkoutUrl, display, doi, url, citNum, value) {
+    if (dbid != anyDbId && (140737488355327 & dbid) == 0) return;
+    var content = sideParts[part];
+    if (linkoutUrl) { content = content.replace(/{\$linkoutUrl}/g, linkoutUrl); }
+    if (display) { content = content.replace(/{\$display}/g, display); }
+    if (doi) { content = content.replace(/{\$doi}/g, doi); }
+    if (url) {
+        content = content.replace(/{\$url}/g, url);
+        content = content.replace(/{\$urlEnc}/g, encodeURIComponent(encodeURIComponent(url)));
+    }
+    if (citNum) { content = content.replace(/{\$citNum}/g, citNum); }
+    if (value) { content = content.replace(/{\$value}/g, value); }
+    document.write(content);
+}
+
+function hasSfxLinks() {
+	return false;
+}
+
+
+function genSfxLinks(id, url, doi) {
+    if (! doi) { doi = ""; }
+
+}
+function popSfxLink(prefix, id, url, doi) {
+    if (doi) {
+        url += "&id=doi:"+doi;
+    } else {
+        doi = "10.2200%2FS00169ED1V01Y200901HLT002";
+    }
+    var redirect = prefix + encodeURIComponent("?sid=mcp&genre=article"+url);
+    var href = "/servlet/linkout?suffix="+id+"&dbid=16384&doi="+doi+"&url=" + encodeURIComponent(redirect);
+    return newWindow(href);
+}
+
+var sfxRefDisplay = {
+64:"ADS",
+32:"CAS",
+8192:"CIS",
+256:"CSA",
+16:"Crossref",
+128:"ISI",
+4096:"JSTOR",
+8:"Medline",
+1099511627776: "Ichushi",
+17592186044416: "Medical Online",
+8796093022208: "J-Stage",
+2199023255552: "Medical Finder",
+4398046511104: "Pier Online"
+};
+
+window.onload=disableRefLinkWrite ;
+
+function genRefLink(dbid, id, key, textOfLink) {
+    if (140737488355327 & dbid != 0) {
+        if (typeof textOfLink === "undefined") {
+            if (sfxRefDisplay[dbid].substring(0,1) == "[") {
+                textOfLink = sfxRefDisplay[dbid];
+            } else {
+                textOfLink = "["+sfxRefDisplay[dbid]+"]";
+            }
+            // ToDo: move '[' and ']' to sfxRefDisplay (UPDATE: finish changing sfxRefDisplays and remove this branch)
+        }
+        else{ textOfLink = unescape(textOfLink)};
+
+        if(document.disableRefLinkWrite == null){
+            document.write("<a class='ref' href=\"javascript:popRefLink("+dbid+",'"+id+"','"+key+"')\">"+textOfLink+"<\/a>");
+        }
+    }
+}
+
+function disableRefLinkWrite () {
+    document.disableRefLinkWrite = true;
+}
+
+function popRefLink(dbid, id, key) {
+    var redirect = "/servlet/linkout?suffix=" + id + "&dbid=" + dbid + "&doi=10.2200%2FS00169ED1V01Y200901HLT002&key=" + key;
+    return newWindow(redirect);
+}
+function popRefFull(rid, citart, ptype, area) {
+    return popRefImplFull(rid, citart, ptype, area, 600, 500);
+}
+function popRefImplFull(rid, citart, ptype, area, width, height) {
+    var doi = "10.2200%2FS00169ED1V01Y200901HLT002";
+    if (! ptype) { ptype = ""; }
+    var pt = rid.charAt(0) + "S00169ED1V01Y200901HLT002" + ptype;
+    return popupFull(rid, doi, pt, area, width, height);
+}
+function popRef(rid, citart, ptype, area) {
+    return popRefImpl(rid, citart, ptype, area, 600, 500);
+}
+function popRef2(rid, citart, ptype, area) {
+    return popRefImpl(rid, citart, ptype, area, 400, 100);
+}
+function popRefImpl(rid, citart, ptype, area, width, height) {
+    var doi = "10.2200%2FS00169ED1V01Y200901HLT002";
+    if (! citart) { citart = "citart1"; }
+    if (! ptype) { ptype = ""; }
+    var pt = rid.charAt(0) + "S00169ED1V01Y200901HLT002" + ptype;
+    return popupRef(citart, rid, doi, pt, area, width, height);
+}
+
+
+
+function genCitingCrossref() {
+}
+
+var citLinkDisplay = {
+    
+    0:"SYSTEM",
+4:"SYSTEM",
+20:"SYSTEM",
+64:"ADS",
+32:"CAS",
+8192:"CIS",
+256:"CSA",
+16:"Crossref",
+128:"ISI",
+4096:"JSTOR",
+8:"MEDLINE"
+};
+var feeBasedMask = 4480;
+
+function genCitLink(dbid, suffix, key) {
+    if (dbid != anyDbId && (feeBasedMask & dbid) != 0 && (140737488355327 & dbid) == 0) return;
+
+    var param = "/servlet/linkout?suffix=" + suffix + "&dbid=" + dbid + "&doi=10.2200%2FS00169ED1V01Y200901HLT002&key=" + key;
+    var display = citLinkDisplay[dbid];
+    var img = "/templates/jsp/_midtier/_mcp/images/" + display + "_btn.gif";
+
+
+
+    document.write("<a class='ref' href='javascript:newWindow(\"" + param + "\")'>");
+    document.write("<" + "img src='"+img+"' width='85' height='20' align='BOTTOM' alt='"+display+" Abstract' border='0'/>");
+    document.write("<\/a>");
+}
+// stop hiding -->
+</script>
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tr>
+    <td valign="top">
+    
+    
+
+    <!-- when referer is not from literatum (referer is null or not equals to the default host), display note on abstarct page -->
+    
+
+    <h1 class="articleTitle">Dependency Parsing</h1>
+    <h2 class="journalTitle"><a href="/toc/hlt/2/1">Synthesis Lectures on Human Language Technologies</a></h2>
+    <div>2009,
+            127 pages, (<a href="https://doi.org/10.2200/S00169ED1V01Y200901HLT002">https://doi.org/10.2200/S00169ED1V01Y200901HLT002</a>)</div>
+        
+        <!-- Start full text content -->
+        
+
+        <!-- abstract content --><div class="Authors"> <span class="name noWrap"> Sandra <span class="NLM_x"> </span> Kübler </span><span class="wbr">&#8203;&#8204;</span><div class="aff"> <span class="institution"> Department of Linguistics, Indiana University </span> </div>  <span class="name noWrap"> Ryan <span class="NLM_x"> </span> McDonald </span><span class="wbr">&#8203;&#8204;</span><div class="aff"> <span class="institution"> Google Research </span> </div>  <span class="name noWrap"> Joakim <span class="NLM_x"> </span> Nivre </span><span class="wbr">&#8203;&#8204;</span><div class="aff"> <span class="institution"> Department of Linguistics and Philology, Uppsala University and  School of Mathematics and System Engineering, Växjö University </span> </div> </div><div class="hlFld-Abstract"> <p class="summary-title"><b>Abstract</b></p> <p> Dependency-based methods for syntactic parsing have become increasingly  popular in natural language processing in recent years. This book gives a thorough introduction to the methods that are most widely used today. After an introduction to dependency grammar and dependency parsing, followed by a formal characterization of the dependency parsing problem, the book surveys the three major classes of parsing models that are in current use: transition-based, graph-based, and grammar-based models. It continues with a chapter on evaluation and one on the comparison  of different methods, and it closes with a few words on current trends and future prospects of dependency parsing. The book presupposes a knowledge of basic concepts in linguistics  and computer science, as well as some knowledge of parsing methods  for constituency-based representations. </p> <p class="last"> Table of Contents: Introduction / Dependency Parsing / Transition-Based Parsing / Graph-Based Parsing / Grammar-Based Parsing / Evaluation / Comparison / Final Thoughts </p> </div><!-- /abstract content --><!-- fulltext content --><!-- /fulltext content -->
+
+        <div class="article_link">
+        <table align="center" cellspacing="10">
+        <tr>
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+        
+            <td align="center" nowrap="nowrap">
+                <a href="/doi/pdf/10.2200/S00169ED1V01Y200901HLT002" class="header4" target="_blank">
+                    PDF
+                    <span class="fileSize">
+                        
+                        (1082 KB)
+                    </span>
+                </a>
+            </td>
+            
+    
+            
+            <td align="center" nowrap="nowrap">
+                <a href="/doi/pdfplus/10.2200/S00169ED1V01Y200901HLT002" class="header4" target="_blank">
+                    PDF Plus
+                    <span class="fileSize">
+                        
+                        (1083 KB)
+                    </span>
+                </a>
+            </td>
+            
+       
+        
+        
+
+    
+    
+    
+
+
+</tr>
+        </table>
+        </div>
+
+        
+        
+        <div class="citedBySection"><a name="citedBySection"></a><h2>Cited by</h2><div class="citedByEntry"><span class="name noWrap">Marina<span class="NLM_x"> </span>Purgina</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Maxim<span class="NLM_x"> </span>Mozgovoy</span><span class="wbr">&#8203;&#8204;</span>.  (2017) Visualizing Sentence Parse Trees with WordBricks. <i>2017 3rd IEEE International Conference on Cybernetics (CYBCONF)</i>, 1-4. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1109/CYBConf.2017.7985822" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="hlFld-contribAuthor"><a class="entryAuthor" href="/author/Goldberg%2C+Yoav">Yoav<span class="NLM_x"> </span>Goldberg</a></span>.  (2017) Neural Network Methods for Natural Language Processing. <i><span class="NLM_source">Synthesis Lectures on Human Language Technologies</span></i> <b>10</b>:1, 1-309. <br />Online publication date: 17-Apr-2017.<br /><span class="CbLinks"><a class="ref nowrap " href="/doi/abs/10.2200/S00762ED1V01Y201703HLT037">Abstract</a> | <a class="ref nowrap pdf" target="_blank" title="Opens new window" href="/doi/pdf/10.2200/S00762ED1V01Y201703HLT037">PDF (4422 KB)</a> | <a class="ref nowrap pdfplus" target="_blank" title="Opens new window" href="/doi/pdfplus/10.2200/S00762ED1V01Y201703HLT037">PDF Plus (4028 KB)</a> <!-- ${cadmus-articleworks: 10.2200%2FS00762ED1V01Y201703HLT037 class='ref' } --><!-- ${xml_link: 10.2200%2FS00762ED1V01Y201703HLT037} --></span></div><div class="citedByEntry"><span class="name noWrap">Riyaz Ahmad<span class="NLM_x"> </span>Bhat</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Irshad Ahmad<span class="NLM_x"> </span>Bhat</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Dipti Misra<span class="NLM_x"> </span>Sharma</span><span class="wbr">&#8203;&#8204;</span>.  (2017) Improving Transition-Based Dependency Parsing of Hindi and Urdu by Modeling Syntactically Relevant Phenomena. <i><span class="NLM_source">ACM Transactions on Asian and Low-Resource Language Information Processing</span></i> <b>16</b>:3, 1-35. <br />Online publication date: 20-Jan-2017.<br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1145/3005447" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Hu<span class="NLM_x"> </span>Xu</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Sihong<span class="NLM_x"> </span>Xie</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Lei<span class="NLM_x"> </span>Shu</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Philip S.<span class="NLM_x"> </span>Yu</span><span class="wbr">&#8203;&#8204;</span>.  (2016) CER: Complementary entity recognition via knowledge expansion on large unlabeled product reviews. <i>2016 IEEE International Conference on Big Data (Big Data)</i>, 793-802. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1109/BigData.2016.7840672" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Laura<span class="NLM_x"> </span>Kallmeyer</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Wolfgang<span class="NLM_x"> </span>Maier</span><span class="wbr">&#8203;&#8204;</span>.  (2016) LR Parsing for LCFRS. <i><span class="NLM_source">Algorithms</span></i> <b>9</b>:3, 58. <br />Online publication date: 27-Aug-2016.<br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.3390/a9030058" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Stefano<span class="NLM_x"> </span>Gogioso</span><span class="wbr">&#8203;&#8204;</span>.  (2016) A Corpus-based Toy Model for DisCoCat. <i><span class="NLM_source">Electronic Proceedings in Theoretical Computer Science</span></i> <b>221</b>, 20-28. <br />Online publication date: 2-Aug-2016.<br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.4204/EPTCS.221.3" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Kenneth<span class="NLM_x"> </span>Joseph</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Wei<span class="NLM_x"> </span>Wei</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Matthew<span class="NLM_x"> </span>Benigni</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Kathleen M.<span class="NLM_x"> </span>Carley</span><span class="wbr">&#8203;&#8204;</span>.  (2016) A social-event based approach to sentiment analysis of identities and behaviors in text. <i><span class="NLM_source">The Journal of Mathematical Sociology</span></i> <b>40</b>:3, 137-166. <br />Online publication date: 10-May-2016.<br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1080/0022250X.2016.1159206" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="hlFld-contribAuthor"><a class="entryAuthor" href="/author/Cohen%2C+Shay">Shay<span class="NLM_x"> </span>Cohen</a></span>.  (2016) Bayesian Analysis in Natural Language Processing. <i><span class="NLM_source">Synthesis Lectures on Human Language Technologies</span></i> <b>9</b>:2, 1-274. <br />Online publication date: 9-Jun-2016.<br /><span class="CbLinks"><a class="ref nowrap " href="/doi/abs/10.2200/S00719ED1V01Y201605HLT035">Abstract</a> | <a class="ref nowrap pdf" target="_blank" title="Opens new window" href="/doi/pdf/10.2200/S00719ED1V01Y201605HLT035">PDF (4631 KB)</a> | <a class="ref nowrap pdfplus" target="_blank" title="Opens new window" href="/doi/pdfplus/10.2200/S00719ED1V01Y201605HLT035">PDF Plus (3022 KB)</a> <!-- ${cadmus-articleworks: 10.2200%2FS00719ED1V01Y201605HLT035 class='ref' } --><!-- ${xml_link: 10.2200%2FS00719ED1V01Y201605HLT035} --></span></div><div class="citedByEntry"><span class="name noWrap">Seyed Abolghasem<span class="NLM_x"> </span>Mirroshandel</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Alexis<span class="NLM_x"> </span>Nasr</span><span class="wbr">&#8203;&#8204;</span>.  (2016) Integrating Selectional Constraints and Subcategorization Frames in a Dependency Parser. <i><span class="NLM_source">Computational Linguistics</span></i> <b>42</b>:1, 55-90. <br />Online publication date: 1-Mar-2016.<br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1162/COLI_a_00242" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Li<span class="NLM_x"> </span>Dong</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Furu<span class="NLM_x"> </span>Wei</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Shujie<span class="NLM_x"> </span>Liu</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Ming<span class="NLM_x"> </span>Zhou</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Ke<span class="NLM_x"> </span>Xu</span><span class="wbr">&#8203;&#8204;</span>.  (2015) A Statistical Parsing Framework for Sentiment Classification. <i><span class="NLM_source">Computational Linguistics</span></i> <b>41</b>:2, 293-336. <br />Online publication date: 1-Jun-2015.<br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1162/COLI_a_00221" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Shai<span class="NLM_x"> </span>Gretz</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Alon<span class="NLM_x"> </span>Itai</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Brian<span class="NLM_x"> </span>MacWhinney</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Bracha<span class="NLM_x"> </span>Nir</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Shuly<span class="NLM_x"> </span>Wintner</span><span class="wbr">&#8203;&#8204;</span>.  (2015) Parsing Hebrew CHILDES transcripts. <i><span class="NLM_source">Language Resources and Evaluation</span></i> <b>49</b>:1, 107-145. <br />Online publication date: 22-Nov-2013.<br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1007/s10579-013-9256-x" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Alex<span class="NLM_x"> </span>Becheru</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Florin<span class="NLM_x"> </span>Buşe</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Mihaela<span class="NLM_x"> </span>Colhon</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Costin<span class="NLM_x"> </span>Bădică</span><span class="wbr">&#8203;&#8204;</span>.  (2015) Tourist review analytics using complex networks. <i>Proceedings of the 7th Balkan Conference on Informatics Conference - BCI '15</i>, 1-8. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1145/2801081.2801088" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Cam<span class="NLM_x"> </span>Vu-Manh</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Anh Tuan<span class="NLM_x"> </span>Luong</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Phuong<span class="NLM_x"> </span>Le-Hong</span><span class="wbr">&#8203;&#8204;</span>.  (2015) Improving Vietnamese Dependency Parsing Using Distributed Word Representations. <i>Proceedings of the Sixth International Symposium on Information and Communication Technology - SoICT 2015</i>, 1-7. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1145/2833258.2833296" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Shusen<span class="NLM_x"> </span>Li</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Zhiyang<span class="NLM_x"> </span>He</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Ji<span class="NLM_x"> </span>Wu</span><span class="wbr">&#8203;&#8204;</span>.  (2014) An ontology semantic tree based natural language interface. <i>The 9th International Symposium on Chinese Spoken Language Processing</i>, 226-230. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1109/ISCSLP.2014.6936647" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Jinfeng<span class="NLM_x"> </span>Yang</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Yi<span class="NLM_x"> </span>Guan</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Xishuang<span class="NLM_x"> </span>Dong</span><span class="wbr">&#8203;&#8204;</span>.  (2014) Lymphocyte-style word representations. <i>2014 IEEE International Conference on Information and Automation (ICIA)</i>, 920-925. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1109/ICInfA.2014.6932783" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="hlFld-contribAuthor"><a class="entryAuthor" href="/author/S%C3%B8gaard%2C+Anders"> Anders  <span class="NLM_x"> </span> Søgaard </a></span>.  (2013) Semi-Supervised Learning and Domain Adaptation in Natural Language Processing. <i><span class="NLM_source">Synthesis Lectures on Human Language Technologies</span></i> <b>6</b>:2, 1-103. <br />Online publication date: 22-May-2013.<br /><span class="CbLinks"><a class="ref nowrap " href="/doi/abs/10.2200/S00497ED1V01Y201304HLT021">Abstract</a> | <a class="ref nowrap pdf" target="_blank" title="Opens new window" href="/doi/pdf/10.2200/S00497ED1V01Y201304HLT021">PDF (1451 KB)</a> | <a class="ref nowrap pdfplus" target="_blank" title="Opens new window" href="/doi/pdfplus/10.2200/S00497ED1V01Y201304HLT021">PDF Plus (1456 KB)</a> | <a class="ref nowrap" href="/doi/suppl/10.2200/S00497ED1V01Y201304HLT021">Supplementary Material</a> <!-- ${cadmus-articleworks: 10.2200%2FS00497ED1V01Y201304HLT021 class='ref' } --><!-- ${xml_link: 10.2200%2FS00497ED1V01Y201304HLT021} --></span></div><div class="citedByEntry"><span class="name noWrap">Pierpaolo<span class="NLM_x"> </span>Basile</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Annalina<span class="NLM_x"> </span>Caputo</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Giovanni<span class="NLM_x"> </span>Semeraro</span><span class="wbr">&#8203;&#8204;</span>.  (2012) A Study on Compositional Semantics of Words in Distributional Spaces. <i>2012 IEEE Sixth International Conference on Semantic Computing</i>, 154-161. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1109/ICSC.2012.55" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Neil<span class="NLM_x"> </span>Barrett</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Jens<span class="NLM_x"> </span>Weber-Jahnke</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Vincent<span class="NLM_x"> </span>Thai</span><span class="wbr">&#8203;&#8204;</span>.  (2012) Automated clinical coding using semantic atoms and topology. <i>2012 25th IEEE International Symposium on Computer-Based Medical Systems (CBMS)</i>, 1-6. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1109/CBMS.2012.6266386" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Neal<span class="NLM_x"> </span>Lewis</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Daniel<span class="NLM_x"> </span>Gruhl</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML">, </x></span><span class="name noWrap">Hui<span class="NLM_x"> </span>Yang</span><span class="wbr">&#8203;&#8204;</span>.  (2011) Dependency Parsing for Extracting Family History. <i>2011 IEEE First International Conference on Healthcare Informatics, Imaging and Systems Biology</i>, 237-242. <br /><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1109/HISB.2011.23" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div></div>  
+    </td>
+
+    <td width="10">&nbsp;</td>
+
+    <!-- side region -->
+    <td width="170" valign="top">
+    
+
+
+
+
+
+
+<!-- Start top Links -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td class="gray9pt">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table border="0" cellspacing="0" cellpadding="0" class="breadcrumbs"><tr>
+<td><a href="/">Home</a></td>
+
+<td>&nbsp;&gt;<td><td nowrap="nowrap"><a href='/toc/hlt/2/1'>Series home</a></td>
+
+<td>&nbsp;&gt;<td><td nowrap="nowrap">Abstract</td>
+
+</tr></table>
+
+<br />
+
+
+
+
+
+
+<!-- Previous and Next Articles -->
+<img src="/na101/home/literatum/publisher/mcp/journals/covergifs/hlt/cover.jpg" />
+<br/><br/>
+
+
+
+
+
+
+        
+        
+        
+        
+        <a href="/doi/abs/10.2200/S00194ED1V01Y200905HLT003">Prev. lecture</a>
+    
+|
+Next lecture
+
+<br />
+
+
+    <a href="/doi/pdf/10.2200/S00169ED1V01Y200901HLT002" target="_blank">View/Print PDF <span class="fileSize">(1082 KB)</span></a><br />
+
+
+    <a href="/doi/pdfplus/10.2200/S00169ED1V01Y200901HLT002" target="_blank">View PDF Plus <span class="fileSize">(1083 KB)</span></a><br />
+
+    
+
+<a href="/personalize/addFavoritePublication?doi=10.2200%2FS00169ED1V01Y200901HLT002">Add to favorites</a><br>
+<a href="/action/showMailPage?href=%2Fdoi%2Fabs%2F10.2200%2FS00169ED1V01Y200901HLT002&amp;title=Dependency+Parsing&amp;doi=10.2200%2FS00169ED1V01Y200901HLT002">Email to a friend</a><br>
+
+
+
+
+
+
+<font color="#000000"><a href="http://www.morganclaypool.com/action/showFeed?ui=0&mi=60s4bu&ai=v5&jc=hlt&type=etoc&feed=rss"><img src="/templates/jsp/images/xml.gif" align="absbottom" border="0" /> TOC Alert</a></font>
+| <font color="#000000"><a href="http://www.morganclaypool.com/action/showFeed?ui=0&mi=60s4bu&ai=xp&doi=10.2200%2FS00169ED1V01Y200901HLT002&type=citrack&feed=rss">Citation Alert</a></font>
+
+
+<small><a href="/help?context=Rss" onclick="popupHelp(this.href); return false;" class="view_link">What is RSS?</a></small>
+<br>
+
+
+
+    <!-- placeholder id=null, description=FSG advert placeholder -->
+</td></tr>
+<!-- End Top Links -->
+
+<tr><td align="right">
+<br /><table cellpadding="0" cellspacing="0" width="170"><tr><td valign="top"><table border="0" cellpadding="2" cellspacing="0" width="170"><tr><td align="center" class="section_head quickLinks_head">Quick Links</td></tr><tr><td class="quickLinks_content"><table border="0" cellspacing="0" cellpadding="1" width="100%"><script type="text/javascript">genCitingCrossref()</script><tr><td class="black9pt fullSideBullet"> &bull; </td><td class="black9pt" valign="middle">Alert me when:<br /><a href="/action/addCitationAlert?doi=10.2200%2FS00169ED1V01Y200901HLT002">New articles cite this article</a></td></tr><tr><td class="black9pt fullSideBullet"> &bull; </td><td class="black9pt" valign="top"><a href="/action/showCitFormats?doi=10.2200%2FS00169ED1V01Y200901HLT002">Download to citation manager</a></td></tr><tr><td class="black9pt fullSideBullet"> &bull; </td><td class="black9pt" valign="middle">Related articles found in:<br /><a href="/action/doSearch?target=related&amp;DOI=10.2200%2FS00169ED1V01Y200901HLT002">Morgan &amp; Claypool</a></td></tr><tr><td class="black9pt fullSideBullet"> &bull; </td><td class="black9pt" valign="middle"><a href="/action/showMostReadArticles?journalCode=hlt">View Most Downloaded Articles</a></td></tr></table></td></tr></table></td></tr><tr><td> </td></tr><tr><td> </td></tr><tr><td valign="top"><table border="0" cellpadding="2" cellspacing="0" width="100%"><tr><td align="center" class="section_head quickSearch_head">Quick Search</td></tr><tr><td class="quickSearch_content"><form method="get" action="/action/searchDispatcher" name="frmQuickSearch"><input type="hidden" name="type" value="simple" /><input type="hidden" name="pageSize" value="10" /><input type="hidden" name="displaySummary" value="false" /><table width="100%" border="0" cellpadding="4" cellspacing="0" bgcolor="#FFFFFF"><tr><td valign="top" width="100%"><span class="black9pt"><select name="searchService" size="1"><option value="mcp" selected="">Morgan &amp; Claypool</option>   </select> for </span></td></tr><!-- quicksearch authors --><tr><td valign="top" width="100%" class="pageTitle">Authors:</td></tr><tr><td valign="top" width="100%" class="black9pt"><table border="0" cellpadding="2" cellspacing="1" width="100%"><tr><td valign="top"><input class="input_boxes" value="Kübler, Sandra" name="author" type="checkbox" /></td><td>  Sandra 
+  Kübler <br /></td></tr><tr><td valign="top"><input class="input_boxes" value="McDonald, Ryan" name="author" type="checkbox" /></td><td>  Ryan 
+  McDonald <br /></td></tr><tr><td valign="top"><input class="input_boxes" value="Nivre, Joakim" name="author" type="checkbox" /></td><td><input type="HIDDEN" name="checkboxNum" value="3" />  Joakim 
+  Nivre </td></tr></table></td></tr><!-- /quicksearch authors --><!-- quicksearch keywords --><tr><td valign="top" width="100%" class="pageTitle">Keywords:</td></tr><tr><td valign="top" width="100%" class="black9pt"><table border="0" cellpadding="2" cellspacing="1" width="100%"><tr><td valign="top"><input class="input_boxes" value="Parsing" name="Keyword" type="checkbox" /></td><td><div class="kwd">parsing</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Syntax" name="Keyword" type="checkbox" /></td><td><div class="kwd">syntax</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Dependency Parsing" name="Keyword" type="checkbox" /></td><td><div class="kwd">dependency parsing</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Dependency Grammar" name="Keyword" type="checkbox" /></td><td><div class="kwd">dependency grammar</div></td></tr></table></td></tr><tr><td class="black9pt"><input type="TEXT" name="AllField" size="15" class="input_boxes" /></td></tr><!-- /quicksearch keywords --><tr><td valign="top" width="100%" class="black9pt"><input type="hidden" name="result" value="true" /><input type="hidden" name="type" value="simple" /><span class="black9pt"><input type="image" border="0" src="/templates/jsp/_midtier/_mcp/images/searchButton.gif" align="right" alt="Search" /></span></td></tr></table></form></td></tr></table></td></tr></table>
+</td></tr>
+</table>
+
+
+    </td>
+</tr>
+</table>
+
+<span id="hide"><a href="/doi/pdf/10.1046/9999-9999.99999"><!-- Spider trap link --></a></span>
+
+
+
+
+
+</td></tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="775">
+<tr><td width="10"></td><td>
+<table width="100%" cellspacing="0" cellpadding="0">
+<tr><td class="hr" colspan="2"><img src="/templates/jsp/images/singlePixel.gif" height="1" /></td></tr>
+<tr><td colspan="2" align="center">
+<table cellpadding="5" border="0">
+<tbody><tr>
+<td><a href="/" class="main_menu">Home</a></td>
+<td> | </td>
+<td><a href="/page/synthesis.jsp" class="main_menu">Synthesis</a></td>
+<td> | </td>
+<td><a href="/search/advanced" class="main_menu">Search</a></td>
+<td> | </td>
+<td><a href="/action/showPreferences" class="main_menu">Profile</a></td>
+<td> | </td>
+<td><a href="/page/access.jsp" class="main_menu">Access</a></td>
+<td> | </td>
+<td><a href="/page/authors.jsp" class="main_menu">Author</a></td>
+<td> | </td>
+
+<td><a href="/help?context=main#_top" onclick="popupHelp(this.href); return false;" target="_blank">Help</a></td>
+<td> | </td>
+<td><a href="/feedback/show" class="main_menu">About</a></td>
+</tr></tbody>
+</table>
+</td></tr>
+<tr><td colspan="2" align="center">Technology Partner - <a href="http://www.atypon.com/" target="_blank">Atypon Systems, Inc.</a></td></tr>
+<tr>
+ <td align="left">
+  <a href="http://www.crossref.org" target="_blank"><img src="/templates/jsp/images/CRMemberLogo.gif" width="75" height="35" border="0" /></a>
+ </td>
+ <td align="right">
+  <a href="http://www.atypon.com" target="_blank"><img src="/templates/jsp/images/AtyponLogo.gif" width="97" height="29" border="0" /></a>
+ </td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</table>
+</td>
+</tr>
+</table>
+
+</div><!--end container-->    
+
+</body>
+</html>
+
+
