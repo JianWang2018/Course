@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!-- saved from url=(0444)https://app.box.com/dropbox/sdiqxv1ec7cztul9zs4wggntzxcz5vuj/7583803865?i=Please%20upload%20the%20zip%20file%20containing%20your%20programming%20portion%20of%20the%20assignment.%20Please%20name%20your%20file%20as%20%3Cyour-sunet-id%3E.zip%20%28e.g.%20jdoe.zip%29.%20If%20you%20do%20not%20have%20an%20sunet-id%2C%20then%20please%20identify%20yourself%20in%20the%20description%20below.&d=1&w=385&h=450&t=Submit%20file%20to%20CS%20224D%20Staff&r=1 -->
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Dropbox</title>
+		<link rel="stylesheet" href="./dropbox_view-I0qkVS.css" type="text/css">
+		<script type="text/javascript" src="./jquery-1.8.3-VUihN1.js"></script>
+		<script type="text/javascript" src="./jquery.form-quMuLT.js"></script>
+		<script type="text/javascript">
+		
+		// @TODO without $j
+		$j = jQuery.noConflict();
+
+		var MAX_FILE_SIZE = 16106127360;
+		var uploading = false;
+		var require_email = 1;
+
+		function is_email(str)
+		{
+			var email_regex = new RegExp("^[a-zA-Z0-9'._%+-]+@([a-zA-Z0-9-]+\\.)+([a-zA-Z]{2}|aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel)$", 'i');
+			return email_regex.exec(str) ? true : false;
+		}
+
+		function ajax_submit()
+		{
+			if (uploading) return;
+
+			var j_form = $j('form');
+			var j_file = j_form.find('input[type="file"]');
+			var j_head = $j('div.head');
+			var j_submit = j_form.find('input[type="submit"]');
+			var j_email = j_form.find('#email_input');
+
+			if (!j_file.val())
+			{
+				alert('Please select a file to upload');
+				return;
+			}
+
+			//check whether browser supports File API, in which case we check the upload size
+			if (typeof FileReader != 'undefined')
+			{
+				var file_size = j_file[0].files[0].size;
+				if (file_size > MAX_FILE_SIZE)
+				{
+					
+					
+					 //tag needs to be at start of line to pass linter
+					alert('Sorry, the maximum file size is 15GB');
+					return;
+				}
+			}
+
+			var email = $j.trim(j_email.val());
+
+			// warn if e-mail is required, or if an invalid e-mail was entered
+			if (require_email && !is_email(email))
+			{
+				alert('Please enter a valid e-mail address');
+				return;
+			}
+
+			j_form.ajaxSubmit({
+				timeout: 7200000 // Extend default timeout to 2 hrs for large uploads.
+				,dataType: $j.browser.msie && parseInt($j.browser.version) > 8 ? 'text' : 'xml'
+				,success: function(data)
+				{
+					// @NOTE (kimber): Do not follow this as an example for anything else.  This is a hack to get around an apparent
+					// corruption of the xml document returned from the server by the ajaxSubmit plugin.  The ajaxSubmit plugin is
+					// utterly unintelligible, so we return text and parse the text directly.
+					var success;
+					var message;
+
+					// IE quirks mode can cause the data to come back in as an unexpected type
+					// Use different parsing technique based on the actual return type
+					var actual_data_type = typeof(data);
+					if (actual_data_type === 'string')
+					{
+						success = data.indexOf('upload_ok') != -1;
+					}
+					else if (actual_data_type === 'object' && $j(data).find('files').children().length == 1)
+					{
+						var file = data.getElementsByTagName('file').item(0);
+						if (file.getAttribute('error')) {
+							success = false;
+
+							// Set message for file size error
+							if (file.getAttribute('error') == 'not_enough_free_space')
+							{
+								message = '<span id="after_upload_message">Sorry, David Nyenzo Dindi does not have enough space left in their account for your file.<br /></span>';
+							}
+						}
+						else
+						{
+							success = true;
+						}
+
+					}
+
+					if (success)
+					{
+						// @TODO fix line wrapping
+						message = '<span id="after_upload_message">Success. Your file has been uploaded, and the<br/>folder owner has been notified.<br /></span>';
+					}
+
+					if (!message)
+					{
+						// @TODO deal with files with same name
+						
+						 //tag needs to be at start of line to pass linter
+						message = '<span id="after_upload_message">Sorry an error occurred during the upload.<br /></span>';
+					}
+
+					j_form.hide();
+					j_head.after(message);
+
+					var j_reset_link = $j('<a href="#"></a>')
+					.text('Upload another file')
+					.click(function()
+						{
+							j_form.get(0).reset();
+							j_form.show();
+							j_submit.val('Upload');
+
+							$j(this).remove();
+							$j('#after_upload_message').remove();
+							uploading = false;
+						}
+					)
+
+					$j('#after_upload_message').append(j_reset_link);
+				}
+			});
+			uploading = true;
+			j_submit.val('Uploading...');
+		}
+
+		// onload, prevent enter from triggering raw form post (in IE), force it to use ajax_submit
+		$j(function()
+		{
+			var ENTER = 13;
+			$j('form').bind('keypress', function(e)
+				{
+					// We want to be able to press Enter in the textarea
+					if (e.keyCode == ENTER && e.target.tagName !== 'TEXTAREA')
+					{
+						ajax_submit();
+						return false;
+					}
+				});
+		});
+		
+
+		</script>
+	</head>
+<body>
+	<!--[if lte IE 9]>
+		<div class="old-ie-not-supported" style="height: 418px;width: 353px;">
+			
+			This version of Internet Explorer is no longer supported. Please upgrade to the latest version of Internet Explorer in order to upload a file.
+		</div>
+	<![endif]-->
+	<!--[if gt IE 9]>
+		
+ <div class="main" style="height: 418px;width: 353px;"> <div class="head"><h2> Submit file to CS 224D Staff </h2> <span>Please upload the zip file containing your programming portion of the assignment. Please name your file as &lt;your-sunet-id&gt;.zip (e.g. jdoe.zip). If you do not have an sunet-id, then please identify yourself in the description below.</span></div> <form action="https://upload.box.com/api/1.0/upload/sdiqxv1ec7cztul9zs4wggntzxcz5vuj/7583803865" enctype="multipart/form-data" method="post"><input type="hidden" name="check_name_conflict_folder_option" value="1"/><table><tr> <td class="field"><label for="file">File Upload</label>:</td><td class="input"><input type="file" name="new_file_1" id="file" /></td></tr> <tr><td class="field field_top"><br/> <label for="desc">Description  <br/>(255 characters maximum)</label>:</td><td class="input"><br/><textarea name="description" id="desc" maxlength="255"></textarea></td></tr>  <tr><td class="field field_top"><br/> <label for="email_input">Your e-mail<br/>(required)</label>:</td><td class="input field_top"><br/><input type="text" name="uploader_email" id="email_input"></input></td></tr> <tr> <td colspan="2" class="submit"><br /><input type="submit" name="upload" value="Upload" onclick="ajax_submit(); return false;"/></td></tr></table></form> <div class="externally-owned-disclimer"> This upload widget is externally owned. Uploading files here will not upload them to your Box account.</div><a href="https://app.box.com/" target="_top"><img src="https://cdn01.boxcdn.net/_assets/img/powered_by_box-lIwgi-.png" alt="Box" title="Box" /></a></div>
+	<![endif]-->
+	<!--[if !IE]> -->
+		
+ <div class="main" style="height: 418px;width: 353px;"> <div class="head"><h2> Submit file to CS 224D Staff </h2> <span>Please upload the zip file containing your programming portion of the assignment. Please name your file as &lt;your-sunet-id&gt;.zip (e.g. jdoe.zip). If you do not have an sunet-id, then please identify yourself in the description below.</span></div> <form action="https://upload.box.com/api/1.0/upload/sdiqxv1ec7cztul9zs4wggntzxcz5vuj/7583803865" enctype="multipart/form-data" method="post"><input type="hidden" name="check_name_conflict_folder_option" value="1"><table><tbody><tr> <td class="field"><label for="file">File Upload</label>:</td><td class="input"><input type="file" name="new_file_1" id="file"></td></tr> <tr><td class="field field_top"><br> <label for="desc">Description  <br>(255 characters maximum)</label>:</td><td class="input"><br><textarea name="description" id="desc" maxlength="255"></textarea></td></tr>  <tr><td class="field field_top"><br> <label for="email_input">Your e-mail<br>(required)</label>:</td><td class="input field_top"><br><input type="text" name="uploader_email" id="email_input"></td></tr> <tr> <td colspan="2" class="submit"><br><input type="submit" name="upload" value="Upload" onclick="ajax_submit(); return false;"></td></tr></tbody></table></form> <div class="externally-owned-disclimer"> This upload widget is externally owned. Uploading files here will not upload them to your Box account.</div><a href="https://app.box.com/" target="_top"><img src="./powered_by_box-lIwgi-.png" alt="Box" title="Box"></a></div>
+	<!--<![endif]-->
+
+
+</body></html>
