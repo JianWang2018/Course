@@ -1,0 +1,31 @@
+Hello, all,
+
+Here are my replies to the following questions.
+
+Q 1) The neural network design problems you have given in 1-11 and 5-3, do they have to be fully connected to receive full points?
+
+Answer:
+
+For Problem 1-11, it is up to you and you can design your neural network in any way you like as long as it works properly.
+
+For Problem 5-3, you need to specify the weights for the given neural network that can solve the XOR problem if you believe the neural network can be trained to solve the problem.. Note that here the neural network architecture is given.
+
+
+Q 2) In problem 2-2, what do you mean by estimated prior? We do not estimate prior using maximum likelihood estimation.
+
+Answer:
+
+The questions are clear. For Problem 2-1, you need to estimate the priors.
+
+
+Q 3) In problem 4-2, you asked to label the nodes of k-d tree. What do mean by labeling the node? I am mentioning the feature and the threshold. Is that enough?
+
+Answer:
+
+For Problem 4-2, you need to label your nodes so that you can refer to them in Problem 4-3 as it asks you to show all the nodes in your k-d tree.
+
+
+Please let me know if you have any other questions.
+
+
+Xiuwen Liu
