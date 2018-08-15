@@ -1,0 +1,16 @@
+﻿Build started 2015/11/6 14:22:21.
+     1>Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment7_MengWei\Array_op\Array_op\Array_op.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\Array_op.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Array_op.cpp
+         Array_op.cpp
+     1>g:\2015 fall\scientific programming\assignment\assignment7_mengwei\array_op\array_op\array_op.h(123): warning C4715: 'Array::operator[]': not all control paths return a value
+     1>g:\2015 fall\scientific programming\assignment\assignment7_mengwei\array_op\array_op\array_op.h(130): warning C4715: 'operator<<': not all control paths return a value
+       Link:
+         E:\Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\2015 Fall\Scientific Programming\Assignment\Assignment7_MengWei\Array_op\Debug\Array_op.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment7_MengWei\Array_op\Debug\Array_op.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment7_MengWei\Array_op\Debug\Array_op.lib" /MACHINE:X86 Debug\Array_op.obj
+         Debug\stdafx.obj
+         Array_op.vcxproj -> G:\2015 Fall\Scientific Programming\Assignment\Assignment7_MengWei\Array_op\Debug\Array_op.exe
+     1>Done Building Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment7_MengWei\Array_op\Array_op\Array_op.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.94

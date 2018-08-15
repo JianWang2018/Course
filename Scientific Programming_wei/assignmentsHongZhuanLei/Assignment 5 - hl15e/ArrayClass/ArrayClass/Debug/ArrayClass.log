@@ -1,0 +1,25 @@
+﻿Build started 2015/10/29 21:20:21.
+     1>Project "G:\2015 Fall\Scientific Programming\assignmentsHongZhuanLei\Assignment 5 - hl15e\ArrayClass\ArrayClass\ArrayClass.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yc"stdafx.h" /Fp"Debug\ArrayClass.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\ArrayClass.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ArrayClass.cpp
+         ArrayClass.cpp
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(74): warning C4018: '>': signed/unsigned mismatch
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(91): warning C4018: '>=': signed/unsigned mismatch
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(107): warning C4018: '>=': signed/unsigned mismatch
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(138): warning C4018: '<': signed/unsigned mismatch
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(152): warning C4018: '<': signed/unsigned mismatch
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(162): warning C4018: '<': signed/unsigned mismatch
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(172): warning C4018: '<': signed/unsigned mismatch
+     1>g:\2015 fall\scientific programming\assignmentshongzhuanlei\assignment 5 - hl15e\arrayclass\arrayclass\arrayclass.cpp(182): warning C4018: '<': signed/unsigned mismatch
+       Link:
+         E:\Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\2015 Fall\Scientific Programming\assignmentsHongZhuanLei\Assignment 5 - hl15e\ArrayClass\Debug\ArrayClass.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"G:\2015 Fall\Scientific Programming\assignmentsHongZhuanLei\Assignment 5 - hl15e\ArrayClass\Debug\ArrayClass.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\2015 Fall\Scientific Programming\assignmentsHongZhuanLei\Assignment 5 - hl15e\ArrayClass\Debug\ArrayClass.lib" /MACHINE:X86 Debug\ArrayClass.obj
+         Debug\stdafx.obj
+     1>ArrayClass.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
+         ArrayClass.vcxproj -> G:\2015 Fall\Scientific Programming\assignmentsHongZhuanLei\Assignment 5 - hl15e\ArrayClass\Debug\ArrayClass.exe
+     1>Done Building Project "G:\2015 Fall\Scientific Programming\assignmentsHongZhuanLei\Assignment 5 - hl15e\ArrayClass\ArrayClass\ArrayClass.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:12.29

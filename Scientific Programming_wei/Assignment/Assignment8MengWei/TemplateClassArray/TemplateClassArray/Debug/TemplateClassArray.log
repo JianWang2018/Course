@@ -1,0 +1,21 @@
+﻿Build started 2015/11/6 16:32:15.
+     1>Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment8MengWei\TemplateClassArray\TemplateClassArray\TemplateClassArray.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\TemplateClassArray.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt TemplateClassArray.cpp
+         TemplateClassArray.cpp
+     1>g:\2015 fall\scientific programming\assignment\assignment8mengwei\templateclassarray\templateclassarray\templateclassarray.cpp(19): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+     1>g:\2015 fall\scientific programming\assignment\assignment8mengwei\templateclassarray\templateclassarray\templateclassarray.cpp(20): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+     1>g:\2015 fall\scientific programming\assignment\assignment8mengwei\templateclassarray\templateclassarray\templateclassarray.cpp(21): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+     1>g:\2015 fall\scientific programming\assignment\assignment8mengwei\templateclassarray\templateclassarray\templateclassarray.cpp(22): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+     1>g:\2015 fall\scientific programming\assignment\assignment8mengwei\templateclassarray\templateclassarray\templateclassarray.cpp(23): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+     1>g:\2015 fall\scientific programming\assignment\assignment8mengwei\templateclassarray\templateclassarray\templateclassarray.cpp(25): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+     1>g:\2015 fall\scientific programming\assignment\assignment8mengwei\templateclassarray\templateclassarray\templateclassarray.h(133): warning C4715: 'Array<int>::operator[]': not all control paths return a value
+       Link:
+         E:\Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\2015 Fall\Scientific Programming\Assignment\Assignment8MengWei\TemplateClassArray\Debug\TemplateClassArray.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment8MengWei\TemplateClassArray\Debug\TemplateClassArray.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment8MengWei\TemplateClassArray\Debug\TemplateClassArray.lib" /MACHINE:X86 Debug\stdafx.obj
+         Debug\TemplateClassArray.obj
+         TemplateClassArray.vcxproj -> G:\2015 Fall\Scientific Programming\Assignment\Assignment8MengWei\TemplateClassArray\Debug\TemplateClassArray.exe
+     1>Done Building Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment8MengWei\TemplateClassArray\TemplateClassArray\TemplateClassArray.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.90

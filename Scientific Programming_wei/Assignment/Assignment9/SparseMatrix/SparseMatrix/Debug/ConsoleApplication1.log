@@ -1,0 +1,16 @@
+﻿Build started 2015/11/18 23:51:07.
+     1>Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment9\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (ConsoleApplication1.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\SparseMatrix.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt SparseMatrix.cpp
+         SparseMatrix.cpp
+     1>g:\2015 fall\scientific programming\assignment\assignment9\consoleapplication1\consoleapplication1\sparsematrix.cpp(98): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+       Link:
+         E:\Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\2015 Fall\Scientific Programming\Assignment\Assignment9\ConsoleApplication1\Debug\SparseMatrix.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment9\ConsoleApplication1\Debug\SparseMatrix.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment9\ConsoleApplication1\Debug\SparseMatrix.lib" /MACHINE:X86 Debug\SparseMatrix.obj
+         Debug\stdafx.obj
+         ConsoleApplication1.vcxproj -> G:\2015 Fall\Scientific Programming\Assignment\Assignment9\ConsoleApplication1\Debug\SparseMatrix.exe
+     1>Done Building Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment9\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.88

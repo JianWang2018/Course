@@ -1,0 +1,13 @@
+﻿Build started 2015/8/27 22:11:51.
+     1>Project "G:\2015 Fall\Hello World\Hello World\Hello World.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\Hello World.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt "Hello World.cpp"
+         Hello World.cpp
+     1>g:\2015 fall\hello world\hello world\hello world.cpp(4): warning C4627: '#include <stdlib.h>': skipped when looking for precompiled header use
+         g:\2015 fall\hello world\hello world\hello world.cpp(4): note: Add directive to 'stdafx.h' or rebuild precompiled header
+     1>g:\2015 fall\hello world\hello world\hello world.cpp(10): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "stdafx.h"' to your source?
+     1>Done Building Project "G:\2015 Fall\Hello World\Hello World\Hello World.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.42

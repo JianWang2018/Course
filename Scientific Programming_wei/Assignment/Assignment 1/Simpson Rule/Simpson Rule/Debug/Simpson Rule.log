@@ -1,0 +1,8 @@
+﻿Build started 2015/9/20 16:44:36.
+     1>Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment 1\Simpson Rule\Simpson Rule\Simpson Rule.vcxproj" on node 2 (build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Platforms\Win32\Microsoft.Cpp.Win32.Targets(511,5): error MSB8008: Specified platform toolset (v140) is not installed or invalid. Please make sure that a supported PlatformToolset value is selected.
+     1>Done Building Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment 1\Simpson Rule\Simpson Rule\Simpson Rule.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.30

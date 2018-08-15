@@ -1,0 +1,17 @@
+﻿Build started 2015/9/29 13:24:58.
+     1>Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment4MengWei\Assignment4-MengWei\Jacobi-and-Gauss-Seidel-Methods\Jacobi-and-Gauss-Seidel-Methods\Jacobi-and-Gauss-Seidel-Methods.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yc"stdafx.h" /Fp"Debug\Jacobi-and-Gauss-Seidel-Methods.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         E:\Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\Jacobi-and-Gauss-Seidel-Methods.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt "Jacobi-and-Gauss-Seidel-Methods.cpp"
+         Jacobi-and-Gauss-Seidel-Methods.cpp
+     1>g:\2015 fall\scientific programming\assignment\assignment4mengwei\assignment4-mengwei\jacobi-and-gauss-seidel-methods\jacobi-and-gauss-seidel-methods\jacobi-and-gauss-seidel-methods.cpp(118): warning C4101: 'j': unreferenced local variable
+       Link:
+         E:\Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"G:\2015 Fall\Scientific Programming\Assignment\Assignment4MengWei\Assignment4-MengWei\Jacobi-and-Gauss-Seidel-Methods\Debug\Jacobi-and-Gauss-Seidel-Methods.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment4MengWei\Assignment4-MengWei\Jacobi-and-Gauss-Seidel-Methods\Debug\Jacobi-and-Gauss-Seidel-Methods.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"G:\2015 Fall\Scientific Programming\Assignment\Assignment4MengWei\Assignment4-MengWei\Jacobi-and-Gauss-Seidel-Methods\Debug\Jacobi-and-Gauss-Seidel-Methods.lib" /MACHINE:X86 "Debug\Jacobi-and-Gauss-Seidel-Methods.obj"
+         Debug\stdafx.obj
+         Jacobi-and-Gauss-Seidel-Methods.vcxproj -> G:\2015 Fall\Scientific Programming\Assignment\Assignment4MengWei\Assignment4-MengWei\Jacobi-and-Gauss-Seidel-Methods\Debug\Jacobi-and-Gauss-Seidel-Methods.exe
+     1>Done Building Project "G:\2015 Fall\Scientific Programming\Assignment\Assignment4MengWei\Assignment4-MengWei\Jacobi-and-Gauss-Seidel-Methods\Jacobi-and-Gauss-Seidel-Methods\Jacobi-and-Gauss-Seidel-Methods.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.80
