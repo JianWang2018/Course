@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0048)http://www.cc.gatech.edu/~hays/compvision/proj3/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" class="gr__cc_gatech_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script type="text/javascript" src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/latexit.js"></script>
+
+    
+    <title>Project 3: Scene Geometry and Model Fitting with RANSAC</title>
+    <link href="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/style.css" rel="stylesheet" type="text/css">
+<style type="text/css" media="all">
+#primarycontent {
+    margin-left: auto;  
+    width: expression(document.body.clientWidth > 995? "995px": "auto" );
+    margin-right: auto;
+    text-align: left;
+    max-width: 995px 
+}
+</style><style type="text/css"></style></head>
+
+ 
+ 
+<body data-gr-c-s-loaded="true"> 
+<div id="primarycontent"> 
+<center>
+<img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/colosseum.jpg"><p style="color: #666;">
+Structure from Multiple Image Views. Figure by <a href="http://www.cs.cornell.edu/~snavely/bundler/">Snavely et al.</a></p><p></p></center>
+
+<h1>Project 3: Camera Calibration and Fundamental Matrix Estimation with RANSAC<br>
+<a href="http://www.cc.gatech.edu/~hays/compvision/">CS 4476/6476: Computer Vision</a></h1> 
+
+ 
+<h2>Brief</h2> 
+<p> 
+</p><ul> 
+  <li>Due: 11:55pm on Tuesday, October 11</li>
+  <li>Project materials including writeup template <a href="http://www.cc.gatech.edu/~hays/compvision/proj3/proj3.zip">proj3.zip (20 MB)</a>. You must separately download <a href="http://www.vlfeat.org/download.html">VLFeat 0.9.20 binary package</a></li> 
+  <li>VLFeat Matlab reference: <a href="http://www.vlfeat.org/matlab/matlab.html">http://www.vlfeat.org/matlab/matlab.html</a>  
+  </li><li>Handin: through <a href="http://t-square.gatech.edu/">t-square.gatech.edu</a> </li>   
+  <li>Required files: README, code/, html/, html/index.html</li>
+</ul>
+<p></p> 
+ 
+<h2>Overview</h2> 
+<p> 
+The goal of this project is to introduce you to camera and scene geometry. Specifically we will estimate the camera projection matrix, which maps 3D world coordinates to image coordinates, as well as the fundamental matrix, which relates points in one scene to epipolar lines in another. The camera projection matrix and the fundamental matrix can each be estimated using point correspondences. To estimate the projection matrix (camera calibration), the input is corresponding 3d and 2d points. To estimate the fundamental matrix the input is corresponding 2d points across two images. You will start out by estimating the projection matrix and the fundamental matrix for a scene with ground truth correspondences. Then you'll move on to estimating the fundamental matrix using point correspondences from from SIFT.
+</p>
+
+<p> 
+Remember these challenging images of Gaudi's Episcopal Palace from Project 2? By using RANSAC to find the fundamental matrix with the most inliers, we can filter away spurious matches and achieve near perfect point to point matching as shown below:
+</p>
+
+<div style="text-align: left">
+<img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gaudi.jpg" alt="Episcopal Gaudi" style="width:1000px;"><p style="color: #666;">
+</p></div>
+
+
+<h2>Details and Starter Code</h2>
+
+<p>This project consists of three parts: (1) estimating the projection matrix, (2) estimating the fundamental matrix, 
+and (3) estimating the fundamental matrix with unreliable SIFT matches using RANSAC. These three tasks have 
+top level Matlab scripts <code>proj3_part1.m</code>, <code>proj3_part2.m</code>, and <code>proj3_part3.m</code> respectively.
+</p>
+
+<h3>Part I: Camera Projection Matrix</h3>
+
+<p> The goal is to compute the projection matrix that goes from world 3D coordinates to 2D image
+coordinates. Recall that using homogeneous coordinates the equation for moving from 3D world to 2D camera coordinates is:
+</p>
+
+<ul>
+
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif.latex" alt="\begin{pmatrix}u \\ v \\ 1\end{pmatrix} \cong 
+                   \begin{pmatrix}u*s \\ v*s \\ s \end{pmatrix}= \begin{pmatrix}m_{11} &amp; m_{12} &amp; m_{13} &amp; m_{14} \\ 
+                  m_{21} &amp; m_{22} &amp; m_{23} &amp; m_{24} \\
+                  m_{31} &amp; m_{32} &amp; m_{33} &amp; m_{34} \end{pmatrix}
+                  \begin{pmatrix}X \\ Y \\ Z \\ 1 \end{pmatrix} " border="0" class="latex"> </div>
+</ul>
+
+<p> Another way of writing this equation is:
+
+</p><ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(1).latex" alt="u = \frac{m_{11}X + m_{12}Y + m_{13}Z + m_{14}}{m_{31}X + m_{32}Y + m_{33}Z + m_{34}}" border="0" class="latex"> </div>
+</ul>
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(2).latex" alt="\rightarrow (m_{31}X + m_{32}Y + m_{33}Z + m_{34})u = m_{11}X + m_{12}Y + m_{13}Z + m_{14}" border="0" class="latex"> </div>
+</ul>
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(3).latex" alt="\rightarrow  0 = m_{11}X + m_{12}Y + m_{13}Z + m_{14} - m_{31}uX - m_{32}uY - m_{33}uZ - m_{34}u" border="0" class="latex"> </div>
+</ul>
+
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(4).latex" alt="v = \frac{m_{21}X + m_{22}Y + m_{23}Z + m_{24}}{m_{31}X + m_{32}Y + m_{33}Z + m_{34}} " border="0" class="latex"> </div>
+</ul>
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(5).latex" alt="\rightarrow (m_{31}X + m_{32}Y + m_{33}Z + m_{34})v = m_{21}X + m_{22}Y + m_{23}Z + m_{24}" border="0" class="latex"> </div>
+</ul>
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(6).latex" alt="\rightarrow 0 = m_{21}X + m_{22}Y + m_{23}Z + m_{24} - m_{31}vX - m_{32}vY - m_{33}vZ -  m_{34}v" border="0" class="latex"> </div>
+</ul>
+
+<p>
+At this point, you're almost able to set up your linear regression to find the elements of the matrix M. There's only one problem, the matrix M is only defined up to a scale. So these equations have many different possible solutions, in particular M = all zeros is a solution which is not very helpful in our context. The way around this is to first fix a scale and then do the regression. There are several options for doing this (1) You can fix the last element (<span lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(7).latex" alt="m_{34}" border="0" class="latex"> </span>) to 1 and then find the remaining coefficients, or you can use the singular value decomposition to directly solve the constrained optimization problem: </p><ul><div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(8).latex" alt=" \begin{align*} &amp;\min\|Ax \| \\ &amp;s.t ~ \| x \| = 1\end{align*} " border="0" class="latex"> </div></ul> <p></p>
+
+<p> To make sure that your code is correct, we are going to give you a set of “normalized points” in
+the files ./pts2d-norm-pic_a.txt and ./pts3d-norm.txt. If you solve for M using all the points
+you should get a matrix that is a scaled equivalent of the following:</p>
+
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(9).latex" alt="M_{\text{norm}A} = \begin{pmatrix}-0.4583 &amp; 0.2947 &amp; 0.0139 &amp; -0.0040 \\
+                                                    0.0509 &amp; 0.0546 &amp; 0.5410 &amp; 0.0524 \\
+                                                    -0.1090 &amp; -0.1784 &amp; 0.0443 &amp; -0.5968 \end{pmatrix} " border="0" class="latex"> </div>
+</ul>
+
+<p> For example, this matrix will take the last normalized 3D point which is &lt; 1.2323, 1.4421, 0.4506, 1.0 &gt;
+and will project it to the &lt; u, v &gt; of &lt; 0.1419, −0.4518 &gt; where we converted the homogeneous 2D
+point &lt; us, vs, s &gt; to its inhomogeneous version (the  transformed pixel coordinate in the image) by dividing by s.
+</p>
+
+<p>The first task for you is to write the least squares regression to solve for M given the corresponding normalized points. The starter code will load 20 corresponding
+normalized 2D and 3D points. You have to write the code to set up the linear system of equations, solve for the unknown entries of M, and reshape it into the estimated projection matrix. To validate that you've found a reasonable projection matrix, we've provided evaluation code which computes the total "residual" between the projected 2d location of each 3d point and the actual location of that point in the 2d image. The residual is just the distance (square root of the sum of squared differences in u and v). This should be very small.</p>
+
+<p> Once you have an accurate projection matrix M, it is possible to tease it apart into the more familiar and more useful matrix K of intrinsic parameters and matrix [R | T] of extrinsic parameters. For this project we will only ask you to estimate one particular extrinsic parameter: the camera center in world coordinates. Let us define M as being made up of a
+3x3 we’ll call Q and a 4th column will call m_4 :
+
+</p><ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(10).latex" alt="M = (Q | m_4 )" border="0" class="latex"> </div>
+</ul>
+
+<p>
+From class we said that the center of the camera C could be found by:</p>
+
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(11).latex" alt="C = -Q^{-1} m_4" border="0" class="latex"> </div>
+</ul>
+
+<p>
+To debug your code: If you use you the normalized 3D points to get the M given above you would get a camera center of:</p>
+
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(12).latex" alt="C_{\text{norm}A} = &lt; -1.5125, -2.3515, 0.2826 &gt;" border="0" class="latex"> </div>
+</ul>
+
+<p>We've also provided a visualization which will show the estimated 3d location of the camera with respect to the normalized 3d point coordinates.</p>
+
+
+<h3>Part II: Fundamental Matrix Estimation</h3>
+
+<p>
+The next part of this project is estimating the mapping of points in one image to lines in another by means of the
+fundamental matrix. This will require you to use similar methods to those in part 1. We will
+make use of the corresponding point locations listed in pts2d-pic_a.txt and pts2d-pic_b.txt.
+Recall that the definition of the Fundamental Matrix is:
+</p>
+
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(13).latex" alt="\begin{pmatrix}u&#39; &amp; v&#39; &amp; 1\end{pmatrix}\begin{pmatrix}f_{11} &amp; f_{12} &amp; f_{13} \\ 
+                                                                        f_{21} &amp; f_{22} &amp; f_{23} \\
+                                                                        f_{31} &amp; f_{32} &amp; f_{33} \end{pmatrix}
+                                                                        \begin{pmatrix}u \\ v \\ 1\end{pmatrix} = 0" border="0" class="latex"> </div>
+</ul>
+
+<p>Note: the fundamental matrix is sometimes defined as the transpose of the above matrix with the left and right image points swapped. Both are valid fundamental matrices,
+but the visualization functions in the starter code assume you use the above form.</p><p>
+
+And another way of writing this matrix equations is:
+
+</p><ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(14).latex" alt="\begin{pmatrix}u&#39; &amp; v&#39; &amp; 1\end{pmatrix}\begin{pmatrix}f_{11}u + f_{12}v + f_{13} \\ 
+                                                                        f_{21}u + f_{22}v + f_{23} \\
+                                                                        f_{31}u + f_{32}v + f_{33} \end{pmatrix}
+                                                                        = 0" border="0" class="latex"> </div>
+</ul>
+Which is the same as:
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(15).latex" alt="\begin{pmatrix}f_{11}uu&#39; + f_{12}vu&#39; + f_{13}u&#39; + f_{21}uv&#39; + f_{22}vv&#39; + f_{23}v&#39; + f_{31}u + f_{32}v + f_{33} \end{pmatrix} = 0" border="0" class="latex"> </div>
+</ul>
+
+<p>Starting to see the regression equations? Given corresponding points you get one equation per point pair. With 8 or more points you can
+solve this (why 8?). As in part I there's an issue here where the matrix is only defined up to scale and the degenerate zero solution solves these equations. 
+So you need to solve using the same method you used in part 1 of first fixing the scale and then solving the regression.</p>
+
+<p>The least squares estimate of F is full rank; however, the fundamental matrix is a rank 2
+matrix. As such we must reduce its rank. In order to do this we can decompose F using
+singular value decomposition into the matrices U ΣV' = F. We can then estimate a rank 2
+matrix by setting the smallest singular value in Σ to zero thus generating Σ2 . The fundamental
+matrix is then easily calculated as F = U Σ2 V'. You can
+check your fundamental matrix estimation by plotting the epipolar lines using the plotting function provided in the starter code.</p>
+
+<h3>Part III: Fundamental Matrix with RANSAC</h3>
+
+<p>For two photographs of a scene it's unlikely that you'd have perfect point corresponence with which to do the regression for the fundamental matrix. So, next you are going to compute the fundamental matrix with unreliable point correspondences computed with SIFT (as you might get from project 2). As discussed in class, least squares regression is not appropriate in this scenario due to the presence of multiple outliers. In order to estimate the fundamental matrix from this noisy data 
+you'll need to use RANSAC in conjunction with your fundamental matrix estimation. </p>
+<p>
+The starter code will use VLFeat to do SIFT matching for any image pair you give it (you could use your project 2 code if you want, but this is not recommended). You'll use these putative point correspondences and RANSAC to find the "best" fundamental matrix. You will iteratively choose some number of point correspondences (8, 9, or some small number), solve for the fundamental matrix using the function you wrote for part II, and then count the number of inliers. Inliers in this context will be point correspondences that "agree" with the estimated fundamental matrix. In order to count how many inliers a fundamental matrix has, you'll need a distance metric based on the fundamental matrix. (Hint: For a point correspondence (x',x) what properties does the fundamental matrix have?). You'll need to pick a threshold between inlier and outlier and your results are very sensitive to this threshold so explore a range of values. You don't want to be too permissive about what you consider an inlier nor do you want to be too conservative. Return the fundamental matrix with the most inliears</p>
+<p>
+Recall from lecture the expected number of iterations of RANSAC to find the "right" solution in the presence of outliers. For example, if half of your input correspondences are wrong, then you have a 0.5^8 = 0.39% chance to randomly pick 8 correspondences when estimating the fundamental matrix. Hopefully that correct fundamental matrix will have more inliers than one created from spurious matches, but to even find it you should probably do thousands of iterations of RANSAC.</p>
+
+<p>
+For many real images, the fundamental matrix that is estimated will be "wrong" (as in it implies a relationship between the cameras that must be wrong, e.g. an epipole in the center of one image when the cameras actually have a large translation parallel to the image plane).
+The estimated fundamental matrix can be wrong because the points are coplanar or because the cameras are not actually pinhole cameras and have lens distortions. Still, these "incorrect" fundamental matrices tend to do a good job at removing incorrect SIFT matches (and, unfortunately, many correct ones).
+</p>
+
+<h2>Evaluation and Visualization</h2>
+
+<p>For part I we've told you the expected output (matrix M and camera center C). These are numerical estimates
+so we won't be checking for exact numbers, just approximately correct locations.</p>
+
+<p>
+For part II you'll be evaluated based on your estimate of the fundamental matrix. You can test how good your estimate of the fundamental matrix is by drawing the 
+epipolar lines on one image which correspond to a point in the other image. You should see all of the epipolar lines crossing through the corresponding point in the other 
+image, like this:</p>
+
+<div style="text-align: left">
+<img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/pic1-epipolar.jpg" alt="Epipolar Lines" style="width:720px;height:480px;"><p style="color: #666;">
+</p></div>
+
+<p>
+We provide you with a function in the starter code that draws an epipolar line in an image given the fundamental matrix, and a point from the other image.
+</p>
+
+<p>
+Part III is the most open ended part of this assignment. Your goal should be to demonstrate that you can estimate a fundamental matrix for a real image pair and use it to reject spurious keypoint matches. We may check the fundamental matrix you estimate and you should have a visualization of the epipolar lines in your writeup. The Gaudi image pair shown above is fairly difficult and you might not be able to find a reasonable fundamental matrix without doing the extra credit (normalization, described below). Notre Dame is also difficult because the keypoint matches are mostly planar and thus the fundamental matrix is not well constrained.</p>
+
+<p>We do not include the keypoint accuracy evaluation used in project 2. You should be able to get nearly perfect accuracy (very few outliers) among the keypoints you designate as inliers. </p>
+
+<h2>Data</h2>
+
+<p>
+You'll be provided with 2D and 3D ground truth point correspondences for the base image pair (pic_a.jpg and pic_b.jpg), as well as other images which will not have any
+ground truth dataset.</p>
+
+<h2>Setting Up VLFeat</h2>
+
+<p>First, download and uncompress the <a href="http://www.vlfeat.org/download.html">VLFeat 0.9.20 binary package</a>. VLFeat functions are precompiled to be called from Matlab in Windows, Linux, and MacOS so you shouldn't need to do any compilation. The only setup required is making sure Matlab can see VLFeat. That process is described on the <a href="http://www.vlfeat.org/install-matlab.html">VLFeat install guide</a>.</p>
+
+<h2>Useful Functions</h2>
+
+<p>
+<a href="http://www.mathworks.com/help/matlab/ref/svd.html"><code>svd()</code></a>. This function returns the singular value decomposition of a matrix. Useful for solving the linear systems of equations you build and reducing the rank of the fundamental matrix.
+</p>
+
+<p>
+<a href="http://www.mathworks.com/help/matlab/ref/inv.html"><code>inv()</code></a>. This function returns the inverse of a matrix.
+</p>
+
+<p>
+<a href="http://www.mathworks.com/help/stats/randsample.html"><code>randsample()</code></a>. Let's you pick integers from a range. Useful for RANSAC.</p>
+
+
+<p>The starter code uses the SIFT implementation from VLFeat and you aren't required to change it. In case you want to, here are the two VLFeat functions being used:
+<br><a href="http://www.vlfeat.org/matlab/vl_sift.html"><code>vl_sift()</code></a>. This function returns SIFT descriptors from an image. You are allowed to use this function because you have already implemented the SIFT descriptor in project 2. You can use your own code if you want, but it is probably too slow. 
+<br>
+<a href="http://www.vlfeat.org/matlab/vl_ubcmatch.html"><code>vl_ubcmatch()</code></a>. This function takes as input SIFT descriptors for two images, and returns the matches based on the ratio test that you implemented in project 2.
+</p>
+
+
+
+<h2>Banned Functions</h2>
+<p> You may not use the constrained least squares version of the MATLAB lsqlin() function. You may also not using any tools from the MATLAB computer vision toolbox for RANSAC or for estimating the
+fundamental matrix.
+</p> 
+
+
+<h2>Write up</h2> 
+<p> 
+For this project, and all other projects, you must do a project report in HTML. In the report you will describe your algorithm and any decisions you made to write your algorithm a particular way. Discuss any extra credit you did and show what contribution it had on the results (e.g. performance with and without each extra credit component).</p>
+
+<p>
+Make sure to include the following in your write-up:
+
+</p><ul>
+(1) Your estimate of the projection matrix and the camera center.
+</ul>
+<ul>
+(2) Your estimate of the fundamental matrix for the base image pair (pic_a.jpg and pic_b.jpg)
+</ul>
+<ul>
+(3) Several different images with the epipolar lines drawn on them and with the inlier keypoint correspondences shown. At least one of these pairs should be "correct" for full credit.
+</ul>
+
+<h2>Extra credit / graduate credit</h2>
+
+<p>As discussed in lecture, your estimate of the fundamental matrix can be improved by normalizing the coordinates before computing the fundamental matrix. It is suggested you perform the normalization through linear transformations as described below to make the mean of the points zero and the average magnitude  about 1.0 or some other small number (square root of 2 is also recommended).</p>
+
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(16).latex" alt="\begin{pmatrix}u&#39; &amp; v&#39; &amp; 1 \end{pmatrix} =
+                      \begin{pmatrix}s &amp; 0 &amp; 0 \\
+                                     0 &amp; s &amp; 0 \\
+                                     0 &amp; 0 &amp; 1 \end{pmatrix}
+                      \begin{pmatrix}1 &amp; 0 &amp; -c_u \\
+                                     0 &amp; 1 &amp; -c_v \\
+                                     0 &amp; 0 &amp; 1 \end{pmatrix}
+                      \begin{pmatrix}u \\ v \\ 1 \end{pmatrix}
+ " border="0" class="latex"> </div>
+</ul>
+
+
+<p>The transform matrix T is the product of the scale and offset matrices. c_u and c_v are the mean coordinates.
+To compute a scale s you could estimate the standard deviation after substracting the means. Then the scale factor s would be the reciprocal of whatever estimate of the scale you are using. Or you could find the maximum absolute value. Or you could scale the coordinates such that the average squared distance from the origin (after centering) is 2. You could use one scale matrix based on the statistics of the coordinates from both images or you could do it per image.</p>
+
+<p>
+However you scale your coordinates, you will need to use the scaling matrices to adjust your fundamental matrix so that it can operate on the original pixel coordiantes as follows:
+</p>
+
+<ul>
+<div lang="latex"> <img src="./Project 3_ Scene Geometry and Model Fitting with RANSAC_files/gif(17).latex" alt="F_{orig} = T_{b}^{T} * F_{norm} * T_{a}" border="0" class="latex"> </div>
+</ul>
+
+
+<p>This extra credit can be implemented in your function <code>estimate_fundamental_matrix()</code> written for part II, but you won't actually notice a difference in part II because the input correspondences are pretty much perfect. In part III (which calls <code>estimate_fundamental_matrix()</code>) you are more likely to notice an improvement. Alternatively, you could implement the scaling based on the distribution of all feature coordinates and not just the handful passed into <code>estimate_fundamental_matrix()</code>. In your writeup you should highlight one before and after case where normalization improved your results.</p>
+ 
+<p>The above coordinate normalization is <i>required</i> for graduate credit and is extra credit for those enrolled in 4476.</p>
+
+<p>This is a new project so we don't have good suggestions for additional extra credit yet. If you have ideas come talk to us!</p>
+
+<p></p><h2> Web-Publishing Results </h2> 
+<p> 
+
+All the results for each project will be put on the course website so that the students can see each other's results. In class we will highlight the best projects as determined by the professor and TAs. If you do not want your results published to the web, you can choose to opt out.
+</p>
+ 
+<h2> Handing in </h2> 
+<p> 
+This is very important as you will lose points if you do not follow instructions. Every time after the first that you do not follow instructions, you will lose 5 points. The folder you hand in must contain the following:
+</p> 
+<ul> 
+    <li> README - text file containing anything about the project that you want to tell the TAs</li> 
+    <li> code/ - directory containing all your code for this assignment</li> 
+    <li> html/ - directory containing all your html report for this assignment, including images (any images not under this directory won't be published)</li> 
+    <li> html/index.html - home page for your results </li> 
+</ul> 
+<p> 
+Hand in your project as a zip file through <a href="http://t-square.gatech.edu/">t-square.gatech.edu</a>.
+</p> 
+ 
+<h2> Rubric </h2> 
+<ul> 
+   <li> +15 pts: Correctly setting up the system of equations for the least squares regression for the projection matrix.
+   </li><li> +15 pts: Correctly solving for the projection matrix and correctly solving for the camera center.
+   </li><li> +15 pts: Correctly setting up the fundamental matrix regression.
+   </li><li> +15 pts: Correctly solving for the fundamental matrix and generating good epipolar lines on the test set.
+   </li><li> +40 pts: Correctly combining RANSAC with fundamental matrix estimation and generating epipolar lines on the test images. </li>
+   <li> +10 pts: Extra Credit
+   </li><li> -5*n pts: Lose 5 points for every time (after the first) you do not follow the instructions for the hand in format </li> 
+</ul> 
+ 
+<h2> Final Advice </h2> 
+<p> 
+</p><h2> Credits </h2> 
+<p>
+This project is based on a project from Aaron Bobick's offering of 4495 and has been expanded and edited by Henry Hu, Grady Williams, and James Hays.
+</p></div> 
+ 
+ 
+
+</body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>

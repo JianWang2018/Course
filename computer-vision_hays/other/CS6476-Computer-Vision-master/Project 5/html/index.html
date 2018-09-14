@@ -1,0 +1,318 @@
+<html>
+<head>
+<title>Face Detection Project</title>
+<link href='http://fonts.googleapis.com/css?family=Nunito:300|Crimson+Text|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" title="Default" href="styles/github.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>  
+
+<link rel="stylesheet" href="highlighting/styles/default.css">
+<script src="highlighting/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;	
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 1160px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table td img {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body>
+<div id="header" >
+<div id="headersub">
+<h1>Yujia Liu <span style="color: #DE3737">(903070716)</span></h1>
+</div>
+</div>
+<div class="container">
+
+<h2> Project 5 / Face Detection with a Sliding Window</h2>
+
+<p>In this project, I implemented a face detection algorithm using the sliding window model. It is similar to the sliding window detector of Dalal and Triggs 2005, using SIFT-like Histogram of Gradients representation of features. There are roughly three parts to the detection pipeline of the algorithm: extracting features of positive and negative training data, training a classifier, and running the sliding window detector with the classifier. Details of each of these steps are discussed below.</p>
+
+<div style="clear:both">
+
+<h2>Implementation</h2>
+
+<h3>Feature Extraction</h3>
+
+<p>Features are represented with Histogram of Gradients computed via vl_hog in the vl_feat package. One important parameter here is the cell size of the histograms. I have tried to use 3 and 6 pixels for the cell size. Smaller size gives better performance as images are described in finer detail, but slows down the algorithm significantly. </p>
+
+<p>Mining the features of the positive examples was pretty straightforward. Each
+input image had already been cropped to a fixed-size 36x36 template, so it was
+only a matter of running vl_hog and convert each HOG feature matrix into a
+vector.</p>
+
+
+<pre><code>
+for i = 1:num_images
+    img = single(imread(fullfile(train_path_pos, image_files(i).name)))/255;
+    features_pos(i,:) = reshape(vl_hog(img,cell_size),[1 dim]);
+end
+</code></pre>
+
+<p>
+Mining the results for the negative example is a little involved. I divided an image into a series of 6x6 blockes represented as columns each column into a separate HOG feature. Then I downsized the image and repeated this process on the shrunk image, until the image was smaller than the size of the template. I repeated this process until I mined a specified number of examples and sample the required number of examples out of them.</p>
+
+<pre><code>
+for i = 1:num_images
+    img = single(imread(fullfile(non_face_scn_path, image_files(i).name)))/255;
+    if(size(img,3) > 1)
+        img = rgb2gray(img);
+    end
+    while (size(img,1) >= template_size && size(img,2) >= template_size)
+        windows = im2col(img, [template_size template_size], 'distinct');
+        for j = 1:size(windows,2)
+            window = reshape(windows(:,j),[template_size template_size]);
+            features_neg(end+1,:) = reshape(vl_hog(window,cell_size),[1 dim]);
+        end
+        img = imresize(img,0.6);
+    end
+    if (size(features_neg,1) > 3*num_samples)
+        break;
+    end
+end
+
+sample_index = randperm(size(features_neg,1),num_samples);
+features_neg = features_neg(sample_index,:);
+</code></pre>
+
+<center>
+<img width="48%" src="6_feature.bmp">
+</center>
+
+<p>One can see that at this stage, the template coarsely resembles the shape of a human face (round contour, black eyebrows, bright in the center). </p>
+
+<h3>Classification</h3>
+
+<p>Classification of the training data uses a linear SVM with lambda 0.0001. Performance on training set is almost perfect, accuracy around 0.99.</p>
+
+<pre><code>
+X = [features_pos;features_neg];
+Ypos = ones(size(features_pos,1),1);
+Yneg = ones(size(features_neg,1),1) * -1;
+Y = [Ypos;Yneg];
+
+[w b] = vl_svmtrain(X', Y', 0.0001);
+</code></pre>
+
+<h3>Sliding Window Detection</h3>
+
+<p>Detecting faces uses the sliding window approach. Each test image is scaled to different sizes, and then for every window of size 36 x 36 of the resized image, an HoG feature is computed and classified with the pre-computed classifier from the classification step. Finally, windows that score above a threshold 1 go through non-maximum suppression, producing the final results.</p>
+
+<pre><code>
+while (size(img,1) >= template_size && size(img,2) >= template_size)
+    hog = vl_hog(single(img), feature_params.hog_cell_size);
+    cell_rows = size(hog,1);
+    cell_cols = size(hog,2);
+    for r = 1:(cell_rows - cells_per_template)
+        rstart = r;
+        rend = rstart + cells_per_template - 1;
+        for c = 1:(cell_cols - cells_per_template)
+            cstart = c;
+            cend = cstart + cells_per_template - 1;
+            window = hog(rstart:rend, cstart:cend, :);
+            feature_vector = window(:);
+            confidence = dot(w,feature_vector) + b;
+            if(confidence > 1)
+                loc = floor([(cstart-1)*cell_size+1, (rstart-1)*cell_size+1, (cstart-1)*cell_size+template_size, (rstart-1)*cell_size+template_size] * 1/scale);
+                cur_confidences(end+1,:) =  confidence;
+                cur_bboxes(end+1,:) = loc;
+                cur_image_ids(end+1,:) = {test_scenes(i).name};
+            end
+        end 
+    end
+    img = imresize(img,0.9);
+    scale = scale * 0.9;
+end
+</code></pre>
+
+
+<h2>Results</h2>
+
+<p>An average precision of 0.874 is achieved. This shows that the linear classifier and the feature descriptor already does a reasonably good job at 6 pixel cell size. </p>
+
+<center>
+<p>
+Precision Recall curve for multiple scales implementation.
+<p>
+<img src="6_1.bmp">
+<p>
+"ROC" curve (except horizontal axis is # of false positives) for multiple scales implementation
+<p>
+<img src="6_2.bmp">
+</center>
+
+<p>Here are two examples of running this implementation on test images.</p>
+
+<center>
+<p>
+<img width="48%" src="6_result1.bmp">
+<img width="48%" src="6_result2.bmp">
+</center>
+
+<h3>Better Performance with Smaller Cells</h3>
+
+<p>Decreasing cell size and increasing the number of negative samples makes the result even better. I achieved best performance (average precision 0.924) with cell size of 3. I believe this number can still increase with even higher number of negative samples and different step size, but the extra cost of run time may be too much compared to increased performance. Below are some visualizations of the results. Note that with cell size of 3, the HoG template has much finer details and one can see it is the shape of a human face.</p>
+
+<center>
+<p>
+Face template HoG visualization for best performance implementation.
+<p>
+<img src="3_feature.bmp">
+<p>
+Precision Recall curve for best performance implementation.
+<p>
+<img src="3_1.bmp">
+<p>
+"ROC" curve for best performance implementation.
+<p>
+<img src="3_2.bmp">
+</center>
+
+<p>Some test images with detections:</p>
+
+<center>
+<p>
+<img width="48%" src="3_result1.bmp">
+<img width="48%" src="3_result2.bmp">
+<p>
+<img width="48%" src="3_result3.bmp">
+<img width="48%" src="3_result4.bmp">
+</center>
+
+<h3>Extra Credits</h3>
+
+<p>Doing a little more tweaking, I added mirror version of positive example in the traning images. Now the number of positive example become 6,713x2 = 13,426. From the HoG template we can see that the flipped traing examples make the template more symmetric. However, the average precision has no apparent improvement.</p>
+
+<center>
+<p>
+<img width="48%" src="flip_feature.bmp">
+<img width="48%" src="flip_result1.bmp">
+</center>
+
+Apart from this, I applied the hard negative mining approach. This is done by using images which are exhaustively false positives, the hard examples for the classifier. The classifier is then trained the combination of easy and hard data set to achieve a better performance. However, as has been pointed out, the result are not satisfactory and the average precision is 89.1%, (6x6 blocks) only increased by less than 2%.
+
+<center>
+<p>
+<img width="48%" src="hard_result1.png">
+<img width="48%" src="hard_result2.png">
+</center>
+
+</body>
+</html>

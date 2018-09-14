@@ -1,0 +1,302 @@
+
+<!-- saved from url=(0077)http://www.cc.gatech.edu/~hays/compvision/results/proj2/html/dfan6/index.html -->
+<html class="gr__cc_gatech_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Computer Vision Project</title>
+<link href="./Computer Vision Project_files/css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" title="Default" href="./Computer Vision Project_files/github.css">
+<script src="./Computer Vision Project_files/jquery.min.js"></script>  
+
+<link rel="stylesheet" href="./Computer Vision Project_files/default.css">
+<script src="./Computer Vision Project_files/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;	
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 960px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+td img {
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body data-gr-c-s-loaded="true">
+<div id="header">
+<div id="headersub">
+<h1><span style="color: #DE3737">David Fan</span></h1>
+</div>
+</div>
+<div class="container">
+
+<h2>Project 2: Local Feature Matching</h2>
+
+<div style="float: right; padding: 20px">
+<img src="./Computer Vision Project_files/eval_notredame.jpg">
+<p style="font-size: 14px">Example of a hybrid image.</p>
+</div>
+
+<p> 	The goal of this project is to create a local feature matching algorithm using techniques described in Szeliski chapter 4.1.   The pipeline is a simplified version of the famous SIFT pipeline. The matching pipeline is intended to work for instance-level matching -- multiple views of the same physical scene.  There are three key components to the pipeline: interest point detection, local feature description, and feature matching.</p>
+
+<div style="clear:both">
+<h2>Interest point detection</h2>
+<p> To find interest points I implemented the Harris corner detector.  First, I blurred the image with a Gaussian filter to remove high frequency variations.  Next, I computed the gradients in the x and y direction using a Sobel filter.  Then, I filtered Ix^2, Ix.*Iy, etc with gaussians to obtain the necessary terms for the Harris function.  Lastly, I computed the Harris function values at every pixel.  I threw out points whose Harris value was lower than a threshold.  Then I performed nonmaximal supression by simply finding points which were higher than all their neighbors.  This gave me a list of interest points with high Harris corner function values.  I passed on 3000 points which had the highest Harris scores.  </p>
+
+<h2>Local feature description</h2>
+<p> For the feature description I used a SIFT-like feature.  First, I blurred with image with a Gaussian filter.  Next, I calculated the gradient at each pixel with the matlab function imgradient.  Then, at each interest point, I performed histogram binning to bin the orientations of nearby pixels.  At the interest point, I created a 16x16 grid, and for each pixel in this grid I created 8 bins for 8 different orientations.  Each pixel was added to the corresponding orientation bin.  Then, in blocks of 4x4, I added up the histograms counts.  This gave a final feature count of 4x4x8=128.  I also normalized the features to unit length, and I also raised the features to the power of 0.4 to skew the scaling of the features.</p>
+
+<h2>Feature Matching</h2>
+<p>For feature matching I used the ratio test method based on the nearest neighbor distance ration (NNDR) metric.  First, given two lists of points, I calculated the distances between the points in the lists.  I then considered the list with the least number of features.  For each element of this list, I found the closest and the second closest match in the other list (by Euclidean distance).  I then recorded the confidence of the match with the closest match as the ratio dist(2nd-best match)/dist(1st-best match).  Finally, I found the most confident matches and took the best 100.</p>
+
+<h2> Preliminary Results </h2>
+<p> When using cheat_interest_points() instead of my own implementation, I got scores of 76%, 53%, and 14% on the Notre Dame, Mount Rushmore, and Gaudi test pairs, respectively.  With the full basic pipeline including Harris corner interest point detection, SIFT-like feature description, and Nearest Neighbor Distance Ratio matching, I was able to achieve scores of 99%, 96%, and 4% accuracy on the three test pairs.  Here are the results for those scores: </p>
+
+<div style="float: center; padding: 20px">
+<table border="1">
+<tbody><tr>
+<td>
+<img src="./Computer Vision Project_files/eval_notredame.jpg" width="100%">
+<img src="./Computer Vision Project_files/vis_arrows_notredame.jpg" width="100%">
+<img src="./Computer Vision Project_files/eval_rushmore.jpg" width="100%">
+<img src="./Computer Vision Project_files/vis_arrows_rushmore.jpg" width="100%">
+<img src="./Computer Vision Project_files/eval_gaudi.jpg" width="100%">
+<img src="./Computer Vision Project_files/vis_arrows_gaudi.jpg" width="100%">
+
+</td>
+</tr>
+</tbody></table>
+<p style="font-size: 14px">Results for basic pipeline.</p>
+</div>
+
+
+<p>While the Notre Dame and Mount Rushmore pairs performed very well, the Gaudi test pair performed very poorly.  However, with some parameter tuning (increasing the gaussian blur before finding interest points) I was able to increase the test accuracy to 8%.</p>
+
+<table border="1">
+<tbody><tr>
+<td>
+<img src="./Computer Vision Project_files/eval_gaudi2.jpg" width="100%">
+<img src="./Computer Vision Project_files/vis_arrows_gaudi2.jpg" width="100%">
+</td>
+</tr>
+</tbody></table>
+
+<h2> EXTRA: Scale invariant interest points and features </h2>
+<p>To attempt to handle the scaling problem, especially with the Gaudi image pair, I implemented an automatic scaling detection when finding interest points.  I resized the image before calculating the Harris score, then resized it back to original size.  Having done this for a range of resize scales, I then picked points which had locally maximal Harris values in both space and scale.  I saved the scale at which the maximum Harris value was found; this was the scale of the interest point.  Next, when calculating SIFT features, I resized the image to the same scale that the interest point corresponded to in order to create a more scale-invariant feature.  With this added to the pipline I achieved scores of 93%, 99%, and 21% accuracy on the Notre Dame, Mount Rushmore, and Gaudi test pairs, respectively.  While the Notre Dame image suffers slightly in performance, Mount Rushmore improves a bit and Gaudi improves substantially.  This may be due to the fact that the Mount Rushmore images have slight scaling differences and the Gaudi images have strong scaling differences, while the Notre Dame images have less scaling differences to contend with.</p>
+
+<div style="float: center; padding: 20px">
+<table border="1">
+<tbody><tr>
+<td>
+<img src="./Computer Vision Project_files/eval_notredame3.jpg" width="100%">
+<img src="./Computer Vision Project_files/vis_arrows_notredame3.jpg" width="100%">
+<img src="./Computer Vision Project_files/eval_rushmore3.jpg" width="100%">
+<img src="./Computer Vision Project_files/vis_arrows_rushmore3.jpg" width="100%">
+<img src="./Computer Vision Project_files/eval_gaudi3.jpg" width="100%">
+<img src="./Computer Vision Project_files/vis_arrows_gaudi3.jpg" width="100%">
+
+</td>
+</tr>
+</tbody></table>
+<p style="font-size: 14px">Results for basic pipeline with automatic scale detection.</p>
+</div>
+
+<h2> EXTRA: Local self-similarity features </h2>
+<p>I also tried computing feature descriptions using the Local Self-Similarity (LSS) method described in the paper by Shechtman and Irani (CVPR'07) entitled "Matching Local Self-Similarities across Images and Videos".  (Details found here: <a href="http://www.wisdom.weizmann.ac.il/~vision/SelfSimilarities.html">http://www.wisdom.weizmann.ac.il/~vision/SelfSimilarities.html</a>).  My implementation was as follows:  First, I calculated the sum of square differences (SSD) between patches, where the patch centered at the interest point was compared with patches in a local region surrounding the interest point.  Each pixel around the interest point in some local radius was assigned an SSD value.  I then took the negative exponent of the SSD to obtain the local correlation surface.  I then used a log-polar grid to find the maximal correlation values for each grid location.  Finally, after normalizing, these correlation values formed the feature.  I was able to achieve scores of 78%, 32, and </p>
+
+<div style="float: center; padding: 20px">
+<table border="1">
+<tbody><tr>
+<td>
+<img src="./Computer Vision Project_files/eval_notredame4.jpg" width="100%">
+<img src="./Computer Vision Project_files/eval_rushmore4.jpg" width="100%">
+<img src="./Computer Vision Project_files/eval_gaudi4.jpg" width="100%">
+</td>
+</tr>
+</tbody></table>
+<p style="font-size: 14px">Results for pipeline with Local Self-Similarity (LSS) features.</p>
+</div>
+
+<h2> EXTRA: PCA reduction of SIFT feature </h2>
+<p>In order to try to achieve a speed-up when matching features, it is desirable to reduce the dimensionality of the features.  The SIFT features I used had a dimension of 128.  Using PCA, we can reduce this number of any lower number at the cost of a reduced match rate.  To calculate the PCA bases, I took images from the training/validation set of the PASCAL Visual Object Classes dataset (VOC2007, found at <a href="http://host.robots.ox.ac.uk/pascal/VOC/voc2007/index.html">http://host.robots.ox.ac.uk/pascal/VOC/voc2007/index.html</a>).  The dataset consisted of 5011 color images of a variety of objects and settings.  From each image I used the Harris corner detection to find interest points, then I used my SIFT-like feature descriptor to calculate features for each data point.  I then used all the features from all the interest points and from all the images to calculate the PCA bases.  To do this in a computationally efficient manner, I used the eigen decomposition of the matrix X.'*X, which was 128x128, as follows:</p>
+
+<pre><code class="matlab"><span class="comment">%find principal components of large matrix</span>
+<span class="matrix">[V D]</span>=eig(<span class="transposed_variable">allfeatures.'</span>*allfeatures);
+S=<span class="built_in">sqrt</span>(D);
+</code></pre>
+
+<p>where V are the right singular vectors and S is the standard deviations.  I was then able to calculate the coefficients of a feature with:</p>
+
+<pre><code class="matlab"><span class="comment">%get PCA coefficients from feature</span>
+pca_coeff=<span class="transposed_variable">feat'</span>*V*S^(-<span class="number">1</span>);
+feat=pca_coeff(<span class="keyword">end</span>-num_pca_feat+<span class="number">1</span>:<span class="keyword">end</span>);
+</code></pre>
+
+<p>The last coefficients correspond to the more principal vectors, and are used as the new features.  I then calculated the computation time to find the matches and match rate for varying numbers of PCA features on the Notre Dame example.</p>
+
+<div style="float: center; padding: 20px">
+<table style="width:20%">
+  <tbody><tr>
+    <th># Feat</th>
+    <th>Match %</th>
+    <th>Time (s)</th>
+  </tr>
+  <tr>
+    <td>128</td>
+    <td>96</td>
+    <td>9.39</td>
+  </tr>
+  <tr>
+    <td>64</td>
+    <td>98</td>
+    <td>8.85</td>
+  </tr>
+  <tr>
+    <td>32</td>
+    <td>96</td>
+    <td>7.06</td>
+  </tr>
+    <tr>
+    <td>16</td>
+    <td>88</td>
+    <td>6.8</td>
+  </tr>
+    <tr>
+    <td>8</td>
+    <td>39</td>
+    <td>6.67</td>
+  </tr>
+</tbody></table> 
+</div>
+
+<p> The conclusion is that it seems that using 32 PCA features results in a hefty speedup while maintaining the same level of matches. </p>
+
+
+<h2> Final Results </h2>
+<p>Finally, we show matches on extra image pairs.  These results are obtained using Harris interest point detection with scaling, SIFT features with scaling, and NNDR matching.  </p>
+
+<div style="float: center; padding: 20px">
+<table border="1">
+<tbody><tr>
+<td>
+<img src="./Computer Vision Project_files/extra1.jpg" width="100%">
+<img src="./Computer Vision Project_files/extra2.jpg" width="100%">
+<img src="./Computer Vision Project_files/extra3.jpg" width="100%">
+<img src="./Computer Vision Project_files/extra4.jpg" width="100%">
+<img src="./Computer Vision Project_files/extra5.jpg" width="100%">
+<img src="./Computer Vision Project_files/extra6.jpg" width="100%">
+</td>
+</tr>
+</tbody></table>
+</div>
+
+
+
+
+</div></div></body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>

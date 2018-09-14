@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)http://www.cc.gatech.edu/~hays/compvision/proj6/ -->
+<html class="gr__cc_gatech_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Project 6: Deep Learning</title>
+    <link href="./Project 6_ Deep Learning_files/style.css" rel="stylesheet" type="text/css">
+
+<style type="text/css" media="all">
+#primarycontent {
+    margin-left: auto;  
+    width: expression(document.body.clientWidth > 995? "995px": "auto" );
+    margin-right: auto;
+    text-align: left;
+    max-width: 995px 
+}
+</style>
+
+        <link href="./Project 6_ Deep Learning_files/github-gist.min.css" rel="stylesheet">
+
+</head>
+
+
+ 
+<body data-gr-c-s-loaded="true"> 
+<div id="primarycontent"> 
+<center>
+<a href="http://www.cc.gatech.edu/~hays/compvision/proj6/deepNetVis.png"><img src="./Project 6_ Deep Learning_files/deepNetVis_small.png" height="461" width="1000"></a>
+AlexNet / VGG-F network visualized by <a href="http://vision03.csail.mit.edu/cnn_art/index.html">mNeuron</a>.</center>
+
+<h1>Project 6: Deep Learning<br>
+<a href="http://www.cc.gatech.edu/~hays/compvision/">Introduction to Computer Vision</a></h1> 
+
+ 
+<h2>Brief</h2> 
+<p> 
+</p><ul> 
+
+  <li>Due date: Tuesday, December 6th, 11:55pm</li>
+  <li>Project materials including starter code, training and testing data, and html writeup template: <a href="http://www.cc.gatech.edu/~hays/compvision/proj6/proj6.zip">proj6.zip (83MB)</a>.</li>
+  <li>You must separately download <a href="http://www.vlfeat.org/matconvnet/">MatConvNet</a> 1.0 beta 16. (<a href="http://www.vlfeat.org/matconvnet/download/matconvnet-1.0-beta16.tar.gz">direct link to beta 16</a>). Last year, MatConvNet updated versions mid-project and broke everyone's code so we are sticking to a particular version. This might mean that the online documentation doesn't quite match your version, though.</li>
+    <li>MatConvNet isn't precompiled like VLFeat, so we compiled it for you. Here are the mex files for CPU-only usage for 64bit Windows, MacOS, and Linux: <a href="http://www.cc.gatech.edu/~hays/compvision/proj6/MatConvNet64mex.zip">MatConvNet64mex.zip (.5 MB)</a>. The files go in [MatConvNetPath]/matlab/mex/</li> 
+  <li>Handin: through <a href="http://t-square.gatech.edu/">t-square.gatech.edu</a> </li>   
+  <li>Required files: README, code/, html/, html/index.html</li>
+</ul>
+ 
+<h2>Overview</h2> 
+<p> 
+This project is an introduction to deep learning tools for computer vision. You will design and train deep convolutional networks for scene recognition using the MatConvNet toolbox.
+<br><br>
+Remember <a href="http://www.cc.gatech.edu/~hays/compvision/proj4">project 4: Scene recognition with bag of words</a>. You worked hard to design a bag of features representations that achieved 60 to 70% accuracy (most likely) on 15-way scene classification. You might have done the spatial pyramid extra credit and gotten up to nearly 80% accuracy. We're going to attack the same task with deep learning and get higher accuracy. Sort of -- training from scratch won't work quite as well as project 4, fine-tuning an existing network will work much better than project 4.
+<br><br>
+In Part 1 of the project you will train a deep convolutional network <i>from scratch</i> to recognize scenes. The starter code gives you a very simple network architecture which doesn't work that well and you will add jittering, normalization, regularization, and more layers to increase recognition accuracy to 50, 60, or perhaps 70%. Unfortunately, we only have 1,500 training examples so it doesn't seem possible to train a network from scratch which outperforms hand-crafted features (extra credit to anyone who proves us wrong).
+<br><br>
+For Part 2 you will instead <i>fine-tune</i> a pre-trained deep network to achieve more than 85% accuracy on the task. We will use the pretrained VGG-F network which was not trained to recognize scenes at all. 
+<br><br>
+These two approaches represent the most common approach to recognition problems in computer vision today -- train a deep network from scratch if you have enough data (it's not always obvious whether or not you do), and if you cannot then instead fine-tune a pre-trained network.
+</p>
+
+<h2>Starter Code Outline</h2>
+<p>
+  The following is an outline of the stencil code:
+  </p><ul>
+	<li><code><font color="green">proj6_part1.m</font></code>. The top level function for training a deep network <i>from scratch</i> for scene recognition. If you run this starter code unmodified it will train a simple network that achieves only 25% accuracy (about as good as the tiny images baseline in project 4). <code><font color="green">proj6_part1.m</font></code> calls:
+    <ul>
+        <li><code><font color="green">proj6_part1_setup_data.m</font> </code>. Loads the 15 scene database into MatConvNet imdb format.</li>
+        <li><code><font color="green">proj6_part1_cnn_init.m</font></code>. Initializes the convolutional network by specifying the various layers which perform convolution, max pooling, non-linearities, normalization, regularization, and the final loss layer.</li>
+        <li><code><font color="green">proj6_part1_get_batch()</font></code> (defined inside <code>proj6_part1.m</code>) This operates on each <i>batch</i> of training images to be passed into the network during training. This is where you can "jitter" your training data.</li>
+</ul>
+</li>
+<li>
+    <code><font color="green">proj6_part2.m</font></code>. The top level function for <i>fine-tuning</i> a pre-trained network for scene recognition. It makes calls to <code><font color="green">proj6_part2_setup_data.m</font></code>, <code><font color="green">proj6_part2_cnn_init.m</font></code>, and <code><font color="green">proj6_part2_get_batch()</font></code> which are analogous to the part1 functions.</li>
+</ul>
+
+The deep network training will be performed by <code><font color="green">cnn_train.m</font></code> which in turn calls <a href="http://www.vlfeat.org/matconvnet/mfiles/simplenn/vl_simplenn/">vl_simplenn.m</a> but you will not need to modify those functions for this project.
+
+<p></p>
+
+<h2>Part 0</h2>
+<p>
+First make sure that MatConvNet is working. Step through the following MatConvNet "Quick start" demo. You can simply copy and paste the commands into the Matlab command window. 
+
+</p><pre><code class="matlab hljs"><span class="hljs-comment">% install and compile MatConvNet </span>
+<span class="hljs-comment">% (you can skip this if you already installed MatConvNet beta 16 and the mex files)</span>
+<span class="hljs-comment">% untar('http://www.vlfeat.org/matconvnet/download/matconvnet-1.0-beta16.tar.gz') ;</span>
+<span class="hljs-comment">% cd matconvnet-1.0-beta16</span>
+<span class="hljs-comment">% run matlab/vl_compilenn</span>
+
+<span class="hljs-comment">% download a pre-trained CNN from the web (needed once)</span>
+urlwrite(<span class="hljs-string">'http://www.cc.gatech.edu/~hays/compvision/proj6/imagenet-vgg-f.mat'</span>, ...
+         <span class="hljs-string">'imagenet-vgg-f.mat'</span>) ;
+
+<span class="hljs-comment">% setup MatConvNet. Your path might be different.</span>
+run  <span class="hljs-string">'../matconvnet-1.0-beta16/matlab/vl_setupnn'</span>
+
+<span class="hljs-comment">% load the 233MB pre-trained CNN</span>
+net = load(<span class="hljs-string">'imagenet-vgg-f.mat'</span>) ;
+
+<span class="hljs-comment">% load and preprocess an image</span>
+im = imread(<span class="hljs-string">'peppers.png'</span>) ;
+im_ = single(im) ; <span class="hljs-comment">% note: 0-255 range</span>
+im_ = imresize(im_, net.normalization.imageSize(<span class="hljs-number">1</span>:<span class="hljs-number">2</span>)) ;
+im_ = im_ - net.normalization.averageImage ;
+
+<span class="hljs-comment">% run the CNN</span>
+res = vl_simplenn(net, im_) ;
+
+<span class="hljs-comment">% show the classification result</span>
+scores = <span class="hljs-built_in">squeeze</span>(gather(res(<span class="hljs-keyword">end</span>).x)) ;
+[bestScore, best] = max(scores) ;
+figure(<span class="hljs-number">1</span>) ; clf ; imagesc(im) ;
+title(sprintf(<span class="hljs-string">'%s (%d), score %.3f'</span>,...
+net.classes.description{best}, best, bestScore)) ;
+</code></pre>
+
+It might take a while to download the 233MB VGG-F network used in the demo, but you will need it for part 2 of the project anyway.
+<br><br>
+<b>Troubleshooting</b>. If you encounter errors trying to run this demo, make sure: (1) You have MatConvNet 1.0 beta 16 (not a later version). (2) You download <code>imagenet-vgg-f.mat</code> from the course website and not from MatConvNet (because it was changed for beta 17 and it not backwards compatible) (3) Your mex files are in the correct location <code>[MatConvNetPath]/matlab/mex/</code>. If you encounter errors about invalid mex files in Windows you may be missing <a href="https://www.microsoft.com/en-us/download/details.aspx?id=40784">Visual C++ Redistributable Packages</a>. If you encouter an error about about <code>labindex</code> being undefined you may be missing the parallel computing toolbox for Matlab. That toolbox is available with the Georgia Tech student version of Matlab.
+
+
+<br><br>
+Before we start building our own deep convolutional networks, it might be useful to have a look at <a href="http://www.robots.ox.ac.uk/~vgg/practicals/cnn/index.html">MatConvNet's tutorial</a>. In particular, you should be able to understand Part 1 of the tutorial. In addition to the examples shown in parts 3 and 4 of the tutorial, MatConvNet has <a href="http://www.vlfeat.org/matconvnet/training/">example code</a> for training networks to recognize the MNIST and CIFAR datasets. Your project follows the same outline as those examples. Feel free to take a look at that code for inspiration. You can run the example code to watch the training process  MNIST and CIFAR. Training will take about 5 and 15 minutes for those datasets, respectively.
+
+
+<br><br>
+Compiling MatConvNet with GPU support is more complex and not needed for this project. If you're trying to do extra credit and find yourself frustrated with training times you can try, though.
+<p></p>
+
+<h2>Part 1: training a deep network from scratch</h2>
+<p>
+Run <code>proj6_part1.m</code> and bask in the glory of deep learning. Gone are the days of hand designed features. Now we have end-to-end learning in which a highly non-linear representation is learned for our data to maximize our objective (in this case, 15-way classification accuracy). Instead of an anemic 70% accuracy we can now recognize scenes with... 25% accuracy. OK, that didn't work at all. What's going on?
+<br><br>
+First, let's take a look at the network architecture used in this experiment. Here is the code from <code>proj6_part1_cnn_init.m</code> that specifies the network structure:
+</p><center>
+<img src="./Project 6_ Deep Learning_files/net_baseline_setup.png" width="804" height="329">
+</center>
+Let's make sure we understand what's going on here. This simple baseline network has 4 layers -- a convolutional layer, followed by a max pool layer, followed by a rectified linear layer, followed by another convolutional layer. This last convolutional layer might be called a "fully connected" or "fc" layer because its output has a spatial resolution of 1x1. Equivalently, every unit in the output of that layer is a function of the entire previous layer (thus "fully connected"). But mathematically there's not really any difference from "convolutional" layers so we specify them in the same way in MatConvNet.
+<br><br>
+Let's look at the first convolutional layer. The "weights" are the filters being learned. They are initialized with random numbers from a Gaussian distribution. The inputs to <code>randn(9,9,1,10)</code> mean the filters have a 9x9 spatial resolution, span 1 filter depth (because the input images are grayscale), and that there are 10 filters. The network also learns a bias or constant offset to associate with the output of each filter. This is what <code>zeros(1,10)</code> initializes.
+<br><br>
+The next layer is a max pooling layer. It will take a max over a 7x7 sliding window and then subsample the resulting image / map with a stride of 7. Thus the max pooling layer will decrease the spatial resolution by a factor of 7 according to the <code>stride</code> parameter. The filter depth will remain the same (10). There are other pooling possibilities (e.g. average pooling) but we will only use max pooling in this project.
+<br><br>
+The next layer is the non-linearity. Any values in the feature map from the max pooling layer which are negative will be set to 0. There are other non-linearity possibilities (e.g. sigmoid) but we will use only rectified linear in this project. 
+<br><br>
+Note that the pool layer and relu layer have no <i>learned</i> parameters associated with them. We are hand-specifying their behavior entirely, so there are no weights to initialize as in the convolutional layers.
+<br><br>
+Finally, we have the last layer which is convolutional (but might be called "fully connected" because it happens to reduce the spatial resolution to 1x1). The filters learned at this layer operate on the rectified, subsampled, maxpooled filter responses from the first layer. The output of this layer <i>must</i> be 1x1 spatial resolution (or "data size") and it <i>must</i> have a filter depth of 15 (corresponding to the 15 categories of the 15 scene database). This is achieved by initializing the weights with <code>randn(8,8,10,15)</code>. 8x8 is the spatial resolution of the filters. 10 is the number of filter dimensions that each of these filters take as input and 15 is the number of dimensions out. 10 is highlighted in green to emphasize that it must be the same in those 3 places -- if the first convolutional layer has weights for 10 filters, it must also have offsets for 10 filters, and the next convolutional layer must take as input 10 filter dimensions.
+<br><br>
+At the top of our network we add one more layer which is only used for training. This is the "loss" layer. There are many possible loss functions but we will use the "softmax" loss for this project. This loss function will measure how badly the network is doing for any input (i.e. how different its final layer activations are from the ground truth, where ground truth in our case is category membership). The network weights will update, through backpropagation, based on the derivative of the loss function. With each training batch the network weights will take a tiny gradient descent step in the direction that should decrease the loss function (but isn't actually guaranteed to, because the steps are of some finite length, or because dropout regularization will turn off part of the network).
+<br><br>
+How did we know to make the final layer filters have a spatial resolution of 8x8? It's not obvious because we don't directly specify output resolution. Instead it is derived from the input image resolution and the filter widths, padding, and strides of the previous layers. Luckily MatConvNet provides a visualization function  <code>vl_simplenn_display</code> to help us figure this out. Here is what it looks like if we specify the net as shown above and then call <code>vl_simplenn_display(net, 'inputSize', [64 64 1 50])</code>.
+<center>
+<img src="./Project 6_ Deep Learning_files/net_baseline.png" width="401" height="418">
+</center>
+If the last convolutional layer had a filter size of 6x6 that would lead to a "data size" in the network visualization of 3x3 and we would know we need to change things (subsample more in previous layers or create wider filters in the final layer). In general it is not at all obvious what the <i>right</i> network architecture is. It takes a lot of artistry (read as: black magic) to design the right network and training strategy for optimal performance.
+<br><br>
+We just said the network has 4 real layers but this visualization shows 6. That's because it includes a layer 0 which is the input image and a layer 5 which is the loss layer. For each layer this visualization shows several useful attributes. "data size" is the spatial resolution of the feature maps at each level. In this network and most deep networks this will <i>decrease</i> as you move up thet network. "data depth" is the number of channels or filters in each layer. This will tend to <i>increase</i> as you move up a network. "rf size" is the receptive field size. That is how large an area in the original image a particular network unit is sensitive to. This will <i>increase</i> as you move up the network. Finally this visualization shows us that the network has 10,000 free parameters, the vast majority of them associated with the last convolutional layer.
+<br><br>
+OK, now we understand a bit about the network. Let's analyze its performance. After 30 training epochs (30 passes through the training data) Matlab's Figure 1 should look like this:
+<center>
+<img src="./Project 6_ Deep Learning_files/train_baseline.png" width="900" height="730">
+</center>
+We'll be studying these figures quite a bit during this project so it's important to understand what it shows.
+<br><br>
+The left pane shows the training error (blue) and validation error (dashed orange) across training epochs. Each training epoch is a pass over the entire training set of 1500 images broken up into "batches" of 50 training instances. The code shuffles the order of the training instances randomly each epoch. When the network makes mistakes, it incurs a "loss" and backpropagation updates the weights of the network in a direction that should decrease the loss. Therefore the blue line should more or less decrease monotonically. On the other hand, the orange dashed line is the error incurred on the <i>held out</i> test set. The figure refers to it as "val" or "validation". In a realistic recognition scenario we might have three sets of data: train, validation, and test. We would use validation to assess how well our training is working and to know when to stop training and then we would test on a completely held out test set. For this project the validation set is our test set. We're trying to maximize performance on the validation set and that's it. The pass through the validation set does <i>not</i> change the network weights in any way. The pass through the validation set is also 3 times faster than the training pass because it does not have the "backwards" pass to update network weights.
+<br><br>
+The right pane shows the training and testing accuracy on the train and test (val) data sets across the same training epochs. It shows top 1 error -- how often the highest scoring guess is wrong -- and top 5 error -- how often all of the 5 highest scoring guesses are wrong. We're interested in top 1 error, specifically the top 1 error on the held out validation / test set.
+<br><br>
+In this experiment, the training and test top 1 error started out around 93% which is exactly what we would expect. If you have 15 categories and you make a random guess on each test case, you will be wrong 93% of the time. As the training progressed and the network weights moved away from their random initialization, accuracy increased.
+<br><br>
+Note the areas circled in green corresponding to the first 8 training epochs. During these epochs, the training <i>and</i> validation error were decreasing which is exactly what we want to see. Beyond that point the error on the training dataset kept decreasing, but the validation error did not. Our lowest error on the validation/test set is around 75% (or 25% accuracy). We are <i>overfitting</i> to our training data. This is hard to avoid with a small training set. In fact, if we let this experiment run for 200 epochs we see that it is possible for the training accuracy to become perfect with no appreciable increase in test accuracy:
+<center>
+<img src="./Project 6_ Deep Learning_files/train_baseline_many_epochs.png" width="900" height="732">
+</center>
+
+<br><br>
+Now we are going to take several steps to improve the performance of our convolutional network. The modifications we make in Part 1 will familiarize you with the building blocks of deep learning that <i>can</i> lead to impressive performance with enough training data. In the end, you might decide that this isn't any simpler than hand-designing a feature. Also, with the relatively small amount of training data in the 15 scene database, it is very hard to outperform hand-crafted features.
+<br><br>
+<b>Learning rate</b>. Before we start making changes, there is a very important learning parameter that you might need to tune any time you change the network or the data being input to the network. The learning rate (set by default as <code>opts.LearningRate = 0.0001</code> in <code>proj6_part1.m</code>) determines the size of the gradient descent steps taken by the network weights. If things aren't working, try making it much smaller  or larger (e.g. by factors of 10). If the objective remains exactly constant over the first dozen epochs, the learning rate might have been too high and "broken" some aspect of the network. If the objective spikes or even becomes <code>NaN</code> then the learning rate may also be too large. However, a very small learning rate requires many training epochs.
+<br><br>
+
+<b>Problem 1: We don't have enough training data. Let's "jitter"</b>. 
+<br><br>
+If you left-right flip (mirror) an image of a scene, it never changes categories. A kitchen doesn't become a forest when mirrored. This isn't true in all domains -- a "d" becomes a "b" when mirrored, so you can't "jitter" digit recognition training data in the same way. But we can synthetically increase our amount of training data by left-right mirroring training images during the learning process.
+<br><br>
+The learning process calls <code>getBatch()</code> in <code>proj6_part1.m</code> each time it wants training or testing images. Modify <code>getBatch()</code> to randomly flip some of the images (or entire batches). Useful functions: <code>rand</code> and <code>fliplr</code>.
+<br><br>
+You can try more elaborate forms of jittering -- zooming in a random amount, rotating a random amount, taking a random crop, etc. Mirroring helps quite a bit on its own, though, and is easy to implement. You should see a roughly 10% increase in accuracy by adding mirroring.
+<br><br>
+After you implement mirroring, you should notice that your training error doesn't drop as quickly. That's actually a good thing, because it means the network isn't overfitting to the 1,500 original training images as much (because it sees 3,000 training images now, although they're not as good as 3,000 truly independent samples). Because the training and test errors fall more slowly, you may need more training epochs or you may try modifying the learning rate.
+
+<br><br>
+
+<b>Problem 2: The images aren't zero-centered</b>. 
+<br><br>
+One simple trick which can help a lot is to subtract the mean from every image. Modify <code>proj6_part1_setup_data.m</code> so that it computes the mean image and then subtracts the mean from all images before returning <code>imdb</code>. It would arguably be more proper to only compute the mean from the training images (since the test/validation images should be strictly held out) but it won't make much of a difference. After doing this you should see another 15% or so increase in accuracy.
+
+<br><br>
+<b>Problem 3: Our network isn't regularized</b>.
+<br><br>
+If you train your network (especially for more than the default 30 epochs) you'll see that the training error can decrease to zero while the val top1 error hovers at 40% to 50%. The network has learned weights which can perfectly recognize the training data, but those weights don't generalize to held out test data. The best regularization would be more training data but we don't have that. Instead we will use <i>dropout</i> regularization. We add a dropout layer to our convolutional net as follows: 
+
+<center>
+<img src="./Project 6_ Deep Learning_files/dropout_code.png" width="403" height="39">
+</center>
+
+What does dropout regularization do? It randomly turns off network connections at training time to fight overfitting. This prevents a unit in one layer from relying too strongly on a single unit in the previous layer. Dropout regularization can be interpreted as simultaneously training many "thinned" versions of your network. At test test, all connections are restored which is analogous to taking an average prediction over all of the "thinned" networks. You can see a more complete discussion of dropout regularization in <a href="https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf">this paper</a>.
+<br><br>
+The dropout layer has only one free parameter -- the dropout rate -- the proportion of connections that are randomly deleted. The default of 0.5 should be fine. Insert a dropout layer between your convolutional layers. In particular, insert it directly before your last convolutional layer. Your test accuracy should increase by another 10%. Your train accuracy should decrease much more slowly. That's to be expected -- you're making life much harder for the training algorithm by cutting out connections randomly.
+<br><br>
+If you increase the number of training epochs (and maybe decrease the learning rate) you should be able to achieve 60% test accuracy (40% top1 val) or slightly better at this point. Notice how much more structured the learned filters are at this point compared to the initial network before we made improvements:
+<center>
+<img src="./Project 6_ Deep Learning_files/filters.png" width="844" height="350">
+</center>
+
+<br><br>
+<b>Problem 4: Our network isn't deep</b>.
+<br><br>
+
+
+
+Let's take a moment to reflect on what our convolutional network is actually doing. We learn filters which seem to be looking horizontal edges, vertical edges, and parallel edges. Some of the filters have diagonal orientations and some seem to be looking for high frequencies or center-surround. This learned filter bank is applied to each input image, the maximum response from each 7x7 block is taken by the max pooling, and then the rectified linear layer zeros out negative values. The fully connected layer sees a 10 channel image with 8x8 spatial resolution. It learns 15 linear classifiers (a linear filter with a learned threshold is basically a linear classifier) on this 8x8 filter response map. This architecture is reminiscent of hand-crafted features like the <a href="http://people.csail.mit.edu/torralba/code/spatialenvelope/">gist scene descriptor</a> developed precisely for scene recoginition (on 8 scene categories which would later be incorporated into the 15 scene database). The gist descriptor actually works better than our learned feature. The gist descriptor with a non-linear classifier can achieve 74.7% accuracy on the 15 scene database. 
+<br><br>
+Our convolutional network to this point isn't "deep". It has two layers with learned weights. Contrast this with the example networks for MNIST and CIFAR in MatConvNet which contain 4 and 5 layers, respectively. AlexNet and VGG-F contain 8 layers. The <a href="http://www.robots.ox.ac.uk/~vgg/research/very_deep/">VGG "very deep" networks</a> contain 16 and 19 layers. <a href="https://arxiv.org/abs/1512.03385">ResNet</a> contains up to 150 layers.
+<br><br>
+One quite unsatisfying aspect of our current network architecture is that the max-pooling operation covers a window of 7x7 and then is subsampled with a stride of 7. That seems overly lossy and deep networks usually do not subsample by more than a factor of 2 or 3 each layer.
+<br><br>
+Let's make our network deeper by adding an additional convolutional layer in <code>proj6_part1_cnn_init.m</code>. In fact, we probably don't want to add just a convolutional layer, but another max-pool layer and relu layer, as well. For example, you might insert a convolutional layer after the existing relu layer with a 5x5 spatial support followed by a max-pool over a 3x3 window with a stride of 2. You can reduce the max-pool window in the previous layer, adjust padding, and reduce the spatial resolution of the final layer until <code>vl_simplenn_display(net, 'inputSize', [64 64 1 50])</code>, which is called at the end of <code>proj6_part1_cnn_init()</code> shows that your network's final layer (not counting the softmax) has a data size of 1 and a data depth of 15. You also need to make sure that the data depth output by any channel matches the data depth input to the following channel. For instance, maybe your new convolutional layer takes in the 10 channels of the first layer but outputs 15 channels. The final layer would then need to have its weights initialized accordingly to account for the fact that it operates on a 15 channel image instead of a 10 channel image.
+<br><br>
+We leave it up to you to decide the specifics of your slightly deeper network: filter depth, padding, max-pooling, stride, etc. The network will probably take longer to train because it will have more parameters and deeper networks take longer to converge. You might need to use more training epochs, but even then it will be difficult to outperform your shallow network. It is <i>not</i> required that your deeper network increases accuracy over the shallow network. As long as you can achieve 50% test accuracy for some epoch with a deeper network which uses mirroring to jitter, zero-centers the images as they are loaded, and regularizes the network with a dropout layer you will receive full credit for Part 1.
+<br><br>
+<b>Additional optional improvements</b>
+<br><br>
+Enjoy chasing higher accuracy? Here's some <i>optional</i> directions to investigate which might help improve your accuracy.
+<ul>
+<li>
+If you look at MatConvNet's ImageNet examples you can see that the learning rate isn't constant during training. You can specify learning rate as <code>pts.learningRate = logspace(-3, -5, 120)</code> to have it change from .001 to .00001 over 120 training epochs, for instance. This can improve performance slightly.
+</li>
+<li>
+You can try increasing the filter depth of the network. The example networks for MNIST, CIFAR, and ImageNet have 20, 32, and 64 filters in the first layer and it tends to increase as you go up the network. Unfortunately, it doesn't seem to help too much in our case probably because of lack of training data.
+</li>
+<li>
+The MNIST, CIFAR, and ImageNet examples in MatConvNet show numerous advanced strategies: Use of normalization layers, variable learning rate per layer (the two elements of the per-layer learning rate in <code>cnn_cifar_init.m</code> are the relative learning rates for the filters and the bias terms), use of average pooling instead of max pooling for some layers, skipping relu layers between some convolutional layers, initializing weights with distributions other than <code>randn</code>, more dramatic jittering, etc.
+</li>
+<li>The more free parameters your network has the more prone to overfitting it is. Multiple dropout layers can help fight back against this, but will slow down training considerably.
+</li>
+<li>One obvious limitation of our network is that it operates on 64x64 images when the scene images are generally closer to 256x256. We're definitely losing valuable texture information by working at low resolution. Luckily, it's not necessarily slow to work with the higher resolution images if you put a greater-than-one stride in your first convolutional layer. The VGG-F network adopts this strategy. You can see in <code>cnn_imagenet_init.m</code> that its first layer uses 11x11 filters with a stride of 4. This is 1/16th as many evaluations as a stride of 1.
+</li>
+<li>The images can be normalized more strongly (e.g. making them have unit standard deviation) but this did not help in my experiments.
+</li>
+<li>You can try alternate loss layers at the top of your network. E.g. <code>net.layers{end+1} = struct('name', 'hinge loss', 'type', 'loss', 'loss', 'mhinge')</code> for hinge loss.
+</li>
+<li>You can train the VGG-F network from scratch on the 15 scene database. You can call <code>cnn_imagenet_init.m</code> to get a randomly initialized VGG-F and train it just like your other networks. It works better than I would expect considering how little training data we have.
+</li>
+<li>The best accuracy I have achieved when training a network from scratch is 66%, which unfortunately isn't much better than the accuracy achieved by addressing the first 3 problems above.
+</li>
+</ul>
+<br><br>
+
+<p></p>
+
+<h2>Part 2: fine-tuning a pre-trained deep network</h2>
+<p>
+
+One of the impressive things about the representations learned by deep convolutional networks is that they generalize surprisingly well to other recognition tasks 
+(see <a href="http://arxiv.org/abs/1310.1531">DeCAF</a> and the work of <a href="http://www.csc.kth.se/cvap/cvg/DL/ots/">Razavian et al.</a>). 
+This is unexpected because these networks are discriminatively trained to perform well at a particular task so one might expect their representations to 
+"overfit" for that task. And perhaps they do, but they still often exceed the performance of hand-crafted features when used in a new domain.
+<br><br>
+But how do we use an existing deep network for a new recognition task? Take, for instance, the VGG-F ("F" for "fast") network examined in 
+<a href="http://www.robots.ox.ac.uk/~vgg/publications/2014/Chatfield14/">Chatfield et al. BMVC 2014</a>. This network is meant to be architecturally similar 
+to the original <a href="http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks">AlexNet</a>. <b>Strategy A</b>: The VGG-F network has 
+1000 units in the final layer corresponding to 1000 ImageNet categories. One could use those 1000 activation as a feature in place of a hand crafted feature such as a bag-of-features representation. 
+You would train a classifier (typically a linear SVM) in that 1000 dimensional feature space. However, those activations are clearly very object specific and may not generalize well to new recognition tasks. 
+It is generally better to use the activations in slightly earlier layers of the network, e.g. the 4096 activations in "fc6" or "fc7". You can often get away with sub-sampling those 4096 activations considerably, e.g. taking only the first 200 activations. This <b>Strategy A</b> for using an existing deep network was extra credit for project 4 and several students achieved high accuracy (especially when using a deep network trained on the Places database, but that isn't so much a testament to generalization because it's the same task with more training data).
+<br><br>
+Alternatively, <b>Strategy B</b> is to <i>fine-tune</i> an existing network. In this scenario you take an existing network, replace the final layer (or more) with random weights, and train <i>the entire network</i> again with images and ground truth labels for your recognition task. You are effectively treating the pre-trained deep network as a better initialization than the random weights used when training from scratch. When you don't have enough training data to train a complex network from scratch (e.g. with the 15 scene database) this is an attractive option. Fine-tuning can work far better than <b>Strategy A</b> of taking the activations directly from an pre-trained CNN. For example, in <a href="http://www.cc.gatech.edu/~hays/papers/deep_geo.pdf">Lin et al's cross-view geolocalization work from CVPR 2015</a>, there wasn't enough data to train a deep network from scratch, but fine tuning led to 4 times higher accuracy than using off-the-shelf networks directly.
+<br><br>
+For <b>Part 2</b> of this project you will fine-tune the VGG-F network to perform scene recognition. If you did not already run the MatConvNet quick start demo, use this command to download and save the VGG-F network: <code>urlwrite('http://www.cc.gatech.edu/~hays/compvision/proj6/imagenet-vgg-f.mat', 'imagenet-vgg-f.mat')</code>
+<br><br>
+The code for <b>Part 2</b> will largely follow the same outline or even use the same code as <b>Part 1</b>. You will need to do a handful of things differently, though:
+</p><ul>
+ <li>
+  <code>proj6_part2_cnn_init.m</code> will start with <code>net = load('imagenet-vgg-f.mat');</code> and then <i>edit</i> the network rather than specifying the structure from scratch.
+ <ul>
+ <li>You need to make the following edits to the network: The final two layers, fc8 and the softmax layer, should be removed and specified again using the same syntax seen in Part 1. The original fc8 had an input data depth of 4096 and an output data depth of 1000 (for 1000 ImageNet categories). We need the output depth to be 15, instead. The weights can be randomly initialized just like in Part 1.
+ </li>
+ <li>The dropout layers used to train VGG-F are missing from the pretrained model (probably because they're not used at test time). It's probably a good idea to add one or both of them back in between fc6 and fc7 and between fc7 and fc8.
+ </li>
+ </ul>
+ </li>
+ <li>
+   <code>proj6_part2_setup_data.m</code> will be very similar to its part 1 analog except that:
+    <ul>
+       <li>The input images need to be resized to 224x224. More specifically, the input images need to be 224x224 when returned by <code>getBatch()</code>. You <i>could</i> keep them at higher resolution in <code>imdb</code> and crop them to 224x224 as a form of jittering. See <code>cnn_imagenet_get_batch.m</code> for an extreme jittering example. You can call that function if you want, but you can achieve high accuracy with no jittering. You could also simply reuse your jittering strategy from Part 1.
+       </li>
+       <li>VGG-F accepts 3 channel (RGB) images. The 15 scene database contains grayscale images. There are two possibilities: modify the first
+layer of VGG-F to accept 1 channel images, or concatenate the grayscale images with themselves (e.g. <code>cat(3, im, im, im)</code>) to make an RGB image. The latter is probably easier and safer.
+       </li>
+       <li>VGG-F expects input images to be normalized by subtracting the average image, just like in Part 1. VGG-F provides a 224x224x3 average image in <code>net.normalization.averageImage</code>.
+       </li>
+    </ul>
+  </li>
+</ul>
+
+With these issues addressed, <code>proj6_part2.m</code> will call <code>cnn_train</code> just as in Part 1 and you should see very high accuracy. Training will naturally be a bit slow because the network is far bigger than in Part 1. However, you don't need many training epochs. Five training epochs was enough to achieve 87% accuracy and it is possible to approach (or perhaps exceed) 90% test accuracy. Compare this with the 2010 state-of-the-art performance of 88.1% accuracy achieved by combining more than a dozen existing and new features with a non-linear SVM and multiple kernel learning in the <a href="http://www.cc.gatech.edu/~hays/papers/sun.pdf">SUN Database paper</a>.
+<br><br>
+It isn't necessary to retrain the entire network to achieve high accuracy. You could retrain just the new fc8 layer by setting <code>opts.backPropDepth = 2</code> in <code>proj6_part2.m</code>. This basically implements <b>Strategy A</b> and would not be considered fine-tuning. But it is possible to do a strategy that falls in between. What if you only retrain the fully connected layers? What if you prune the pre-trained network down to the convolutional layers and only add a single fully connected layer to dramatically reduce the number of parameters? There are many possible strategies to explore and you will receive full credit as long as you achieve 85% accuracy by starting from VGG-F. You can <i>additionally</i> experiment with fine-tuning other networks such as VGG very deep networks or networks trained on the <a href="http://places.csail.mit.edu/">Places database</a>, but be sure to report performance for and turn in code for fine-tuning VGG-F.
+
+<h2>Write up</h2> 
+<p> 
+For this project, and all other projects, you must do a project report in HTML. In the report you will describe your algorithm and any decisions you made to write your algorithm a particular way. Then you will show and discuss the results of your algorithm. Discuss any extra credit you did, and clearly show what contribution it had on the results (e.g. performance with and without each extra credit component).</p>
+
+<p>
+We suggest showing results plots (Matlab figure 1) and filter visualization (Matlab figure 2) as needed.</p>
+
+<p></p>
+ 
+<h2>Extra Credit / Graduate Credit</h2> 
+<p>
+There is <b>NO</b> required extra credit for graduate students for this project. The following extra credit is available for students in both 4476 and 6476. The max score for all students is 110.
+</p>
+<p>
+For all extra credit, be sure to analyze on your web page whether your extra credit has improved classification accuracy. Each item is "up to" some amount of points because trivial implementations may not be worthy of full extra credit.
+Some ideas:</p>
+<ul>
+  <li>up to 10 pts: Gather additional scene training data (e.g. from the <a href="http://groups.csail.mit.edu/vision/SUN/">SUN database</a> or the <a href="http://places.csail.mit.edu/">Places database</a>) and train a network from scratch. Report performance on those datasets and then use the learned networks for the 15 scene database with fine tuning.</li>
+<li>up to 10 pts: Try a completely different recognition task. For example, try to recognize <a href="http://cybertron.cg.tu-berlin.de/eitz/projects/classifysketch/">human object sketches</a> (download the .png files). Or try to predict <a href="https://cs.brown.edu/~gen/sunattributes.html">scene attributes</a>. The scene attributes are not one-vs-all (an image simultaneously has many attributes) so you'll need to configure MatConvNet accordingly. There are many other recognition data sets available to experiment with.</li>
+  <li>up to 10 pts: Produce visualizations using your own code or methods such as <a href="http://vision03.csail.mit.edu/cnn_art/index.html">mNeuron</a>, <a href="https://github.com/aravindhm/deep-goggle">Understanding Deep Image Representations by Inverting Them</a>, <a href="http://yosinski.com/deepvis">DeepVis</a>, or <a href="https://github.com/google/deepdream">DeepDream</a>.</li>
+  <li>up to 10 pts: 1 point for every percent accuracy over 70% when training from scratch on the 15 scene database. The highest accuracy I've gotten in 66%, so I expect this to require many bells and whistles such as extensive jittering of the training data, carefully tuned network structure and per-layer training rates, etc.</li>
+  <li>up to 10 pts: 1 point for every percent accuracy over 90% when fine-tuning from VGG-F. You don't get extra credit for switching to another network (like one trained on the Places database). The challenge here is to adapt a very big network to  a relatively small training set.</li>
+  <li>up to 10 pts: Come up with your own idea to impress us. Chat with James or the TAs if you're not sure if an idea is worth pursuing.</li>
+  
+</ul>
+ 
+<h2> Web-Publishing Results </h2> 
+<p> 
+All the results for each project will be put on the course website so that the students can see each other's results. In class we will highlight the best projects as determined by the professor and TAs. If you do not want your results published to the web, you can choose to opt out.
+</p>
+ 
+<h2> Handing in </h2> 
+<p> 
+This is very important as you will lose points if you do not follow instructions. Every time after the first that you do not follow instructions, you will lose 5 points. The folder you hand in must contain the following:
+</p> 
+<ul> 
+    <li> README - text file containing anything about the project that you want to tell the TAs</li> 
+    <li> code/ - directory containing all your code for this assignment. Do not hand in any networks, training data, or MatConvNet itself! You only need to hand in 6 source files: <code>proj6_part1.m, proj6_part1_cnn_init.m, proj6_part1_setup_data.m, proj6_part2.m, proj6_part2_cnn_init.m, and proj6_part2_setup_data.m</code>. You can of course hand in any helper functions you created.</li> 
+    <li> html/ - directory containing all your html report for this assignment, including images (any images not under this directory won't be published).</li> 
+    <li> html/index.html - home page for your results </li> 
+</ul> 
+<p> 
+Hand in your project as a zip file through <a href="http://t-square.gatech.edu/">t-square.gatech.edu</a>.
+ 
+</p><h2> Rubric </h2> 
+<ul> 
+   <li> +50 pts: Part 1: Build a convolutional network with jittering, pre-processing of the input images to remove the mean, dropout normalization, and an additional convolutional layer which achieves at least 50% test accuracy (for any training epoch) on the 15 scene database.
+   </li><li> +30 pts: Part 2: Fine-tune VGG-F to achieve at least 85% test accuracy (for any training epoch) on the 15 scene database.</li>
+<li> +20 pts: Writeup with design decisions and evaluation.</li>
+   <li> +10 pts: Extra credit (up to ten points) </li>
+   <li> -5*n pts: Lose 5 points for every time (after the first) you do not follow the instructions for the hand in format </li> 
+</ul> 
+ 
+<h2> Final Advice </h2> 
+<p> 
+</p><ul> 
+  <li>Unfortunately, MatConvNet is not as well documented as VLFeat. Use Piazza to get clarifications if needed. If you're confused, it's likely many other students are, as well.</li>
+</ul>
+<p></p> 
+ 
+<h2> Credits </h2> 
+<p>Project description and code by James Hays. Thanks to the MatConvNet team.
+</p>
+  
+</div> 
+
+
+       <script src="./Project 6_ Deep Learning_files/highlight.min.js"></script>
+       <script src="./Project 6_ Deep Learning_files/matlab.min.js"></script>
+       <script>hljs.initHighlightingOnLoad();</script>
+
+
+ 
+ 
+</body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>

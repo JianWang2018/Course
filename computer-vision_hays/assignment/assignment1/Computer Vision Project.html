@@ -1,0 +1,1337 @@
+
+<!-- saved from url=(0080)http://www.cc.gatech.edu/~hays/compvision/results/proj1/html/mbalusu3/index.html -->
+<html class="gr__cc_gatech_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Computer Vision Project</title>
+<link href="./Computer Vision Project_files/css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" title="Default" href="./Computer Vision Project_files/github.css">
+<script src="./Computer Vision Project_files/jquery.min.js"></script>  
+
+<link rel="stylesheet" href="./Computer Vision Project_files/default.css">
+<script src="./Computer Vision Project_files/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;	
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 960px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+td img {
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body data-gr-c-s-loaded="true">
+<div id="header">
+<div id="headersub">
+<h1><span style="color: #DE3737"> Murali Raghu Babu Balusu  (GaTech ID - 903241955) </span></h1>
+</div>
+</div>
+<div class="container">
+
+<h2>Project 1: Image Filtering and Hybrid Images</h2>
+
+<div style="float: right; padding: 20px">
+
+<p style="font-size: 14px"></p>
+</div>
+
+<p> The following writeup is organized as follows: <br>
+1. I have described the image filtering algorithm used along with the variants I have implemented and the results. <br>
+2. I have also compared the time taken for the varaints of the image filtering algorithm. <br>
+3. The procedure for the generation of hybrid images is outlined next. <br>
+4. I have also implemented image filtering in the frequency domain which is described below along with its results.<br>
+5. I have also tried experimenting the hybrid image generation with few other examples shown at the end.
+</p>
+
+
+
+
+<br>
+
+<div style="clear:both">
+<h2>Image Filtering algorithm</h2>
+
+<p> 	The algorithm initially creates an empty output array of the same dimension as that of the input image. Then for each pixel, the algorithm obtains a local neighborhood of that pixel from the original image and this is then multiplied (element-wise) with the filter matrix and the sum of the product result is taken to be the value for that particular pixel. This is computed for every pixel in the image and the final output i.e. the filtered image is stored in 'output' variable. I have implemented several variants of the filtering algorithm with respect to the boundary pixels and padding the image each of which I have discussed below along with the results. </p>
+
+<h4> Variant 1: </h4>
+<p> This is present in the file 'my_imfilter.m'. For the case of boundary pixels- the values for the local neighbourhood matrix of each pixel is obtained by using the pixels value from the input image for those which fall within the dimension of the input image and the rest of the values of the local matrix are assigned zero value. This is just a plain implementation of the filtering algorithm described above. padarray() function is not used here. Instead the idea is implemented. 
+
+</p><pre><code class="matlab">
+	...
+	...
+            <span class="keyword">for</span> ss1=<span class="number">1</span>:s1 					<span class="comment">%local matrix is contsructed here from the input image</span>
+                <span class="keyword">for</span> ss2=<span class="number">1</span>:s2                    
+                    <span class="keyword">if</span> <span class="built_in">i</span>-p1+ss1&lt;<span class="number">1</span> | <span class="built_in">i</span>-p1+ss1&gt;r | <span class="built_in">j</span>-p2+ss2&lt;<span class="number">1</span> | <span class="built_in">j</span>-p2+ss2&gt;c
+                        local(ss1,ss2)=<span class="number">0</span>;
+                    <span class="keyword">else</span>
+                        local(ss1,ss2)=image(<span class="built_in">i</span>-p1+ss1,<span class="built_in">j</span>-p2+ss2,k);
+                    <span class="keyword">end</span>
+                    <span class="comment">%display(local(ss1,ss2));</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+    	...
+    	...
+
+</code></pre>
+
+<p></p>
+
+<h4> Variant 2: </h4>
+<p> This is written in the 'my_imfilter2.m' file. In the case of boundary pixels- the local matrix is populated with the values in the input image for those cells of the matrix which fall within the dimension of the input image and their average is computed. Then, the cells which fall outside the input image are assigned a value equal to the average that was computed. I have implemented the functionality of padarray() here instead of using the inbuilt function. 
+</p><pre><code class="matlab">
+	...
+	...
+            <span class="keyword">for</span> ss1=<span class="number">1</span>:s1 					<span class="comment">%local matrix is contsructed here from the input image</span>
+                <span class="keyword">for</span> ss2=<span class="number">1</span>:s2                    
+                    <span class="keyword">if</span> <span class="built_in">i</span>-p1+ss1&lt;<span class="number">1</span> | <span class="built_in">i</span>-p1+ss1&gt;r | <span class="built_in">j</span>-p2+ss2&lt;<span class="number">1</span> | <span class="built_in">j</span>-p2+ss2&gt;c
+                        local(ss1,ss2)=<span class="number">0</span>;
+                    <span class="keyword">else</span>
+                        local(ss1,ss2)=image(<span class="built_in">i</span>-p1+ss1,<span class="built_in">j</span>-p2+ss2,k);
+                        count=count+<span class="number">1</span>;
+                    <span class="keyword">end</span>
+                    <span class="comment">%display(local(ss1,ss2));</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+            total=sum(local(:));
+            <span class="keyword">for</span> ss1=<span class="number">1</span>:s1
+                <span class="keyword">for</span> ss2=<span class="number">1</span>:s2
+                    <span class="keyword">if</span> <span class="built_in">i</span>-p1+ss1&lt;<span class="number">1</span> | <span class="built_in">i</span>-p1+ss1&gt;r | <span class="built_in">j</span>-p2+ss2&lt;<span class="number">1</span> | <span class="built_in">j</span>-p2+ss2&gt;c
+                        local(ss1,ss2)=total/count; <span class="comment">%average is assigned to those entries here</span>
+                    <span class="keyword">end</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+    	...
+    	...
+
+</code></pre>
+
+
+<p></p>
+
+<h4> Variant 3: </h4>
+<p> This is available in the 'my_imfilter3.m' file.  Here, I have used the padarray() inbuilt function of matlab to pad the input image and then the local matrix for each pixel is extracted directly from the input image and used to compute the filtered image. There are two ways to pad an input image- <br>
+1. mirroring the border pixels (symmetric)   	&nbsp;	&nbsp; or <br>
+2. repeating the border elements (replicate). 
+I have tried experiments using both ways.  <br>
+
+</p><pre><code class="matlab">
+image=padarray(image,<span class="matrix">[double(p1-<span class="number">1</span>) double(p2-<span class="number">1</span>)]</span>,<span class="string">'replicate'</span>);
+<span class="comment">%creates a new image with padding - here replicate to Pad by repeating border elements of array.</span>
+
+image=padarray(image,<span class="matrix">[double(p1-<span class="number">1</span>) double(p2-<span class="number">1</span>)]</span>,<span class="string">'symmetric'</span>);
+<span class="comment">%creates a new image with padding - here replicate to Pad array with mirror reflections of itself.</span>
+... <span class="comment">%choose the padding that you need and comment the other in the code.</span>
+...
+
+</code></pre>
+
+ 
+<p></p>
+
+<h4> Variant 4: </h4>
+<p> In file 'my_imfilter4.m', I tried to parallelize the algorithm by using a parallel for loop. However, starting a parallel pool and later shutting it down takes time. Else, parallelizing helps to improve speed slightly. I have used the variant 2 here for the case of boundary pixels. <br>
+</p><pre><code class="matlab">
+<span class="keyword">parfor</span> k=<span class="number">1</span>:l                                    <span class="comment">%parallelized across RGB layers</span>
+    local=<span class="built_in">zeros</span>(<span class="built_in">size</span>(filter));
+    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:c
+        <span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:r
+        ...
+        ...
+</code></pre>
+<p></p>
+<br>
+<br>
+<h3>Image Filtering Results using various filters</h3> <h5> using variant 1</h5>
+
+<table border="1">
+<tbody><tr>
+<td>
+Identity Filter
+</td>
+<td>
+Box Filter
+</td>
+<td>
+Gaussian Filter
+</td>
+<td>
+Sobel Filter
+</td>
+<td>
+Discrete Laplacian Filter
+</td>
+<td>
+High Pass Filter
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image.jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(1).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(2).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(3).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(4).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(5).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(6).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(7).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(8).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/identity_image(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/blur_image(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/sobel_image(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/laplacian_image(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/high_pass_image(9).jpg" width="100%">
+</td>
+</tr>
+
+</tbody></table>
+
+<p>
+	The above results are obtained using the algorithm as mentioned in variant 1. <br>
+</p>
+<br>
+<br>
+<h3>Comparison of Image Filtering Results</h3>
+
+<table border="1">
+<tbody><tr>
+<td>
+Using variant 1
+</td>
+<td>
+Using variant 2
+</td>
+<td>
+Using variant 3
+</td>
+<td>
+Using variant 4*
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(10).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(11).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(12).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 2.3sec
+</td>
+<td>
+time taken: 3.6sec
+</td>
+<td>
+time taken: 1.9sec
+</td>
+<td>
+time taken: 2.6sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(13).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(14).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(15).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 1.8sec
+</td>
+<td>
+time taken: 2.8sec
+</td>
+<td>
+time taken: 1.7sec
+</td>
+<td>
+time taken: 2.1sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(16).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(17).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(18).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 2.2sec
+</td>
+<td>
+time taken: 3.3sec
+</td>
+<td>
+time taken: 1.7sec
+</td>
+<td>
+time taken: 2.4sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(19).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(20).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(21).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 1.5sec
+</td>
+<td>
+time taken: 2.5sec
+</td>
+<td>
+time taken: 1.3sec
+</td>
+<td>
+time taken: 2.9sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(22).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(23).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(24).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 0.8sec
+</td>
+<td>
+time taken: 1.3sec
+</td>
+<td>
+time taken: 0.6sec
+</td>
+<td>
+time taken: 1.0sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(25).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(26).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(27).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 1.9sec
+</td>
+<td>
+time taken: 3.2sec
+</td>
+<td>
+time taken: 1.6sec
+</td>
+<td>
+time taken: 2.3sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(28).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(29).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(30).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 1.6sec
+</td>
+<td>
+time taken: 2.7sec
+</td>
+<td>
+time taken: 1.5sec
+</td>
+<td>
+time taken: 2.0sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(31).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(32).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(33).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 1.8sec
+</td>
+<td>
+time taken: 3.0sec
+</td>
+<td>
+time taken: 1.5sec
+</td>
+<td>
+time taken: 2.2sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(34).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(35).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(36).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 1.6sec
+</td>
+<td>
+time taken: 2.7sec
+</td>
+<td>
+time taken: 1.4sec
+</td>
+<td>
+time taken: 2.0sec
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(37).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(38).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/large_blur_image(39).jpg" width="100%">
+</td>
+</tr>
+
+<tr>
+<td>
+time taken: 0.8sec
+</td>
+<td>
+time taken: 1.3sec
+</td>
+<td>
+time taken: 0.6sec
+</td>
+<td>
+time taken: 1.0sec
+</td>
+</tr>
+
+
+</tbody></table>
+
+<p>
+	The table above compares the results obtained using a gaussian filter with each of the above variants. Specifically, gaussian filter has been used since the images clearly have some difference along the boundaries.<br>
+	</p><h6>*- time excludes the time taken to start and shut down a parallel pool.</h6>
+<p></p>
+
+
+<br>
+<h2>Hybrid Images</h2>
+
+<p> 	The algorithm to construct hybrid images is present in the file 'proj1.m'. One important change (in 'proj11.m' only) is that the gaussian filter is implemented as a one dimensional filter to reduce the time for computation of the fitered image. The input image is filtered twice once with the gaussian filter and the result with the transpose of the filter to obtain the final filtered image. The low frequencies image is obtained using a gaussian filter on image1 and the high frequencies image of image2 is obtained by subtracting the low frequencies image from the original input image2.The Hybrid image is constructed by adding these two filtered images. </p>
+
+<p>
+	Clearly, the hybrid images would change depending on the image chosen for image1 (low frequencies) and the image chosen for image2(high frequencies). All the corresponding pairs and their results have been present below.
+</p>
+
+
+<table border="1">
+<tbody><tr>
+<td>
+High Frequencies
+</td>
+<td>
+Low Frequencies</td>
+<td>
+Hybrid Image
+</td>
+<td>
+Hybrid Image scales
+</td>
+<td>
+
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales.jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(1).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(2).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(3).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(4).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(4).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(5).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(5).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(6).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(6).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(7).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(7).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(8).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(8).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(9).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(9).jpg" width="100%">
+</td>
+<td>
+
+</td></tr></tbody></table>
+<br>
+<br>
+
+<h2>Image Filtering in the frequency domain</h2>
+<p> I have also implemented the image filtering of the grayscale image of the input image in the frequency domain 
+	using a gaussian filter in 'myfilter_freq.m' file. The code uses inbuilt function in matlab on fourier transform and inverse fourier transform. 
+	</p><pre><code class="matlab">
+im = double(imread(<span class="string">'../data/fish.bmp'</span>))/<span class="number">255</span>; 
+im = rgb2gray(im);                              <span class="comment">% “im” should be a gray-scale floating point image</span>
+<span class="matrix">[imh, imw]</span> = <span class="built_in">size</span>(im);
+
+hs = <span class="number">12</span>;                                        <span class="comment">% filter half-size</span>
+fil = fspecial(<span class="string">'gaussian'</span>, hs*<span class="number">2</span>+<span class="number">1</span>, <span class="number">10</span>); 
+
+fftsize = <span class="number">1024</span>;                                 <span class="comment">% should be order of 2 (for speed) and include padding</span>
+
+im_fft = fft2(im, fftsize, fftsize);            <span class="comment">% 1) fft im with padding</span>
+figure(<span class="number">1</span>), imagesc(<span class="built_in">log</span>(<span class="built_in">abs</span>(fftshift(im_fft)))), axis image, colormap jet; saveas(figure(<span class="number">1</span>),<span class="string">'image_fft.jpg'</span>);
+
+fil_fft = fft2(fil, fftsize, fftsize);          <span class="comment">% 2) fft fil, pad to same size as</span>
+figure(<span class="number">2</span>), imagesc(<span class="built_in">log</span>(<span class="built_in">abs</span>(fftshift(fil_fft)))), axis image, colormap jet; saveas(figure(<span class="number">2</span>),<span class="string">'filter_fft.jpg'</span>);
+
+im_fil_fft = im_fft .* fil_fft;                 <span class="comment">% 3) multiply fft images</span>
+figure(<span class="number">3</span>), imagesc(<span class="built_in">log</span>(<span class="built_in">abs</span>(fftshift(im_fil_fft)))), axis image, colormap jet; saveas(figure(<span class="number">3</span>),<span class="string">'image_filter_fft.jpg'</span>);
+
+im_fil = ifft2(im_fil_fft);                     <span class="comment">% 4) inverse fft2</span>
+im_fil = im_fil(<span class="number">1</span>+hs:<span class="built_in">size</span>(im,<span class="number">1</span>)+hs, <span class="number">1</span>+hs:<span class="built_in">size</span>(im, <span class="number">2</span>)+hs); <span class="comment">% 5) remove padding</span>
+figure(<span class="number">4</span>), imshow(im_fil); imwrite(im_fil, <span class="string">'filtered_image.jpg'</span>);
+output=im_fil; 
+
+</code></pre>
+The results obtained using this method are shown below. <p></p>
+
+<table border="1">
+<tbody><tr>
+	<td>
+Input Image
+</td>
+<td>
+FFT of Image
+</td>
+<td>
+FFT of filter</td>
+<td>
+FFT of Image.*filter
+</td>
+<td>
+Filtered image
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+Dog
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_fft.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filter_fft.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_filter_fft.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filtered_image.jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+Fish
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_fft(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filter_fft(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_filter_fft(1).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filtered_image(1).jpg" width="100%">
+</td>
+<td>
+
+</td></tr><tr>
+	<td>
+Einstein
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_fft(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filter_fft(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_filter_fft(2).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filtered_image(2).jpg" width="100%">
+</td>
+<td>
+
+	</td></tr><tr>
+		<td>
+Bicycle
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_fft(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filter_fft(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/image_filter_fft(3).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/filtered_image(3).jpg" width="100%">
+</td>
+<td>
+
+</td></tr></tbody></table>
+<br>
+<br>
+
+<h2>Additional examples for Hybrid Images</h2>
+<p>The following examples which are given below are also used for the generation of hybrid images. The results are presented below. The same algorithm as mentioned above has been used for the hybrid images. </p>
+
+<table border="1">
+<tbody><tr>
+<td>
+Young Girl
+</td>
+<td>
+Woman</td>
+<td>
+Happy
+</td>
+<td>
+Angry
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/before.png" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/after.png" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/happy.jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/angry.jpg" width="100%">
+</td>
+<td>
+
+</td></tr></tbody></table>
+
+<p> For the above examples, we used a guassian filter with an appropriate cuttoff frequency and then the hybrid images are generated as shown below.  </p>
+
+<table border="1">
+<tbody><tr>
+<td>
+High Frequencies
+</td>
+<td>
+Low Frequencies</td>
+<td>
+Hybrid Image
+</td>
+<td>
+Hybrid Image scales
+</td>
+<td>
+
+</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(10).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(10).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(10).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(10).jpg" width="100%">
+</td>
+<td>
+
+	</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(11).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(11).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(11).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(11).jpg" width="100%">
+</td>
+<td>
+
+	</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(12).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(12).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(12).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(12).jpg" width="100%">
+</td>
+<td>
+
+	</td></tr><tr>
+<td>
+<img src="./Computer Vision Project_files/high_frequencies(13).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/low_frequencies(13).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image(13).jpg" width="100%">
+</td>
+<td>
+<img src="./Computer Vision Project_files/hybrid_image_scales(13).jpg" width="100%">
+</td>
+<td>
+
+</td></tr></tbody></table>
+
+
+<p> All the work that has been implemented for the project has been presented and discussed above. Feel free to contact me for further queries. <br> <br>
+Contact details: <br>
+Murali Raghu Babu Balusu <br>
+GaTech id: 903241955 <br>
+Email: b.murali@gatech.edu <br>
+Phone: (470)-338-1473 <br>
+
+<br>
+<br>
+Thank you! </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+<h2>Example of code with highlighting</h2>
+The javascript in the <code>highlighting</code> folder is configured to do syntax highlighting in code blocks such as the one below.<p>
+
+<pre><code>
+%example code
+for i = 1:length(offset)
+    source = imread(sprintf('%s/source_%02d.jpg',data_dir,i));
+    mask   = imread(sprintf('%s/mask_%02d.jpg',data_dir,i));
+    target = imread(sprintf('%s/target_%02d.jpg',data_dir,i));
+
+</code></pre>
+
+<h3>Results in a table</h3>
+
+<table border=1>
+<tr>
+<td>
+<img src="placeholder.jpg" width="24%"/>
+<img src="placeholder.jpg"  width="24%"/>
+<img src="placeholder.jpg" width="24%"/>
+<img src="placeholder.jpg" width="24%"/>
+</td>
+</tr>
+
+<tr>
+<td>
+<img src="placeholder.jpg" width="24%"/>
+<img src="placeholder.jpg"  width="24%"/>
+<img src="placeholder.jpg" width="24%"/>
+<img src="placeholder.jpg" width="24%"/>
+</td>
+</tr>
+
+</table>
+
+<div style="clear:both" >
+<p> 	Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+</body>
+</html>
+-->
+</div></div></body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>

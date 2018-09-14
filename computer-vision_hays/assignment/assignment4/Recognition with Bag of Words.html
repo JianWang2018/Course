@@ -1,0 +1,433 @@
+
+<!-- saved from url=(0077)http://www.cc.gatech.edu/~hays/compvision/results/proj4/html/dfan6/index.html -->
+<html class="gr__cc_gatech_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Recognition with Bag of Words</title>
+<link href="./Recognition with Bag of Words_files/css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" title="Default" href="./Recognition with Bag of Words_files/github.css">
+<script src="./Recognition with Bag of Words_files/jquery.min.js"></script>  
+
+<link rel="stylesheet" href="./Recognition with Bag of Words_files/default.css">
+<script src="./Recognition with Bag of Words_files/highlight.pack.js"></script>
+
+<style type="text/css">
+body {
+	margin: 0px;
+	width: 100%;
+	font-family: 'Crimson Text', serif;
+	font-size: 20px;
+	background: #fcfcfc;
+}
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 28px;
+	margin: 25px 0px 0px 0px;
+	text-transform: lowercase;
+
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 32px;
+	margin: 15px 0px 35px 0px;
+	color: #333;	
+	word-spacing: 3px;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 26px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+h4 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 22px;
+	margin: 10px 0px 10px 0px;
+	color: #333;
+	word-spacing: 2px;
+}
+
+h5 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: normal;
+	font-size: 18px;
+	margin: 10px 0px 10px 0px;
+	color: #111;
+	word-spacing: 2px;
+}
+
+p, li {
+	color: #444;
+}
+
+a {
+	color: #DE3737;
+}
+
+.container {
+	margin: 0px auto 0px auto;
+	width: 1160px;
+}
+
+#header {
+	background: #333;
+	width: 100%;
+}
+
+#headersub {
+	color: #ccc;
+	width: 960px;
+	margin: 0px auto 0px auto;
+	padding: 20px 0px 20px 0px;
+}
+
+.chart {
+	width: 480px;
+}
+.lol {
+	font-size: 16px;
+	color: #888;
+	font-style: italic;
+}
+.sep {
+	height: 1px;
+	width: 100%;
+	background: #999;
+	margin: 20px 0px 20px 0px;
+}
+.footer{
+	font-size: 16px;
+}
+.latex {
+	width: 100%;
+}
+
+.latex img {
+	display: block;
+	margin: 0px auto 0px auto;
+}
+
+pre {
+	font-family: 'Droid Sans Mono';
+	font-size: 14px;
+}
+
+table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table td img {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#contents a {
+}
+</style>
+<script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+</script>
+</head>
+<body data-gr-c-s-loaded="true">
+<div id="header">
+<div id="headersub">
+<h1>David Fan</h1>
+</div>
+</div>
+<div class="container">
+
+<h2>Project 4 / Scene Recognition with Bag of Words</h2>
+
+<p> 	The goal of this project is to perform scene recognition with several simple methods, then moving on to more advanced methods.  We begin with the simplest implmenetation of using tiny images as a representation and nearest neighbor classifier.  </p>
+
+<h3>Tiny images representation and nearest neighbor classifier</h3>
+<p>
+For the tiny images representation I took the center square of each image and resized it to 16x16.  I used a nearest neighbor classifier with K=10.  The mean diagonal of the confusion matrix was 0.191.
+</p>
+
+
+<h3>Bag of Sift representation and nearest neighbor classifier</h3>
+<p>
+Next I created the Bag of Sift representation to use with the nearest neighbor classifier.  To build the vocabulary for the bag of SIFT method, I used the 'fast' method along with 1000 randomly selected features from each image, and a step size of 10.  I used a vocabulary size of 50.  When creating the bag of sifts for each image I again used a stepsize of 5 and the 'fast' method, along with 2000 randomly selected features.  Other parameters were the same as the previous section.  Run time (excluding building the vocabulary) was about 2min and the mean diagonal of the confusion matrix was 0.51.
+</p>
+
+
+
+<h3>Bag of Sift representation and linear SVM</h3>
+<p>
+Using the same parameters for the Bag of Sift representation, I changed the nearest neighbor classifier to a linear SVM.  I used the vl_svmtrain() package.  I found good performance with a Lambda value of 1.0e-6.  Other parameters were the same as the previous section.  The mean diagonal of the confusion matrix was 0.583.
+</p>
+
+
+<h3>EXTRA: Bag of Sift and kernel SVM</h3>
+<p>
+Next I used a kernel SVM instead of the linear SVM.  I used MATLAB's svmtrain package for this.  I found that a polynomial kernel with polynomial order of the vocabulary size worked well.  Other parameters were the same as the previous section.  The mean diagonal of the confusion matrix was 0.632.
+</p>
+
+
+<h3>EXTRA: "Soft assignment" of Bag of Sift and kernel SVM</h3>
+<p>
+I next implemented the "soft assignment" method for Bag of SIFT found in Kernel codebooks for scene categorization by Gemert et al, ECCV 2008.  They outline 4 different kernel-based assignment methods, the best one being "codeword uncertainty" weights, which are defined as taking the gaussian kernel of the distances between the features and the codewords, and normalizing them to sum to 1.  Each feature then contributes to every codeword a weighted contribution.  I used a sigma value for the gaussian kernel of 3.0e4.  Other parameters were the same as the previous section.  The mean diagonal of the confusion matrix was 0.635.
+</p>
+
+
+<h3>EXTRA: Comparison of Vocabulary Sizes</h3>
+<p>Using the same pipeline with the same parameters found in the previous section, I tested the performance on different vocabulary sizes.  The mean diagonal of the confusion matrices are shown in the table below.  I did however change the polynomial order for the kernel SVM because it would overfit with high polynomial orders on low vocabulary sizes.  I used the same polynomial order as the vocabulary size, except for 400 and 1000, where I used a polynomial kernel of order 200.</p>
+
+<table style="width:20%">
+  <tbody><tr>
+    <td>Vocab Size</td>
+    <td>Score</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td>.445</td>
+  </tr>
+  <tr>
+    <td>20</td>
+    <td>.553</td>
+  </tr>
+  <tr>
+    <td>50</td>
+    <td>.625</td>
+  </tr>
+  <tr>
+    <td>100</td>
+    <td>.669</td>
+  </tr>
+  <tr>
+    <td>200</td>
+    <td>.689</td>
+  </tr>
+  <tr>
+    <td>400</td>
+    <td>.701</td>
+  </tr>
+  <tr>
+    <td>1000</td>
+    <td>.689</td>
+  </tr>
+</tbody></table> 
+
+<h3>Final Result</h3>
+<p>The full details of the best result I was able to achieve is shown below.  I used all the same parameters as the previous section, with a vocabulary size of 400.</p>
+
+<p>
+</p><center>
+<h1>Scene classification results visualization</h1>
+<img src="./Recognition with Bag of Words_files/confusion_matrix.png">
+
+<br>
+Accuracy (mean of diagonal of confusion matrix) is 0.702
+<p>
+
+<table border="0" cellpadding="4" cellspacing="1">
+<tbody><tr>
+<th>Category name</th>
+<th>Accuracy</th>
+<th colspan="2">Sample training images</th>
+<th colspan="2">Sample true positives</th>
+<th colspan="2">False positives with true label</th>
+<th colspan="2">False negatives with wrong predicted label</th>
+</tr>
+<tr>
+<td>Kitchen</td>
+<td>0.690</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Kitchen_image_0079.jpg" width="100" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Kitchen_image_0099.jpg" width="112" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Kitchen_image_0043.jpg" width="57" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Kitchen_image_0120.jpg" width="113" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0136.jpg" width="100" height="75"><br><small>LivingRoom</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Bedroom_image_0020.jpg" width="101" height="75"><br><small>Bedroom</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Kitchen_image_0085.jpg" width="101" height="75"><br><small>Store</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Kitchen_image_0033.jpg" width="57" height="75"><br><small>Office</small></td>
+</tr>
+<tr>
+<td>Store</td>
+<td>0.570</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Store_image_0142.jpg" width="76" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Store_image_0232.jpg" width="113" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Store_image_0083.jpg" width="100" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Store_image_0014.jpg" width="44" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0084.jpg" width="110" height="75"><br><small>LivingRoom</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0045.jpg" width="115" height="75"><br><small>LivingRoom</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Store_image_0102.jpg" width="100" height="75"><br><small>Kitchen</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Store_image_0068.jpg" width="100" height="75"><br><small>Highway</small></td>
+</tr>
+<tr>
+<td>Bedroom</td>
+<td>0.450</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Bedroom_image_0055.jpg" width="100" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Bedroom_image_0193.jpg" width="105" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Bedroom_image_0121.jpg" width="102" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Bedroom_image_0095.jpg" width="101" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/InsideCity_image_0015.jpg" width="75" height="75"><br><small>InsideCity</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0086.jpg" width="100" height="75"><br><small>LivingRoom</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Bedroom_image_0138.jpg" width="52" height="75"><br><small>TallBuilding</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Bedroom_image_0118.jpg" width="114" height="75"><br><small>Store</small></td>
+</tr>
+<tr>
+<td>LivingRoom</td>
+<td>0.280</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0226.jpg" width="100" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0289.jpg" width="100" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0123.jpg" width="98" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0114.jpg" width="98" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Bedroom_image_0029.jpg" width="133" height="75"><br><small>Bedroom</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Bedroom_image_0103.jpg" width="100" height="75"><br><small>Bedroom</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0087.jpg" width="100" height="75"><br><small>Office</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0111.jpg" width="88" height="75"><br><small>Bedroom</small></td>
+</tr>
+<tr>
+<td>Office</td>
+<td>0.940</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Office_image_0187.jpg" width="106" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Office_image_0194.jpg" width="126" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Office_image_0140.jpg" width="103" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Office_image_0159.jpg" width="108" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0092.jpg" width="75" height="75"><br><small>TallBuilding</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0098.jpg" width="114" height="75"><br><small>LivingRoom</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Office_image_0127.jpg" width="119" height="75"><br><small>Kitchen</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Office_image_0120.jpg" width="116" height="75"><br><small>Kitchen</small></td>
+</tr>
+<tr>
+<td>Industrial</td>
+<td>0.580</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Industrial_image_0012.jpg" width="50" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Industrial_image_0210.jpg" width="100" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Industrial_image_0020.jpg" width="112" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Industrial_image_0089.jpg" width="112" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0016.jpg" width="75" height="75"><br><small>TallBuilding</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Street_image_0082.jpg" width="75" height="75"><br><small>Street</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Industrial_image_0137.jpg" width="120" height="75"><br><small>Street</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Industrial_image_0007.jpg" width="117" height="75"><br><small>InsideCity</small></td>
+</tr>
+<tr>
+<td>Suburb</td>
+<td>0.970</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Suburb_image_0135.jpg" width="113" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Suburb_image_0030.jpg" width="113" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Suburb_image_0176.jpg" width="113" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Suburb_image_0098.jpg" width="113" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Industrial_image_0113.jpg" width="100" height="75"><br><small>Industrial</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0004.jpg" width="75" height="75"><br><small>OpenCountry</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Suburb_image_0103.jpg" width="113" height="75"><br><small>Store</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Suburb_image_0046.jpg" width="113" height="75"><br><small>Street</small></td>
+</tr>
+<tr>
+<td>InsideCity</td>
+<td>0.610</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/InsideCity_image_0255.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/InsideCity_image_0113.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/InsideCity_image_0066.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/InsideCity_image_0107.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Store_image_0134.jpg" width="57" height="75"><br><small>Store</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Street_image_0119.jpg" width="75" height="75"><br><small>Street</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/InsideCity_image_0087.jpg" width="75" height="75"><br><small>TallBuilding</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/InsideCity_image_0129.jpg" width="75" height="75"><br><small>TallBuilding</small></td>
+</tr>
+<tr>
+<td>TallBuilding</td>
+<td>0.810</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0304.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0326.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0072.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0040.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/LivingRoom_image_0138.jpg" width="125" height="75"><br><small>LivingRoom</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/InsideCity_image_0016.jpg" width="75" height="75"><br><small>InsideCity</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0105.jpg" width="75" height="75"><br><small>Street</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0095.jpg" width="75" height="75"><br><small>Store</small></td>
+</tr>
+<tr>
+<td>Street</td>
+<td>0.670</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Street_image_0200.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Street_image_0139.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Street_image_0077.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Street_image_0132.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Coast_image_0088.jpg" width="75" height="75"><br><small>Coast</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0091.jpg" width="75" height="75"><br><small>TallBuilding</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Street_image_0049.jpg" width="75" height="75"><br><small>Highway</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Street_image_0041.jpg" width="75" height="75"><br><small>InsideCity</small></td>
+</tr>
+<tr>
+<td>Highway</td>
+<td>0.820</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Highway_image_0059.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Highway_image_0175.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Highway_image_0084.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Highway_image_0067.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Industrial_image_0115.jpg" width="94" height="75"><br><small>Industrial</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Street_image_0053.jpg" width="75" height="75"><br><small>Street</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Highway_image_0036.jpg" width="75" height="75"><br><small>Coast</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Highway_image_0029.jpg" width="75" height="75"><br><small>InsideCity</small></td>
+</tr>
+<tr>
+<td>OpenCountry</td>
+<td>0.650</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0271.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0127.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0033.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0029.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Highway_image_0034.jpg" width="75" height="75"><br><small>Highway</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Highway_image_0133.jpg" width="75" height="75"><br><small>Highway</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0079.jpg" width="75" height="75"><br><small>Mountain</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0080.jpg" width="75" height="75"><br><small>Coast</small></td>
+</tr>
+<tr>
+<td>Coast</td>
+<td>0.750</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Coast_image_0048.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Coast_image_0307.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Coast_image_0013.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Coast_image_0118.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Highway_image_0036.jpg" width="75" height="75"><br><small>Highway</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/OpenCountry_image_0011.jpg" width="75" height="75"><br><small>OpenCountry</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Coast_image_0093.jpg" width="75" height="75"><br><small>OpenCountry</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Coast_image_0030.jpg" width="75" height="75"><br><small>OpenCountry</small></td>
+</tr>
+<tr>
+<td>Mountain</td>
+<td>0.830</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Mountain_image_0342.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Mountain_image_0207.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Mountain_image_0066.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Mountain_image_0083.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Forest_image_0118.jpg" width="75" height="75"><br><small>Forest</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Store_image_0041.jpg" width="55" height="75"><br><small>Store</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Mountain_image_0030.jpg" width="75" height="75"><br><small>Coast</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Mountain_image_0075.jpg" width="75" height="75"><br><small>Suburb</small></td>
+</tr>
+<tr>
+<td>Forest</td>
+<td>0.910</td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Forest_image_0031.jpg" width="75" height="75"></td>
+<td bgcolor="LightBlue"><img src="./Recognition with Bag of Words_files/Forest_image_0172.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Forest_image_0142.jpg" width="75" height="75"></td>
+<td bgcolor="LightGreen"><img src="./Recognition with Bag of Words_files/Forest_image_0133.jpg" width="75" height="75"></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/Mountain_image_0100.jpg" width="75" height="75"><br><small>Mountain</small></td>
+<td bgcolor="LightCoral"><img src="./Recognition with Bag of Words_files/TallBuilding_image_0046.jpg" width="75" height="75"><br><small>TallBuilding</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Forest_image_0114.jpg" width="75" height="75"><br><small>OpenCountry</small></td>
+<td bgcolor="#FFBB55"><img src="./Recognition with Bag of Words_files/Forest_image_0128.jpg" width="75" height="75"><br><small>Street</small></td>
+</tr>
+<tr>
+<th>Category name</th>
+<th>Accuracy</th>
+<th colspan="2">Sample training images</th>
+<th colspan="2">Sample true positives</th>
+<th colspan="2">False positives with true label</th>
+<th colspan="2">False negatives with wrong predicted label</th>
+</tr>
+</tbody></table>
+</p></center>
+
+</div>
+
+
+</body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>

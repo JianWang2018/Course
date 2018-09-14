@@ -1,0 +1,211 @@
+
+<!-- saved from url=(0048)http://www.cc.gatech.edu/~hays/compvision/proj2/ -->
+<html xmlns="http://www.w3.org/1999/xhtml" class="gr__cc_gatech_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Project 2: Local Feature Matching</title>
+    <link href="./Project 2_ Local Feature Matching_files/style.css" rel="stylesheet" type="text/css">
+<style type="text/css" media="all">
+#primarycontent {
+    margin-left: auto;  
+    width: expression(document.body.clientWidth > 995? "995px": "auto" );
+    margin-right: auto;
+    text-align: left;
+    max-width: 995px 
+}
+</style><style type="text/css"></style></head>
+
+
+
+<body data-gr-c-s-loaded="true">
+<div id="primarycontent">
+
+<center>
+<img src="./Project 2_ Local Feature Matching_files/matches.jpg" width="935" height="605">
+<br>
+The top 100 most confident local feature matches from a baseline implementation of project 2. In this case, 93 were correct (highlighted in green) and 7 were incorrect (highlighted in red).
+</center>
+
+<h1> Project 2: Local Feature Matching<br>
+<a href="http://www.cc.gatech.edu/~hays/compvision/">CS 4476 / 6476: Computer Vision</a> 
+</h1>
+
+<h2>Brief</h2> 
+<ul> 
+  <li>Due: 11:55pm on Friday, September 23, 2016</li>
+  <li>Project materials including writeup template <a href="http://www.cc.gatech.edu/~hays/compvision/proj2/proj2.zip">proj2.zip (6.9 MB)</a>.</li>
+  <li>Additional scenes to test on <a href="http://www.cc.gatech.edu/~hays/compvision/proj2/extra_data.zip">extra_data.zip (194 MB)</a>.
+  </li><li>Handin: through <a href="http://t-square.gatech.edu/">t-square.gatech.edu</a> </li> 
+  <li>Required files: README, code/, html/, html/index.html</li> 
+</ul> 
+
+<h2>Overview</h2>
+
+<p>The goal of this assignment is to create a local feature matching algorithm using techniques described in Szeliski chapter 4.1. The pipeline we suggest is a simplified version of the famous <a href="http://www.cs.ubc.ca/~lowe/keypoints/">SIFT</a> pipeline. The matching pipeline is intended to work for <i>instance-level</i> matching -- multiple views of the same physical scene. 
+</p>
+<br>
+
+<h2>Details</h2>
+
+<p>
+For this project, you need to implement the three major steps of a local feature matching algorithm:
+</p>
+<ul> 
+  <li>Interest point detection in <code>get_interest_points.m</code> (see Szeliski 4.1.1)</li>
+  <li>Local feature description in <code>get_features.m</code> (see Szeliski 4.1.2)</li>
+  <li>Feature Matching in <code>match_features.m</code> (see Szeliski 4.1.3)</li>
+</ul> 
+
+<p>
+There are numerous papers in the computer vision literature addressing each stage. For this project, we will suggest specific, relatively simple algorithms for each stage. You are encouraged to experiment with more sophisticated algorithms!
+</p>
+
+<h2>Interest point detection (<code>get_interest_points.m</code> )</h2>
+<p>
+You will implement the Harris corner detector as described in the lecture materials and Szeliski 4.1.1. See Algorithm 4.1 in the textbook for pseudocode. The starter code gives some additional suggestions. You do not need to worry about scale invariance or keypoint orientation estimation for your baseline Harris corner detector.</p>
+
+
+<h2>Local feature description (<code>get_features.m</code>)</h2>
+<p>
+You will implement a SIFT-like local feature as described in the lecture materials and Szeliski 4.1.2. See the placeholder <code>get_features.m</code> for more details. If you want to get your matching pipeline working quickly (and maybe to help debug the other algorithm stages), you might want to start with normalized patches as your local feature.
+</p>
+
+<h2>Feature matching (<code>match_features.m</code>)</h2>
+<p>
+You will implement the "ratio test" or "nearest neighbor distance ratio test" method of matching local features as described in the lecture materials and Szeliski 4.1.3. See equation 4.18 in particular.</p>
+
+<h2>Using the starter code (<code>proj2.m</code>)</h2>
+<p>
+The top-level <code>proj2.m</code> script provided in the starter code includes file handling, visualization, and evaluation functions for you as
+ well as calls to placeholder versions of the three functions listed above. Running the starter code without modification will visualize random 
+interest points matched randomly on the particular Notre Dame images shown at the top of this page. The correspondence will be visualized with 
+<code>show_correspondence.m</code> and <code>show_correspondence2.m</code> (you can comment one or both out if you prefer).</p>
+
+<p>For the Notre Dame image pair there is a ground truth evaluation in the starter code, as well. <code>evaluate_correspondence.m</code> 
+will classify each match as correct or incorrect based on hand-provided matches (see <code>show_ground_truth_corr.m</code> for details). 
+The starter code also contains ground truth correspondences for two other image pairs (Mount Rushmore and Episcopal Gaudi). You can
+test on those images by uncommenting the appropriate lines in <code>proj2.m</code>.You can create additional ground truth matches with 
+<code>collect_ground_truth_corr.m</code> (but it's a tedious process)</p>
+<p>
+As you implement your feature matching pipeline, you should see your performance according to <code>evaluate_correspondence.m</code> increase. 
+Hopefully you find this useful, but don't <i>overfit</i> to the initial Notre Dame image pair which is relatively easy. The baseline algorithm suggested here 
+and in the starter code will give you full credit and work fairly well on these Notre Dame images, but additional image pairs provided in 
+<code>extra_data.zip</code> are more difficult. They might exhibit more viewpoint, scale, and illumination variation. 
+If you add enough Bells &amp; Whistles you should be able to match more difficult image pairs.</p>
+
+<h2>Suggested implementation strategy</h2>
+<p>
+It is suggested that you implement the functions in this order:
+</p><ul>
+<li>First, use <code>cheat_interest_points()</code> instead of <code>get_interest_points()</code>. This function will only work for the 3 image pairs with ground truth correspondence. This function cannot be used in your final implementation. It directly loads the 100 to 150 ground truth correspondences for the test cases. Even with this cheating, your accuracy will initially be near zero because the features are random and the matches are random.</li>
+
+<li>Second, implement <code>match_features()</code>. Accuracy should still be near zero because the features are random.</li>
+
+<li> Third, change <code>get_features()</code> to cut out image patches. Accuracy should increase to ~40% on the Notre Dame pair if you're using 16x16 (256 dimensional) patches as your feature. Accuracy on the other test cases will be lower (Mount Rushmore 25%, Episcopal Gaudi 7%). Image patches aren't a great feature (they're not invariant to brightness change, contrast change, or small spatial shifts) but this is simple to implement and provides a baseline.</li>
+
+<li> Fourth, finish <code>get_features()</code> by implementing a sift-life feature. Accuracy should increase to 70% on the Notre Dame pair, 40% on Mount Rushmore, and 15% on Episcopal Gaudi.  These accuracies still aren't great because the human selected  correspondences might look quite different at the local feature level. If you're sorting your matches by confidence (as the starter code does in <code>match_features()</code>) you should notice that your more confident matches (which pass the ratio test more easily) are more likely to be true matches.</li> 
+
+<li> Fifth, stop cheating and implement <code>get_interest_points()</code>. Harris corners aren't as good as ground-truth points which we know correspond, so accuracy may drop. On the other hand, you can get hundreds or even a few thousand interest points so you have more opportunities to find confident matches. If you only evaluate the most confident 100 matches (see the <code>num_pts_to_evaluate
+</code> parameter) on the Notre Dame pair, you should be able to achieve 90% accuracy. As long as your accuracy on the Notre Dame image pair is 80% for the 100 most confident matches you can receive full credit for the project.</li>
+</ul>
+<p>
+You will likely need to do extra credit to get high accuracy on Mount Rushmore and Episcopal Gaudi.
+<br>
+</p><p>
+</p><p>
+<b>Potentially useful MATLAB functions</b>: <code>imfilter(), fspecial(), bwconncomp(), colfilt(), sort(), atan2</code>.
+<br>
+<b>Forbidden functions</b> you can use for testing, but not in your final code: <code>extractFeatures(), detectSURFFeatures(), matchFeatures()</code>.
+</p>
+
+<h2>Writeup</h2>
+<p>
+For this project, and all other projects, you must do a project report in HTML. We provide you with a placeholder .html document which you can edit. In the report you will describe your algorithm and any decisions you made to write your algorithm a particular way. Then you will show and discuss the results of your algorithm.
+</p><p>
+In the case of this project, show how well your matching method works not just on the Notre Dame image pair, but on additional test cases. 
+For the 3 image pairs with ground truth correspondence, you can show <code>eval.jpg</code> which the starter code generates. For other image pairs, there is no ground 
+truth evaluation (you can make it!) so you can show <code>vis_dots.jpg</code> or <code>vis_arrows.jpg</code> instead. A good writeup will assess how 
+important various design 
+decisions were. E.g. by using SIFT-like features instead of normalized patches, I went from 70% good matches to 90% good matches. This is 
+especially important if you did some of the More Bells &amp; Whistles and want extra credit. You should clearly demonstrate how your additions 
+changed the behavior on particular test cases.
+</p>
+
+<h2>Extra Credit</h2> 
+<p>Students enrolled in 6476 are required to do 10 points worth of extra credit from the suggestions below in order to get full credit. 
+Extra credit beyond that can increase your grade over 100. The max score for all students is 110.
+</p><p>
+For all extra credit, be sure to include quantitative analysis showing the impact of the particular method you've implemented.  Each item is "up to" some amount of points because trivial implementations may not be worthy of full extra credit
+</p><p>
+Interest point detection extra credit:
+</p><ul>
+  <li>up to 5 pts: Try detecting keypoints at multiple scales or using a scale selection method to pick the best scale.</li>
+  <li>up to 5 pts: Try estimating the orientation of keypoints to make your local features rotation invariant.</li>
+  <li>up to 5 pts: Try the adaptive non-maximum suppression discussed in the textbook.</li>
+  <li>up to 10 pts: Try an entirely different interest point detection strategy like that of MSER. If you implement an additional interest point detector, you can use it alone or you can take the union of keypoints detected by multiple methods.</li>
+</ul>
+<p></p>
+
+<p>
+Local feature description extra credit:
+</p><ul>
+  <li>up to 3 pts: The simplest thing to do is to experiment with the numerous SIFT parameters: how big should each feature be? How many local cells should it have? How many orientations should each histogram have? Different normalization schemes can have a significant effect, as well. Don't get lost in parameter tuning, though.</li>
+  <li>up to 5 pts: If your keypoint detector can estimate orientation, your local feature descriptor should be built accordingly so that your pipeline is rotation invariant.</li>
+  <li>up to 5 pts: Likewise, if you are detecting keypoints at multiple scales, you should build the features at the corresponding scales.</li>
+  <li>up to 5 pts: Try  different spatial layouts for your feature (e.g. GLOH).</li>
+  <li>up to 10 pts: Try entirely different features (e.g. local self-similarity).</li>
+</ul>
+<p></p>
+
+<p>
+local feature matching extra credit:
+<br>
+An issue with the baseline matching algorithm is the computational expense of computing distance between all pairs of features. For a reasonable implementation of the base pipeline, this is likely to be the slowest part of the code. There are numerous schemes to try and approximate or accelerate feature matching:
+<br>
+</p><ul>
+  <li>up to 10 pts: Create a lower dimensional descriptor that is still accurate enough. For example, if the descriptor is 32 dimensions instead of 128 then the distance computation should be about 4 times faster. PCA would be a good way to create a low dimensional descriptor. You would need to compute the PCA basis on a sample of your local descriptors from many images.</li>
+  <li>up to 5 pts: Use a space partitioning data structure like a kd-tree or some third party approximate nearest neighbor package to accelerate matching.</li>
+</ul>
+<p></p>
+
+
+
+<h2> Rubric </h2>
+<ul> 
+   <li> +30 pts: Implementation of Harris corner detector in <code>get_interest_points.m</code></li>
+   <li> +40 pts: Implementation of SIFT-like local feature in <code>get_features.m</code></li>
+   <li> +10 pts: Implementation of "Ratio Test" matching in <code>match_features.m</code></li>
+   <li> +20 pts: Writeup with several examples of local feature matching.</li>
+   <li> +10 pts: Extra credit (up to ten points) You are welcome to implement any bells &amp; whistles. There is no mandatory portion of extra credit for graduate section for this project. Instead graduate students can pick any 10 points of extra credit to get full credit (and do 10 further extra credit points to get a max score of 110).</li>
+   <li> -5*n pts: Lose 5 points for every time (after the first) you do not follow the instructions for the hand in format </li>
+</ul>
+<br>
+
+<h2> Web-Publishing Results </h2>
+<p>
+All the results for each project will be put on the course website so that the students can see each other's results. The professor and TA will select impressive projects to highlight on the class website and in leture. If you do not want your results published to the web, you can choose to opt out. If you want to opt out, email a TA saying so.
+</p>
+<br>
+
+<h2> Handing in </h2>
+<p>
+This is very important as you will lose points if you do not follow instructions. Every time after the first that you do not follow instructions, you will lose 5 points. The folder you hand in must contain the following:
+</p>
+<ul>
+    <li> README - text file containing anything about the project that you want to tell the TAs</li>
+    <li> code/ - directory containing all your code for this assignment</li>
+    <li> html/ - directory containing all your html report for this assignment (including images). Only this folder will be published to the course web page, so your webpage cannot contain pointers to images in other folders of your handin.</li>
+    <li> html/index.html - home page for your results </li>
+</ul>
+<p>
+Hand in your project as a zip file through <a href="http://t-square.gatech.edu/">t-square.gatech.edu</a>.
+</p>
+
+<h2>Credits</h2>
+<p>Assignment developed by James Hays</p>
+
+</div>
+
+
+
+
+</body><span class="gr__tooltip"><span class="gr__tooltip-content"></span><i class="gr__tooltip-logo"></i><span class="gr__triangle"></span></span></html>
