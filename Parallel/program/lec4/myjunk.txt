@@ -1,0 +1,3 @@
+print to standard output1!!!
+print to standard output2!!!
+print to standard error!!!

@@ -1,0 +1,272 @@
+<META name="keywords" content="COMP 422 Parallel Computing">
+<META name="description" content="COMP 422 Parallel Computing: Assignment 4">
+<head>
+<title>
+COMP 422 Assignment 4
+</title>
+</head>
+
+
+<BODY>
+<table>
+  <tr>
+     <td><IMG align=left
+     SRC="http://www.cs.rice.edu/~johnmc/images/RiceLogo50072dpi.jpg"
+          WIDTH="300" ALT="Rice University"></td>
+     <td><fontsize large><b>
+         <table>
+           <tr><td><font size=6><b>COMP 422</b></font></td></tr>
+           <tr><td><font size=5><b>Parallel Computing </b></font></td></tr>
+           <tr><td><font size=5><b>Spring 2017</b></font></td></tr>
+           <tr><td><font size=5><b>Assignment 4</b> </font></td></tr>
+           <tr><td><font size=4><b>Complete by 11:59pm Wednesday, May 3, 2017</b></font></td></tr>
+           <tr><td><font size=4 style="color:red"><b>No
+	   slip days are allowed for this assignment. 
+           </b> </font></td></tr>
+           <tr><td><font size=4 style="color:red"><b>It is due at the
+	   last possible instant allowed by the registrar.
+           </b> </font></td></tr>
+           </table>
+           </td></tr>
+</table>
+
+<hr />
+
+
+<h2>Implementing a data-parallel bitonic sort using a GPU with CUDA</h2>
+
+<p>Lecture 20 discusses bitonic sorting. There is also a good introduction at <a
+href=http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm>
+http://www.iti.fh-flensburg.de/lang/algorithmen/sortieren/bitonic/bitonicen.htm</a>. In this
+assignment, you will use CUDA to implement a data-parallel sorting
+code using bitonic sort.
+<p>
+
+For this assignment, you will use <tt>davinci.rice.edu</tt> as the
+computational platform. Davinci contains 16 nodes equipped with GPU
+accelerators. 
+<p>
+An installation of CUDA 7.0 is available at
+<tt>/opt/apps/software/Compiler/GCC/4.4.7/CUDA/7.0.28</tt>.
+You can load a module that will put the compiler and debugger for that
+release on your path:
+<ul>
+<tt>module load CUDA</tt>
+</ul>
+Documentation for the CUDA 7.0 release is available on Davinci in
+<tt>/opt/apps/software/Compiler/GCC/4.4.7/CUDA/7.0.28/doc</tt>, as
+well as 
+on the 
+<a href=http://www.clear.rice.edu/comp422/resources/index.html#CUDA>COMP 422 resources page</a>.
+<p>
+For your assignment, you will want to make a copy of the
+CUDA <tt>samples</tt> directory, as follows:
+<ul>
+<tt>cp -r /projects/comp422/cuda-hw4 ${HOME}</tt>
+</ul>
+The 
+directory contains a very nice implementation of bitonic sort on a GPU
+from the CUDA 7.0 SDK. (A copy of the full SDK is available for you to
+peruse, copy, or play with in
+<tt>/projects/comp422/cuda-samples</tt>.)
+After performing the copy operation specified above, you will have a
+copy of this code in
+<tt>${HOME}/cuda-hw4/sortingNetworks</tt>.
+<p>
+There are two parts to the bitonic-sort implementation in this
+directory:
+<ul>
+<li>host code implemented in <tt>main.cpp</tt>, and 
+<li>a mixture of host and device code for the GPU in <tt>bitonicSort.cu</tt>. 
+</ul>
+The <tt>.cu</tt> suffix is used by the Nvidia CUDA compiler
+(<tt>nvcc</tt>). CUDA <tt>.cu</tt> files can
+contain a mixture of host and device code; the directives in the code
+tell the compiler whether to compile functions for the CPU host or the
+GPU device. 
+<p>
+The code in <tt>bitonicSort.cu</tt> implements a bitonic sort in
+two parts. The code first performs a collection of small-scale bitonic
+sorts by mapping them onto individual
+GPU streaming multiprocessors and then performs a larger-scale bitonic
+sort across all of the streaming multiprocessors. 
+The code generates a random sequence of 1M keys and
+values, copies them into the GPU, sorts them, and copies them back to the
+host. Then it checks the resulting sequence to make sure that it is in order. 
+<p>
+You can build the sorting code by simply typing 
+<ul>
+<tt>
+    make
+</tt>
+</ul>
+</ul>
+This will build an executable for the GPU. The executable
+will 
+be placed in the same directory and named as
+"<tt>sortingNetworks</tt>".
+<p>
+A limitation of this
+implementation is that it can only sort vectors of numbers that fit
+into the GPU all at once. Your assignment is to modify this
+implementation (both the host side and GPU side code)  
+to sort large vectors of integer values, <i
+style="color:red"> not (key, value) pairs</i>. You may generate the
+integers to be sorted using rand().
+You will need to copy the data in and out of the GPU in stages
+to acccomplish the assignment. 
+This will require
+understanding and modifying the existing GPU code as well as writing
+some host-side code.
+<p>
+To control the form of your solutions, I am imposing the following
+rules. 
+<ul>
+<li> You must use bitonic sort at all levels. Don't write a hybrid
+solution that simply uses host code to merge sequences that were sorted using
+bitonic sort on the GPU.  
+<li> All element comparisons for sorting and/or 
+merging must be performed on the GPU. This
+restriction will require that you write some GPU code rather than 
+host code only. 
+<li> Your verification code may perform element
+comparisons on the host.
+<li>
+The vector of numbers that you sort will be of length 2^k. k should
+be an input parameter. For timings, let k = 26. To evaluate your code,
+we will run it code with arbitrary values of 0 <= k <= 26.
+<li>You may only sort up to 1M elements on the
+GPU in a single bunch. The intent of the assignment is for you to
+perform bitonic sort by staging data in and out of the GPU in blocks.
+<li>The sample code sorts data of several sizes. Your submitted
+assignment should only generate and sort a single vector of the
+specified size. Delete code that is not relevant to your solution.
+</ul>
+NOTE: CUDA does not permit recursion, so the part of your solution
+that runs on the GPU will have to be in iterative form.
+
+<h2>Running CUDA jobs on DAVinCI</h2>
+You can edit and compile your code on any one of the login nodes on
+davinci. However, to run your code on the GPU hardware, 
+you need to use one of
+the compute nodes with GPGPU. You can use a GPGPU by submitting a
+SLURM job or acquiring a node in an interactive
+session. 
+<p>
+To secure a GPU node to run your job on, you can request an interactive session using:
+<ul>
+    <tt>srun --pty --export=ALL --nodes=1 --ntasks-per-node=1 --gres=gpu:1 --time=00:30:00 bash</tt>
+</ul>
+This will give you a shell that you can use for 30
+minutes to work with your code on the GPU.
+Please don't tie up the GPU unless you are actively debugging.
+<p>
+See the documentation on Using DAVinCI under the tab "Submitting Jobs" for more information about using SLURM. Below is a sample SLURM batch script that you can launch with sbatch.
+<ul>
+    <tt>
+        #!/bin/bash<br>
+        #SBATCH --job-name=bitonicsort<br>
+        #SBATCH --nodes=1<br>
+        #SBATCH --ntasks-per-node=1<br>
+        #SBATCH --gres=gpu:1<br>
+        #SBATCH --time=00:15:00<br>
+        #SBATCH --export=ALL<br>
+        srun ./sortingNetworks<br>
+    </tt>
+</ul>
+<p>
+Save it in a file sort.sbatch and then launch it as
+<ul>
+    <tt>
+    sbatch sort.sbatch
+    </tt>
+</ul>
+<p> This will run the "<tt>sortingNetworks</tt>" executable over one GPU. As you know, the queue status can be checked by running the squeue command on DAVinCI.
+
+<p> <i style="color:blue">I will arrange with
+the CRC to reserve a few GPU nodes for 422 students and have a
+reservation that you can use to submit jobs.  I will post
+instructions about how to use the reservation as soon as it is available. 
+</i>
+
+<h2>Debugging your GPU code</h2>
+You can use <tt>cuda-gdb</tt> to debug your code. 
+To debug your code with the <tt>cuda-gdb</tt> debugger, your code must
+first be compiled for 
+debugging. To build a debug version of your code, type
+<tt>
+<ul>
+make clean
+<br>
+make dbg=1
+</ul>
+</tt>
+<p>
+The debug executable will be placed in the same directory
+<p>
+After you execute the command 
+<br>
+<ul>
+<tt>module load CUDA</tt> 
+</ul>
+<tt>cuda-gdb</tt> will be on your path.
+If you know how to use <tt>gdb</tt>, you will find that
+<tt>cuda-gdb</tt> works much the same. You can set breakpoints in GPU
+kernels as well as host code and inspect variables just as you would
+using <tt>gdb</tt>.
+<i style="color:blue">Note: To run <tt>cuda-gdb</tt>, you must be
+running in interactive mode on a gpu node on
+<tt>davinci</tt>.</i>
+See the <a
+href=https://www.clear.rice.edu/comp422/resources/cuda/pdf/cuda-gdb.pdf>CUDA
+gdb manual</a> 
+for detailed information about how to use <tt>cuda-gdb</tt>.
+<h2>Submitting your Assignment</h2>
+Your assignment submission should include:
+<ul>
+<li>A copy of the sortingNetworks directory that containing your modified
+source files and a Makefile. Please don't submit .o files and your executable.
+</li>
+<li>Your writeup. See the Grading Criteria below for notes about the
+expected content of your writeup.
+</li>
+</ul>
+Submit your assignment using turnin by 11:59pm Wednesday, May 3, 2017.
+<h2>Grading Criteria</h2>
+<ul>
+<li>
+10% Program correctness. 
+</li>
+<li>
+40% Program clarity, elegance and parallelization. Your code should
+be well-documented internally with comments.
+</li>
+</li>
+<li>
+50% Writeup. 
+<i style="color:red">For this assignment,
+your writeup is a larger part of your grade. I want you to explain not
+only the parts of the bitonic sorting code that you implemented, but
+also explain the workings of the existing components that you use.
+Explain how what is there works. Does it employ all of the multiprocessors?
+Does it keep threads in a block busy? How and why does it make use of shared
+memory?</i>
+Time how long it takes to perform your sort for <b style="color:red">k =
+26</b> and report that in your
+writeup. Make sure that the version you use for timing is the
+executable compiled without debugging support. 
+Beyond the content, your grade on the writeup will also 
+depend upon the quality of your
+writing (grammar, sentence structure) and the clarity of your explanations. 
+</li>
+</ul>
+<hr />
+<br>
+13 April 2017  - posted<br>
+30 April 2017  - change deadline to 11:59pm<br>
+<!---
+<i style="color:blue">11:30am 24 April 2016  - updated with information in blue about a reservation.</i>
+<br>
+---!>
+</body>
+</html>

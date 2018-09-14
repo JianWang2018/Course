@@ -1,0 +1,358 @@
+<META name="keywords" content="COMP 422 Parallel Computing">
+<META name="description" content="COMP 422 Parallel Computing: Assignment 3">
+<head>
+<title>
+COMP 422 Assignment 3
+</title>
+</head>
+
+
+<BODY>
+<table>
+  <tr>
+     <td><IMG align=left
+     SRC="http://www.cs.rice.edu/~johnmc/images/RiceLogo50072dpi.jpg"
+          WIDTH="300" ALT="Rice University"></td>
+     <td><fontsize large><b>
+         <table>
+           <tr><td><font size=6><b>COMP 422</b></font></td></tr>
+           <tr><td><font size=5><b>Parallel Computing </b></font></td></tr>
+           <tr><td><font size=5><b>Spring 2016</b></font></td></tr>
+           <tr><td><font size=5><b>Assignment 3</b> </font></td></tr>
+           <tr><td><font size=4><b>Complete by
+	   5pm Friday, April 14, 2017</b></font></td></tr>
+           </table>
+           </td></tr>
+</table>
+
+<hr />
+
+
+<h2>2.5D Matrix Multiplication using MPI</h2>
+
+<p>
+Matrix multiplication is a binary operation performed on a pair of
+matrices A, rank M x N, and B, rank N x P, resulting in a matrix C,
+rank M x P. In matrix multiplication, the element-wise products from a
+row of elements from A, and a column of elements from B are summed to
+generate an element of matrix C. Two popular methods to perform
+parallel matrix
+multiplication on a distributed memory system, namely, Cannon's
+algorithm and 3D matrix multiplication, were described in class.
+
+<p>
+For this assignment, you will implement the 2.5D version of matrix
+multiplication using MPI. You should refer to the technical report
+entitled 
+<a href="http://www.eecs.berkeley.edu/Pubs/TechRpts/2011/EECS-2011-10.pdf"> 
+Communication-optimal parallel 2.5D matrix multiplication and
+LU factorization algorithms</a> by Solomonik et. al. for complete information on this algorithm.
+Communication avoiding algorithms are a hot topic - their development
+was an accomplishment highlighted in President Obama's FY 2012 Department
+of Energy Budget Request to Congress.
+
+<p> <em>Summary of the 2.5D algorithm</em> to get you started: 2.5D
+matrix multiplication algorithm, originating from UC Berkeley, reduces
+communication bandwidth consumed and exposed latency in matrix
+multiplication by maintaining a total of 'C' replicas of the input
+matrices A and B on a 3D grid of processors, P in total, of dimension
+sqrt(P/C) x sqrt(P/C) x C. Initially, a single copy of the A, B
+matrices is broken into chunks, and distributed among the processors
+on the front face of this grid. Through a series of broadcasts, and
+point-to-point communications, these chunks are then distributed to
+different processors. Each processor in the grid performs a matrix
+multiplication on the chunks of A and B received, and a final phase of
+reduction produces the result, C, matrix on the front face of the
+grid.  <p> You can write your program in C, C++, or Fortran with MPI
+communication. You should use MPI collective communication where
+appropriate.
+
+<p> 
+To evaluate the performance of your implementation, perform the following experiments:
+<ul>
+<li>
+Square matrices A, B, C of dimension N x N where N=7500. Your program
+should be run with MPI ranks counts for appropriate values between 1-64.
+Not all core counts 1-64 make sense for this algorithm.
+Determine an appropriate value of 'C' appropriately for each 
+feasible core count. 
+</li>
+</ul>
+<p>
+As with your previous assignment, randomly generate the input
+matrices. I recommend that you use drand48; see its man page for
+details how to use it. 
+<p>
+You will run your MPI program on DAVinCI's compute nodes and measure its performance and
+scalability. Instructions how to do this with SLURM are given
+later on this page. Your program should measure the elapsed time of your
+multiplication phase, which means DO NOT include the matrix
+initialization or answer verification. <i style="color:red">You can use
+the code <a href=mmverify.c>here</a> as a guide for constructing a verification test
+that your matrix multiply is computing the correct answer. You may include any of the code in the attached file in
+your assignment.</i> 
+
+As part of your
+experimentation, you are required to collect a message trace and
+visualize it with <code>jumpshot</code>. (Details about collecting
+traces and visualizing them using <code>jumpshot</code> on DAVinCI are provided in the next section.)
+
+<h2> Using HPCToolkit (COMP 534 students)</h2>
+As part of your
+experimentation, you are required to use HPCToolkit to measure and 
+visualize your code performance. Use the -g option (along with
+optimization) when you compile your program so that the compiler
+augments your executable with information about how to relate its machine 
+code back to your source code. You can collect information about 
+where the application spends its time by collecting a trace using 
+<ul>
+srun -n <your rank count> hpcrun -e REALTIME@1000 -t ./multiply 7500
+</ul>
+You should use hpcstruct to analyze your executable which gathers
+information about how to attribute performance measurements back to
+your source code. 
+<ul>
+hpcstruct multiply 
+</ul>
+To attribute your performance measurements back to the source program,
+run
+<ul>
+hpcprof -S multiply.hpstruct <your hpctoolkit-measurement directory>
+</ul>
+You can examine the profile from the parallel run with hpcviewer and
+visualize the trace with hpctraceviewer.
+<p>
+To collect more detailed information about the compute performance of
+your application, you can use hardware performance counters to measure
+machine instructions completed, cycles, cache misses, and more. See
+the <a href=http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>HPCToolkit
+User's Manual</a> for additional information.
+
+<h2>Preparing your Report</h2>
+<p>
+Write a document that describes how your program works. Along with describing your performance results as required above, please answer the following questions:
+<ul>
+<li>
+Explain the bandwidth and latency lower bounds achieved by the 2.5D matrix multiplication algorithm.
+</li>
+<li>
+If your program uses collective communication, explain how; if not, explain why not. 
+</li>
+<li>
+Your report should include a screenshot an interesting segment of
+<code>jumpshot</code>'s timeline visualization of your program, along with a description of what you learned from it about your parallelization.
+</li>
+<li>
+COMP 534 students: Your report should include at least one interesting
+hpcviewer screenshot and one hpctraceviewer screenshot, along with a
+discussion of what they indicate about the performance of your
+application.
+</ul>
+
+<h2> Using MPI on DAVinCI</h2>
+
+<p>
+General information about MPI and links to online documentation 
+can be found on the 
+<a href=http://www.clear.rice.edu/comp422/resources/index.html>COMP 422
+Resources Page</a>. 
+For helpful details explaining how to develop and debug your programs, 
+see the <a
+href=https://docs.rice.edu/confluence/display/ITDIY/Getting+Started+on+DAVinCI>
+Getting Started on DAVinCI</a> FAQ.
+This FAQ contains information about how to compile your MPI program, run using srun,
+and submit your job to the batch queueing system using SLURM. 
+
+<p>
+There are several MPI implementations on DAVinCI.
+You should use the
+<code>OpenMPI</code>
+library. 
+
+<p>
+Compile and link your program using mpiXX,
+where XX is either cc, CC, or f77 for C, C++, or Fortran 77 code
+respectively. The mpiXX script will use the compiler loaded with
+your "module load openmpi" command. For example,
+<code>module load gcc OpenMPI</code> will use gcc, where as
+<code>module load icc OpenMPI</code> will use icc. If you do not specify
+any compiler in "module load openmpi" then it will use gcc by default.
+The mpiXX script will also provide the include
+path for the MPI include files and automatically add the proper MPI
+libraries when it links your executable.
+
+<p>
+I recommend editing your code on a login node to avoid
+the surprise of having your editor be killed as your interactive
+session on the compute node expires. 
+I also recommend compiling your code on the login nodes rather than
+the compute nodes. 
+When compiling your MPI program with the MPI wrappers scripts for the Intel
+compilers, you may see the error
+<ul>
+<tt>
+/opt/apps/intel/2013.1.039/lib/intel64/libimf.so: warning: warning:
+feupdateenv is not implemented and will always fail
+</tt>
+</ul>
+This error is harmless. Don't worry about it.
+
+
+To run
+an MPI program, you need to use the compute nodes. See the information
+below about using SLURM to run your job on a set of compute nodes.
+<p>
+To monitor the message passing communication of your MPI programs, you
+will use the MPE tools. To do so, you will need to add 
+/projects/comp422/pkgs/MPE/bin to your PATH variable so you can use
+these tools. To collect a communication trace,
+instead of compiling and linking your MPI program with <tt>mpicc</tt>,
+use <tt>mpecc</tt>. This script is like <tt>mpicc</tt>, but it
+contains a library that provides support for message tracing.
+Use the -mpilog option when you compile with <tt>mpecc</tt> to turn on
+message tracing. When you do that,
+your executable will record a trace of MPI communication  when it is
+executed. I recommend that you collect a communication trace on 16 or more 
+processors so that you get a sense of how the execution will scale.
+If your program is named <tt>multiply</tt>. The 
+communication trace for <tt>multiply</tt> will be recorded in a
+file named <tt>multiply.clog2</tt>. You will use the
+<code>jumpshot</code> 
+tool to examine the 
+MPI communication trace from your program. The <code>jumpshot</code>
+executable is installed in the <tt>openmpi</tt> module.  When you run
+<ul>
+<tt>jumpshot multiply.clog2</tt>
+</ul>
+<tt>jumpshot</tt> will prompt you to convert
+the clog2 file to slog2 (a scalable format display format used by
+<tt>jumpshot</tt>). Click the convert button and then click
+the OK button. <tt>jumpshot</tt> will then bring up a timeline view that shows
+how the computation and communication unfold as your program
+executes. (Time proceeds left to right.)
+If traces for the 7500x7500 problem are too large, you can
+trace a smaller problem size. A manual for <code>jumpshot</code> is available in <a
+href=ftp://ftp.mcs.anl.gov/pub/mpi/slog2/js4-usersguide.pdf>PDF</a>
+or <a
+href=http://www.mcs.anl.gov/research/projects/perfvis/software/viewers/jumpshot-4/usersguide.html>HTML</a>.
+
+<h2>
+Using SLURM on DAVinCI
+</h2>
+While you can write your program on one of the login nodes on DAVinCI,
+you must run your experiments on the compute nodes using the SLURM job manager. 
+You can obtain an interactive session for debugging your program by requesting
+an interactive session in the "interactive" queue.
+I recommend using queue "interactive" for development on 1 or 2
+nodes and then submitting timing experiments to the default "compute"
+queue. For faster turnaround, you can also try the "scavenge" queue.
+Specifying a realistic bound for the running time of your
+application will accelerate your
+progress through the queue. The more time you ask for, the longer you
+will probably wait in the queue. However, if you don't ask for enough,
+your job may be killed before it completes if your execution time
+exceeds the amount you requested. Ask for enough, but not too much.
+<p>
+You can obtain a pair of nodes to run your job on by requesting an interactive session using
+<ul>
+<tt>
+srun --pty --export=ALL --nodes=2 --ntasks-per-node=2 --mem=1G --time=00:30:00 bash
+</tt>
+</ul>
+<p>
+See the documentation on Using DAVinCI under the tab "Submitting Jobs"
+for more information about using SLURM. 
+Below is a sample SLURM batch script that you can launch
+with sbatch. 
+<ul>
+<tt>
+#!/bin/bash<br>
+#SBATCH --job-name=multiply<br>
+#SBATCH --nodes=4<br>
+#SBATCH --ntasks-per-node=2<br>
+#SBATCH --exclusive<br>
+#SBATCH --time=00:30:00<br>
+#SBATCH --export=ALL<br>
+<br>
+module load OpenMPI<br>
+<br>
+# The command below will run your program on the number of nodes with
+<br>
+# the number of MPI tasks per node as specified above (in this case total 8 MPI ranks).
+<br>
+srun ./multiply 7500
+<br>
+# The following command lets you specify the total number of MPI ranks the program will run on.
+<br>
+# Here your program will run on 4 MPI ranks.
+<br>
+srun -n 4 ./multiply 7500
+</tt>
+</ul>
+
+Save it in a file multiply.sbatch and then launch it as
+<ul>
+<tt>
+sbatch multiply.sbatch
+</tt>
+</ul>
+
+The sample batch script runs the multiply program twice with different
+numbers of MPI ranks. As shown above, your script 
+can use <code>srun</code> several times to run multiple experiments within a
+single script. While the number of tasks you request with the
+--nodes and --ntask-per-node line of your script will be the maximum number of tasks that
+you can run on, you can also use <code>srun</code> to use a subset of the tasks
+that the script secures for you. As shown in the second
+invocation of <code>srun</code>, you can then use the
+-n option to specify the total number of MPI ranks. The total number of ranks
+specified using -n must be less than or equal to the number of nodes
+requested by your script using --nodes option times the argument you specify for --ntasks-per-node.
+
+
+
+
+<p>
+The queue status can be checked by running the squeue command on DAVinCI.
+
+<h2>Submitting your Assignment</h2>
+You will use  "turnin" to submit your assignment.
+See IT's <a href=https://docs.rice.edu/confluence/x/qAiUAQ>
+turnin documentation</a> for details about how
+to submit your assignment with turnin.
+
+<p>Your submission using turnin should contain:
+<ul>
+<li>
+a directory containing the code for your MPI program and a Makefile
+to build the code, and
+</li>
+<li>a writeup about your programs in either Word or PDF format (PDF
+preferred).
+</li>
+</ul>
+Your assignment should be submitted via turnin prior to the submission
+date and time specified above or it will be subject to the policy on late work.
+<h2>Grading Criteria</h2>
+<ul>
+<li>
+10% Program correctness. 
+</li>
+<li>
+40% Program clarity, elegance and parallelization. The programs should
+be well-documented internally with comments.
+</li>
+<li>
+10% Program scalability and performance.
+</li>
+<li>
+40% Writeup. Your grade on the writeup includes the quality of the
+writing (grammar, sentence structure), whether all of
+the required elements are included, and the clarity of your explanations. 
+</li>
+</ul>
+<hr />
+</body>
+25 March 2017 - initial version posted.<br>
+10 April 2017 - capitalized -S in hpcprof
+</html>

@@ -1,0 +1,45 @@
+  for (i=0 ;i<N; i++)  
+    for (j=0 ;j<N; j++) {
+      c[i][j] = 0;
+      a[i][j] = drand48();
+      b[i][j] = drand48();
+    }
+
+
+
+  for (i=0; i<N; i++) 
+    for (j=0; j<N; j++) 
+      for (k=0; k<N; k++) c[i][j] = c[i][j] + a[i][k]*b[k][j];
+
+
+  for (i=1; i<=NN+1; i++) {
+    x[i][0] = a5*i;
+    x[i][0] = a5*i;
+
+    x[i][NN+1] = a6*i;
+    x[i][NN+1] = a6*i;
+
+    x[NN+1][i] = 0.0;
+    x[NN+1][i] = 0.0; 
+
+    y[NN+1][i] = 0.0;
+    y[NN+1][i] = 0.0; 
+  }
+
+    maxdiff1 = -1.0;
+    for (i=1; i <= NN; i++) 
+      for (j=1; j <=NN; j++) {
+        y[i][j] = a1*x[i-1][j] + a3 * x[i+1][j] +
+                     a2*x[i][j-1] + a4 * x[i][j+1];
+        if (myabs(y[i][j] - x[i][j]) > maxdiff1)
+          maxdiff1 = myabs(y[i][j] - x[i][j]);
+      }
+
+  for (i=0; i<1000; i++) {
+    c[i] = c[i-1]+1.0;
+
+
+    for (i=1; i <= NN; i++) 
+      for (j=1; j <=NN; j++) {
+        x[i][j] = a1*x[i-1][j] + a3 * x[i+1][j] +
+                     a2*x[i][j-1] + a4 * x[i][j+1];

@@ -1,0 +1,166 @@
+
+<!-- saved from url=(0114)https://campus.fsu.edu/bbcswebdav/pid-8355806-dt-content-rid-48814461_2/courses/COP5570-0001.fa16/proj1%281%29.htm -->
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" class="gr__campus_fsu_edu"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="en-us">
+
+<meta name="GENERATOR" content="Microsoft FrontPage 12.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Project 1</title>
+</head>
+
+<body data-gr-c-s-loaded="true">
+
+<p align="center"><font size="4"><b>Project 1: A Simplified Unix Shell Program</b></font></p>
+<p align="center"><font size="4"><b>Due: 10/13/2016</b></font></p>
+<hr>
+<p align="left" style="margin-bottom: 0"><b>Project Statement</b>: Develop a
+simplified version of Unix Shell program</p>
+<p align="left" style="margin-bottom: 0"><b>Project Objectives</b>: Practicing
+Unix system calls, understanding Unix process management, synchronization, and inter-process
+communication (IPC)</p>
+<p align="left"><b>Project Description</b></p>
+<p align="left">In this project, you will develop a simplified version of Unix
+Shell or a command line interpreter such as sh or bash. When your shell starts, 
+it should print a
+dollar sign ($) and a space to the standard output terminal, and then wait for input from the user. You can
+assume each input line from the user will have no more than 80 characters. At 
+the minimum, your shell should meet the following requirements.</p>
+<ul>
+	<li>
+	Your shell should support four built-in commands
+    "exit", "cd", and "pwd", and "set".<ul>
+		<li>exit: terminate the shell</li>
+		<li>cd: change the current working directory. Syntax: cd dir. dir is the 
+		directory where the user wants to change to. If dir starts with a slash 
+		(/"), dir is an absolute path. Otherwise, dir is a path related to the 
+		current directory.</li>
+		<li>pwd: print the absolute path of the current working directory</li>
+		<li>set: set the value of the environment variables. You only need to 
+		support one environment value MYPATH, which is the search path for the 
+		external command you implement (see below). Syntax: set 
+		MYPATH=path1:path2...</li>
+	</ul>
+	</li>
+	<li>
+	Your shell should also terminate if end of file character (CTRL-D) is 
+	encountered.</li>
+	<li>
+	Your shell should implement one external commands "myls"<ul>
+		<li>myls: list files under a directory. The output format should be 
+		similar to "ls -l".</li>
+		<li>For this command, you cannot simply call exec and pass in&nbsp; ls to implement 
+		it. Instead, you must implement this command via file and directory access 
+		functions. In order for your shell to locate this command, it will 
+		search the MYPATH variable. That is, in order to run the command myls, 
+		one needs to put myls under 
+		certain directory and set up MYPATH properly.</li>
+	</ul>
+	</li>
+	<li>
+	Your shell should support all existing external commands in the system (i.e., executable programs 
+	that can be found in one of the search path contained in environment 
+	variable PATH). For these commands, you can call "exec" functions.</li>
+	<li>
+		Your shell should support pipes, e.g, command1 | command2 |
+    command3 | command4. If it is needed, you can assume a maximum number of pipes
+    in any command line. However, it should be greater than
+    1. Note that commands may have parameters.</li>
+	<li>
+		Your shell should support I/O redirections, e.g. command1 &lt; file1, or 
+	command1 &gt; file1, or command1 &lt; file1 &gt; file2.</li>
+	<li>
+		Your shell should support a simple form of background processes, that is,
+    commands followed by an ampersand (&amp;). We do not require a full support 
+		of background processes, but you are more than welcome to do so (see 
+		below).</li>
+	<li>
+		You can assume that pipe and I/O redirection will not appear
+    together in any command line. You can also assume that pipe and background 
+		process will not appear together in any command line.</li>
+	<li>
+		Your shell does not need to support any other special
+    characters (in particular, special character expansion such as *).</li>
+	<li>
+	You cannot use the "system()" function (system
+    call).  
+	</li>
+</ul>
+<p align="left"><b>Notes on Project Requirements</b></p>
+<ul>
+	<li>
+	<p align="left">For "myls", the output should be as close to the 
+	"ls -l" as possible. There are a number of items that are 
+	harder to obtain than others. You are not required to output them as same as 
+	the Unix command.</p>
+	</li>
+	<li>
+	<p align="left">For the background process, you can decide to what degree 
+	you want to support background process. You can support background process 
+	as same as the Bourne shell (which does not support job control), or as same 
+	as bash (which supports job control). However, as a minimum requirement, your implementation of background process 
+	must let your shell proceed to print the next prompt so that users can 
+	input the next command, without waiting for the background process(es) to 
+	finish. A particular problem you need to pay attention to is that, whatever 
+	user types after the next shell prompt is printed is the input to the shell, 
+	not to the background process (if it also reads from standard input). 
+	Depending on if your shell really support job control, the way to handle 
+	this situation is different. You need to do a bit research on this.<br>
+	</p>
+	</li>
+	<li>
+	<p align="left">You cannot create any (long-term) zombie processes. For 
+	example, you cannot keep a terminated child process in the process table 
+	until your shell terminates. Points will be 
+	deducted if you have any (long-term) zombie processes running. That is, your shell must 
+	handle properly when a child process terminates.</p>
+	</li>
+</ul>
+<p align="left"><b>Grading Policy</b></p>
+<p align="left">A program with compiling errors will get 0 point. A program 
+containing "system()" function will get 0 point. Total points: 130.</p>
+<ol>
+  <li>
+    proper README file (5)</li>
+	<li>
+    	proper makefile file (5)</li>
+	<li>
+    built-in commands "exit", "cd", "pwd", "set". Terminating shell when 
+	end-of-file is encountered (15)</li>
+	<li>
+    running single command (with and without parameters) on a
+    command line (20)</li>
+	<li>
+    	running multiple piped commands ("|") (20) </li>
+	<li>
+    	allowing background execution (command line with &amp;) (20)</li>
+	<li>
+    	allowing I/O redirection in a command ("&lt;" and
+    "&gt;") (20)</li>
+	<li>
+    	your own external command "myls" (20)</li>
+	<li>
+    	code readability (5)</li>
+</ol>
+<p align="left"><b>Project Submission</b></p>
+<p align="left">Project must be submitted online via the blackboard. Tar your
+readme file, makefile, all source code files into a single tar file. Make sure
+that you tar files successfully (you can check the content of the tar file by running
+"tar -tvf tar_file"). You are responsible for empty tar file or wrong 
+tar file submitted,
+and late penalty will apply if you need to re-submit after the deadline.</p>
+<p align="left">The readme file should at least contain the following 
+information: functions that your shell supports, limitations that your shell may 
+have. Any particular way to run your program or commands in your shell.&nbsp; </p>
+<p align="left"><b>Hints</b></p>
+<p align="left">Make sure your shell can terminate properly when end-of-file is
+encountered. We may test your shell by passing (i.e., redirect) to it a file
+containing a sequence of command lines. </p>
+<p align="left">Read the manual page of your favorite shell such as bash, sh, or 
+csh to have a better understanding on how a shell works, in particular, built-in 
+commands and external commands. Also, observe how they support pipe and 
+background process by running some commands.</p>
+
+
+
+
+</body></html>

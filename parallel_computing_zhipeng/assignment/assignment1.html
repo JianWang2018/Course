@@ -1,0 +1,400 @@
+<META name="keywords" content="COMP 422 Parallel Computing">
+<META name="description" content="COMP 422 
+Parallel Computing Assignment 1">
+
+
+
+<head>
+<title>
+COMP 422 Assignment 1
+</title>
+</head>
+
+
+<BODY>
+<table>
+  <tr>
+     <td><IMG align=left 
+     SRC="http://www.cs.rice.edu/~johnmc/images/RiceLogo50072dpi.jpg"
+     WIDTH="300" ALT="Rice University"></td>
+     <td><fontsize large><b>
+         <table>
+           <tr><td><font size=6><b>COMP 422</b></font></td></tr>
+           <tr><td><font size=5><b>Parallel Computing </b></font></td></tr>
+           <tr><td><font size=5><b>Spring 2017</b></font></td></tr>
+           <tr><td><font size=5><b>Assignment 1</b> </font></td></tr>
+           <tr><td><font size=4><b style="color:red">Due: 1:00pm Tuesday, February 14</b></font></td></tr>
+           <tr><td><font size=4 style="color:red">Please review the
+	   policies on misconduct and late work in the <a
+	   href=../info.html>course syllabus</a>
+	   before you begin the
+	   assignment.</font></td></tr>
+           </table>
+           </td></tr>
+</table>
+
+<br clear=all />
+<hr />
+<h2> Parallel Exploratory Search</h2>
+<p>
+Othello (also known as Reversi) is a strategy game played on an 8 x 8 gameboard.
+The rules to the game and a brief explanation of strategy issues 
+are available on the Wikipedia page for 
+<a href=http://en.wikipedia.org/wiki/Reversi>Reversi</a>.
+There is an <a href=http://www.mathsisfun.com/games/reversi.html>
+online version of the game</a> that you can play
+to familiarize yourself with the game.
+<b>A sequential program that enables two human players to play Othello is
+included <a href=othello.c>here</a>. You may use this program as you
+see fit to get a jump start on your assignment. 
+You may include any or all of the provided code in your submitted
+program.
+Feel free to use
+the code directly as the basis for your parallel solution.</b> 
+Some of you may be uncomfortable with the board representation
+that I have chosen using bits of a 64-bit integer. If so, you may prefer to
+rewrite the code using a 64-element array of characters as the board
+representation. While this is less compact, it is equally acceptable.
+If you would find it more intuitive to develop your own solution from scratch
+rather than building upon the code that I provided, that is fine as
+well, but not necessary.
+<p>
+Write a shared-memory parallel program in Cilk Plus that enables 
+the computer to play the
+game. Implement the computer player as a parallel function that plays
+Othello/Reversi by searching <em>n</em> moves ahead to select the "best
+board position" for its move. For example, searching 1 move ahead for
+Player 1 means selecting best legal move for Player 1 based only on 
+comparing the board states that would result from any of the possible 
+legal moves for Player 1. Searching 2
+moves ahead for Player 1 means selecting the move that would result in the best
+board position after Player 1's move followed by Player 2's best
+move. This process of considering alternating 
+moves generalizes naturally to consider lookaheads of <em>n</em> moves.
+Note that if one player cannot move, his opponent can move again if 
+any legal moves remain; your search should account for this accordingly.
+You will want to use a version of the <a
+href=http://en.wikipedia.org/wiki/Minimax>minimax algorithm</a> to
+choose the best move.
+<b>Note:</b> Constructing a sophisticated board evaluator to compute
+the best strategic move is beyond the scope of the assignment. A simple
+board evaluator that computes the best move by maximizing the difference between the number of your disks and the number of the opponents disks on the board
+will suffice.
+<p>
+Unless you specifically design your program to be deterministic,
+the sequence of moves the computer player performs will be
+unpredictable. You are required to use a Cilk Plus reducer to enforce determinism in
+your program by using it to deterministically select a move 
+from the set of one or more moves with the best score. 
+The <a href=https://software.intel.com/en-us/node/684236>Intel
+Cilk Plus Programmer's Guide</a> describes reducers and how to work with
+them. The example in directory
+<tt>/projects/comp422/cilkplus-examples/sum</tt>
+and the comments in the reducer include files in 
+<tt>/opt/apps/software/Core/icc/2015.2.164/include/cilk</tt>
+on davinci.rice.edu should be helpful in understanding how to use reducers
+or write a custom reducer. You can use a provided reducer or write
+a custom reducer.
+If you want to write a custom reducer, you can 
+parameterize a <tt>cilk::reducer_max</tt> template.
+<p>
+<h3>Input specification</h3>
+<ul>
+<li> The program should prompt for the user to enter an 'h' or 'c' to
+specify if player 1 is a human or computer player.
+</li>
+<li> If player 1 is a computer player, it should prompt for an
+integer between 1 and 60 that specifies its search depth.
+</li>
+<li> The program should prompt for the user to enter an 'h' or 'c' to
+specify if player 2 is a human or computer player.
+</li>
+<li> If player 2 is a computer player, it should prompt for an
+integer between 1 and 60 that specifies the search depth (the number
+of moves ahead the computer should explore when chosing its move).
+</li>
+</ul>
+The sample input file given <a href=sample-input-assignment1.txt>here</a> 
+specifies that the computer will play both sides of the game and
+that each player will search seven moves ahead to select where to place
+its disk.
+<br>
+
+<h3>
+Output specification
+</h3>
+Given an input file as specified above for two computer players, 
+the program should run to completion. When the program begins, it
+should
+print the initial game board configuration. After each move, the
+program should print the 'row,column' position of the move, 
+specify which disks were flipped,
+indicate how many disks were flipped, and reprint the game board. At the
+end of the game, the program should print out the final game board, the total
+number of disks for each player, and announce the winner. 
+</ul>
+<br>
+<h3>Experiments</h3>
+<ul>
+<li>
+Your submitted
+program should be free of data races. 
+Cilk Plus's <tt>cilkscreen</tt> tool uses binary rewriting to instrument
+your executable to check itself for data races as it runs.
+Running your program with <tt>cilkscreen</tt> at the front of the command
+line will check an execution for data races.
+If <tt>cilkscreen</tt> reports races, make sure that you 
+compile your program with the <tt>-g</tt>
+flag and run it again. (Executables compiled with <tt>-g</tt> have
+more detailed race reports, which will help you identify the
+references involved in the data races.)
+</li>
+<br>
+<li> Compile your program using -O2 optimization. All of the execution
+measurements described below should be performed with this version of
+your executable.</li>
+<br>
+<li>
+Cilk Plus's <tt>cilkview</tt> tool uses binary rewriting to instrument
+your program to profile its parallelism. 
+<tt>cilkview</tt> will report the total amount of work in your program, the critical path length, the average parallelism, as well other measures such as the total number of stack frames, spawns, and syncs. 
+The input file provided above will
+direct your program to have the computer play for each player with a
+lookahead depth of seven. 
+Construct variants of the provided input to have each computer
+player use matching lookahead depths ranging from 1-6. For each lookahead
+depth 1-7, use <tt>cilkview</tt> to profile your program and record
+your measurements. Include the measurements results 
+from <tt>cilkview</tt> in your report in a table.
+</li>
+<br>
+<li>
+<font size=4 style="color:red">COMP 534 Only: </font>Use the <tt>hpctoolkit</tt> to determine 
+where your program is spending the majority of its time. As described
+at the bottom of the assignment, grading of programs
+submitted by COMP 534 students will place more weight on scalability
+and performance than programs submitted by COMP 422 students. 
+HPCToolkit can help you identify problematic code in your program that
+consumes unreasonable time or scales poorly.
+More information about how to use HPCToolkit can be found in its 
+<a href=http://hpctoolkit.org/manual/HPCToolkit-users-manual.pdf>documentation</a>. HPCToolkit is
+available as a module on DAVinci.
+</li>
+<br>
+<li>
+Run the program with the input file provided 
+above (using a lookahead depth of seven) on each of 1-12 cores.
+To control the number of cores used by your program use <tt>CILK_NWORKERS=n time othello < input</tt>, where n is the number of processors you want. 
+Record the real, user, and system time for the
+run on each number of cores. 
+</li>
+<br>
+<li>
+Write a document that describes how your program works. This document
+should <em>not</em> include your program, though it may include one or
+more figures
+containing pseudo-code that sketches key elements of the
+parallelization strategy. Explain how your program exploits 
+parallelism. Explain why you chose to exploit parallelism in this
+way. Were there any opportunities for parallelism that you chose not
+to exploit? If so, why? Explain how the parallel work is synchronized.
+Include a table containing information from the output of 
+<tt>cilkview</tt> for lookahead depths 1-7 in
+your report.
+Discuss and explain the differences you observe in the profiles with
+different lookahead depths. 
+Prepare a graph of the efficiency of your parallelization comparing
+the real times measured on 1-12 cores. Plot a point for each of the
+executions. The x axis should show the number
+of cores. The Y axis should show your measured parallel
+efficiency for the execution.
+Parallel efficiency is computed as
+<em>S/(p * T(p))</em>, where <em>S</em> represents the
+real time of a sequential execution of your program, 
+<em>p</em> is the number of processors and <em>T(p)</em> is the real
+time of the execution on <em>p</em> processors. 
+Discuss your efficiency findings and the quality of the parallelization.
+<p><b>Note</b>:
+Don't make the
+mistake of using the execution time of a one thread version of your
+parallel implementation as the time of a sequential execution. 
+The
+execution time of the one-thread parallel implementation is typically
+larger than that of the original sequential implementation. When you
+compute parallel efficiency, always use the performance of a
+sequential code as a baseline; otherwise, you will
+overestimate the value of your parallelization.  
+<p>
+The sequential execution time of your Cilk Plus program is <em>not</em>
+the same as the execution time of a Cilk Plus program with one
+worker. To provide a baseline for your parallel efficiency
+measurements, you can 
+create a <i>serialization</i> of your program that will execute
+sequentially
+without the overhead of the Cilk Plus runtime. Follow the directions at <a href=https://software.intel.com/en-us/node/684244>Intel
+Cilk Plus Programmer's Guide</a>,
+use the <tt>icpc</tt> compiler to compile up
+a serialization of your program using -O2 optimization.
+Measure the wall clock time for an execution of your serialization 
+on the input with
+lookahead depth seven using the Unix "time" command.
+</li>
+</ul>
+<h2>Submitting your Assignment</h2>
+Your assignment should be submitted in two parts.
+<ul>
+<li>
+A single source file containing your Cilk program.
+</li>
+<br>
+<li>A writeup about your program in either Word or PDF format (PDF
+preferred). Guidelines for your writeup: 3 pages won't have enough
+detail; more than 10 pages will say too much. Plan for a length in
+between. Make sure that you address all of the requirements specified
+in the "Experiments" section.
+</li>
+</ul>
+You will use the "turnin" utility provided by Rice IT for
+submitting your assignments. 
+See the 
+<a href=https://docs.rice.edu/confluence/x/qAiUAQ>
+turnin
+page</a> for details about how
+to submit your assignment.  If you have trouble using turnin and come up against the deadline for submitting your assignment, 
+email me a tar file with your source code and  attach your write up to the
+email.
+<h2>COMP 422 Grading Criteria</h2>
+<ul>
+<li>
+10% Program correctness. Program must correctly implement Othello/Reversi rules. Pay careful
+attention to situations in which one player has no legal move. 
+</li>
+<li>
+10% Reducer usage. Use a Cilk Plus reducer to ensure deterministic move
+selection.
+</li>
+<li>
+10% No data races. Use cilkscreen to prove the absence of races.
+</li>
+<li>
+30% Program clarity, elegance and parallelization. The program should be
+well-documented internally with comments. 
+Your program should have no data races.
+</li>
+<li>
+10% Program scalability and performance.
+</li>
+<li>
+30% Writeup. Your grade on the writeup includes the quality of the
+writing (grammar, sentence structure), whether all of
+the required elements are included, and the clarity of your explanations. 
+<b>Make sure that you have performed all of the experiments
+requested above and provided the information requested about them in
+your writeup. If you haven't, you will lose points!</b>
+</li>
+</ul>
+
+<h2>COMP 534 Grading Criteria</h2>
+<ul>
+<li>
+10% Program correctness. Program must correctly implement Othello/Reversi rules. Pay careful
+attention to situations in which one player has no legal move. 
+</li>
+<li>
+10% Reducer usage. Use a Cilk Plus reducer to ensure deterministic move
+selection.
+</li>
+<li>
+10% No data races. Use cilkscreen to prove the absence of races.
+</li>
+<li>
+30% Program clarity, elegance and parallelization. The program should be
+well-documented internally with comments. 
+Your program should have no data races.
+</li>
+<li>
+20% Program scalability and performance.
+</li>
+<li>
+20% Writeup. Your grade on the writeup includes the quality of the
+writing (grammar, sentence structure), whether all of
+the required elements are included, and the clarity of your explanations. 
+<b>Make sure that you have performed all of the experiments
+requested above and provided the information requested about them in
+your writeup. If you haven't, you will lose points!</b>
+</li>
+</ul>
+
+<h2>Setting up Cilk Plus on DAVinCI</h2>
+<p>To load the suite of Cilk Plus tools, first set your module path
+
+<ul>
+<p><tt>module use /projects/comp422/modulefiles</tt>
+</ul>
+
+<p>Next, load the module that contains paths to the Cilk Plus compiler and tools.
+
+<ul>
+<p><tt>module load cilk-comp422</tt>
+</ul>
+
+The Cilk Plus compiler is <tt>icpc</tt>.
+
+<h2>Setting up HPCToolkit on DAVinCi</h2>
+
+Load the HPCToolkit module.
+
+<ul>
+<p><tt> module load hpctoolkit-comp422 </tt>
+</ul>
+
+<h2>Data Race Detection Tools</h2>
+<p>
+To check your program for data races, you will need to use <tt>cilkscreen</tt>.
+To check your program for data races with <tt>cilkscreen</tt>, simply
+launch your program with <tt>cilkscreen</tt>:
+<ul>
+    <tt>cilkscreen othello < input</tt>
+</ul>
+<p>
+
+<h2>Using SLURM on DAVinCI</h2>
+<p> While you can develop your program on one of the login nodes on
+DAVinCI, you should run your experiments on one of the compute nodes
+using the SLURM job manager. You can obtain a private node to run your
+job on by requesting a node for an interactive session using
+<ul>
+    srun
+    --pty --export=ALL --nodes=1 --ntasks-per-node=1
+    --cpus-per-task=12
+    --mem=1G --time=00:30:00 bash
+</ul>
+
+<p>I strongly recommend developing and
+testing your code (with small lookahead depth) on the login node to
+avoid the surprise of having your editor be killed as your interactive
+session on the compute node expires. See the documentation on <a
+href=https://docs.rice.edu/confluence/display/ITDIY/Getting+Started+on+DAVinCI>
+Using DAVinCI</a> under the tab "Submitting Jobs" for more information
+about using SLURM.
+
+Here is a sample SLURM batch script
+<a href=othello.sbatch>othello.sbatch</a> that you can launch with
+sbatch. Save it in a file othello.sbatch and then launch it as
+<ul>
+    sbatch othello.sbatch
+</ul>
+The sample batch script runs the othello program twice with different
+numbers of cores. In your script, you can run edit the final few lines
+to run othello just once or run it multiple times in a sequence of experiments.
+
+<hr />
+<i>20 January 2017 - posted assignment 1
+<br>
+<i>24 January 2017 - updated to use Intel Cilk Plus compiler
+<br>
+<i>28 January 2017 - changed due date from 10 February to 14 February 
+<br>
+<i>6 February 2017 - replace module "hpctoolkit" with "hpctoolkit-comp422"
+</body>
+</html>

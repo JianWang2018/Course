@@ -1,0 +1,5 @@
+  PID TTY          TIME CMD
+14171 pts/4    00:00:00 tcsh
+28504 pts/4    00:00:00 a.out
+28505 pts/4    00:00:00 sh
+28506 pts/4    00:00:00 ps

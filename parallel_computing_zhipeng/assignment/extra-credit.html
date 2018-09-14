@@ -1,0 +1,381 @@
+<META name="keywords" content="COMP 534 Parallel Computing">
+<META name="description" content="COMP 534 Parallel Computing: Extra Credit">
+
+<head>
+<title>
+COMP 422 Extra Credit
+</title>
+</head>
+
+
+<BODY>
+<table>
+  <tr>
+     <td><IMG align=left 
+     SRC="http://www.cs.rice.edu/~johnmc/images/RiceLogo50072dpi.jpg"
+     WIDTH="300" ALT="Rice University"></td>
+     <td><fontsize large><b>
+         <table>
+           <tr><td><font size=6><b>COMP 422 and 534</b></font></td></tr>
+           <tr><td><font size=5><b>Parallel Computing </b></font></td></tr>
+           <tr><td><font size=5><b>Spring 2017</b></font></td></tr>
+           <tr><td><font size=5><b>Extra Credit (up to 10 pts on final
+	   grade)</b> </font></td></tr>
+           <tr><td><font size=4><b style="color:red">Due 3 May 2017 @
+	   11:59pm (late work cannot be accepted)</b></td></tr>
+           </table>
+           </td></tr>
+</table>
+
+<hr />
+
+<h2>Parallel LU Decomposition using Pthreads</h2>
+
+See <a href=assignment2.html>Assignment 2</a> for a description of LU decomposition.
+For up to 10 points extra credit on your final grade, write a
+shared-memory parallel program that performs LU decomposition using
+row pivoting using the Pthreads programming model.
+
+<p>
+As in Assignment 2, Your LU decomposition implementation should accept two arguments:
+<em>n</em> - the size of a matrix, followed by <tt>t</tt> - the number
+      of threads.  
+Your program will allocate an <em>n</em> x <em>n</em> 
+matrix <b><tt>a</tt></b> of double precision
+      (64-bit) floating point variables. You should initialize the
+    matrix with uniform random numbers computed using a suitable 
+    suitable random number generator, such as <a
+    href=http://linux.die.net/man/3/drand48><tt>drand48</tt></a>, <a
+    href=http://linux.die.net/man/3/drand48_r><tt>drand48_r</tt></a>, or the <a
+    href=http://en.cppreference.com/w/cpp/numeric/random>C++11 facilities for pseudo-random
+    number generation</a>. (Note: if you are generating random numbers in parallel, you
+      will need to use a reentrant random number generator and seed the
+      random number generator for each thread differently.) 
+Apply LU decomposition with partial pivoting to
+factor the matrix into an upper-triangular one and a lower-triangular one.
+To check your answer, compute the sum of Euclidean norms of the columns of the residual matrix (this sum is known
+      as the <a
+      href=https://en.wikipedia.org/wiki/Matrix_norm#L2.2C1_norm>L2,1 norm</a>)
+computed as <b>P</b><b>A</b>-<b>L</b><b>U</b>. Print the value of the L2,1 norm of the
+      residual. (It should be <i>very</i> small.)
+<p>
+The verification step need not be
+      parallelized. Have your program time
+      the LU decomposition phase by reading the
+      real-time clock before and after and printing the
+      difference. 
+<p>
+<b style="color:red">Note:</b> It is highly recommended that you reuse code from your OpenMP assignment. 
+<p>
+The formal components of the assignment are listed below:
+<ul>
+<li>Write a shared-memory parallel program that uses Pthreads 
+to perform LU decomposition with partial pivoting.
+</li>
+<br>
+<li>Compare the parallel efficiency and execution time of your
+    Pthreads solution with your prior OpenMP solutions. How do they
+    differ? Why? HPCToolkit may be helpful in assessing differences
+    between the performance of your codes.
+</li>
+<br>
+<li> Write a document that describes how
+you parallelized LU decomposition using Pthreads. 
+This document should <em>not</em> include your
+program, though it may include figures containing pseudo-code that
+sketch the key elements of your parallelization strategy for each
+implementation. Explain how
+your program partitions the data, work and exploits parallelism. 
+Justify your implementation choices.
+Explain how the parallel work is synchronized.  
+How does it differ from your OpenMP parallelizations?
+<p>
+Use problem size n = 8000 to evaluate the performance of your
+    implementations. Prepare a table that includes your timing
+    measurements for the LU decomposition phase of your
+    implementations on 1, 2, 4, 8, 16, 32, 64, 96, and 128 threads on
+    a node on biou.rice.edu. There are only 32 cores on biou, so 64,
+    96, and 128 threads correspond to using 2 SMT threads, 3 SMT
+    threads and 4 SMT threads per core. Graph of the parallel
+    efficiency of your program executions. Plot a point for each of
+    the executions. The x axis should show the number of
+    processors. The Y axis should show your measured parallel
+    efficiency for the execution. Construct your plot so that the X
+    axis of the graph intersects the Y axis at Y=0.
+<p>
+Prepare a table that includes your timing
+measurements for the LU decomposition phase of your
+implementations on 1, 2, 4, 8, 16, 32, 64, 96, and 128 threads on a node on biou.rice.edu. 
+There are only 32 cores on biou, so 64, 96, and 128 threads correspond
+to using 2 SMT threads, 3 SMT threads and 4 SMT threads per core.
+Graph of the <a href=parallelefficiency.html>parallel
+efficiency</a> of your program executions. 
+Plot a point for each of the executions. 
+The x axis should show the number of processors. The Y
+axis should show your measured parallel efficiency for the execution.
+Construct your plot so that the X axis of the graph intersects the Y
+axis at Y=0.
+Your table and graph should include the data from your prior OpenMP
+implementations for comparison.
+</li> </ul> 
+
+<h2>Submitting your Assignment</h2>
+You will use  "turnin" to submit your assignment.
+See IT's <a href=https://docs.rice.edu/confluence/x/qAiUAQ>
+turnin documentation</a> for details about how
+to submit your assignment with turnin.
+<p>Your submission using turnin should contain:
+<ul>
+<li>
+a directory containing the code for your Pthreads program and a
+Makefile to build the code, and
+</li>
+<li>a writeup about your program in either Word or PDF format (PDF
+preferred).
+</li>
+</ul>
+Your assignment must be submitted via turnin prior to May 3 @ 5pm or
+no extra credit will be earned.
+<h2>Grading Criteria</h2>
+<ul>
+<li>
+10% Program correctness. 
+</li>
+<li>
+40% Program clarity, elegance and parallelization. The program should
+be well-documented internally with comments.
+</li>
+<li>
+10% Program scalability and performance.
+</li>
+<li>
+40% Writeup. Your grade on the writeup includes the quality of the
+writing (grammar, sentence structure), whether all of
+the required elements are included, and the clarity of your explanations. 
+</li>
+</ul>
+<hr />
+<h2>Using Biou</h2>
+<p>I recommend using the GCC compilers for your assignment. You can set up your
+environment to use the latest GCC release on biou with the command
+<ul>
+<tt> module load GCC/4.9.3</tt>
+</ul>
+The names for the GCC compilers are gcc for C, g++ for C++, and
+gfortran for Fortran.
+<p>
+Alternatively, you may use IBM's XL compilers for this assignment. 
+
+To prepare to use the IBM XL C and C++ compiler on biou issue the command
+<ul>
+<tt> module load xlc</tt>
+</ul>
+To prepare to use the IBM XL Fortran compiler on biou issue the command
+<ul>
+<tt> module load xlf</tt>
+</ul>
+The IBM compiler names for the various languages are
+xlc_r for C, xlc++_r for C++, and xlf90_r for Fortran.
+<p>
+Basic documentation for the IBM compilers can be found using "man xlc" and "man xlf".
+Complete information for the IBM compilers can be found at <a 
+href=http://publib.boulder.ibm.com/infocenter/lnxpcomp/v111v131/index.jsp>
+IBM Compiler Documentation</a>. 
+<h2>Atomic Operations</h2>
+<p>In case you want to use GCC atomic operations for synchronization,
+here are some pointers:
+<ul>
+<li><a
+href="https://gcc.gnu.org/onlinedocs/gcc-4.8.4/gcc/_005f_005fsync-Builtins.html#_005f_005fsync-Builtins">Legacy
+atomic operations</a> (straightforward to use with full synchronization to avoid data races)
+<li><a
+href="https://gcc.gnu.org/onlinedocs/gcc-4.8.4/gcc/_005f_005fatomic-Builtins.html#_005f_005fatomic-Builtins">Modern
+atomic operations</a> (flexible synchronization that
+requires some understanding of weak ordering and the C++ memory model)
+</ul>
+
+<!---
+<h2>Using Intel Tools on DaVINCI</h2>
+<b style="color:red">Note: For the assignment, you are required to
+run, evaluate, and report results on biou. The following instructions
+explain how to use the Intel tools for <u>debugging</u> your code on
+DaVINCI.</b>
+
+<p>
+Intel has provided the class with access to their suite of tools for
+developing parallel codes. Before setting up paths for the class
+versions of the tools, check your environment to see if you have any
+Intel compilers already on your paths. First, run
+<ul>
+<tt>module list</tt>
+</ul>
+First, if any Intel module is loaded, correct your startup files so that they no
+longer contain a <tt>module load intel</tt>. You can use the command
+<tt>module rm intel</tt> to remove any Intel compiler module already
+in your environment.
+
+<p>Second, try <tt>which icc</tt>. If <tt>icc</tt> is on your path, edit
+your startup files to remove any direct path to Intel compilers.
+
+<p>Third, to load the suite of Intel tools for class
+use, set your module path
+
+<p><b>bash:</b> <tt>export MODULEPATH=$MODULEPATH:/projects/comp422/modulefiles</tt>
+<br/>
+<b>csh:</b> <tt>setenv MODULEPATH $MODULEPATH:/projects/comp422/modulefiles</tt>
+
+<p>Fourth, load the module that contains paths to the comp422 Intel compilers and tools.
+
+<ul>
+<tt> module load comp422-intel</tt>
+</ul>
+
+<p>
+The Intel C compiler is <tt>icc</tt>. 
+To compile a Pthreads program with <tt>icc</tt>, you need to use the <tt>-pthread</tt> option.
+
+<p>
+To check your program for data races using Intel's Inspector, see the <a href=http://software.intel.com/en-us/inspectorxe_2013_ug_lin>Intel
+Inspector 2013 documentation</a>. To check your program for data races using Intel's Inspector on a STIC compute node, use the following command:
+P
+<ul>
+<tt>inspxe-runtc --option-file /projects/comp422/tc-settings -- </tt><i style="color:red">your_app_name</i>
+</ul>
+
+If you use the above command with srun or sbatch, make sure that you use
+the <tt>-export=ALL</tt> option to ensure that
+environment variables from loading the module are available to the script.
+I highly recommend that you run the thread checker using a
+<u>small</u> linear system.
+
+<p>When the inspector runs, it will tell you the name of the output
+directory where it recorded its results.  To analyze the results, you
+will need to open them with the GUI version of the tool
+<tt>inspxe-gui</tt>, which you will run on a STIC login node. 
+
+<p>When you run <tt>inspxe-gui</tt>, select the "open results folder"
+icon in the toolbar. Use the file browser to open the
+"<i style="color:red">some_prefix</i>.inspxe" file in your results directory. The GUI will then
+load your results and alert you about any data races, deadlocks, etc.
+
+---!>
+
+<h2>Pthreads</h2>
+The command and "man pthreads" will provide you some 
+additional information about using Pthreads.
+Your Pthread application will need <tt>-lpthread</tt> at the end of
+the link line.
+
+<h2>Using the Scheduling Queues</h2>
+<b style=color:red>Don't underestimate the demand for getting access
+to nodes in biou. For that reason, this assignment is one that
+shouldn't be left until the night before it is due.</b>
+<h3>Interactive Development</h3>
+Please try to run your jobs in nodes that you obtain from the
+scheduler queue rather than on the login nodes.
+Like DAVinCI, BIOU uses SLURM for job submission.
+You should use the interactive queue for debugging.
+When you are testing and debugging your code, you
+can request 
+<ul>
+srun --pty --export=ALL --nodes=1 --ntasks-per-node=1 <i style="color:red">--cpus-per-task=128</i> --mem=3G --time=00:30:00 bash
+</ul>
+This will give you a single compute node (consisting of 4 sockets) with 32 cores that will support up
+to 128 hardware threads.
+<p>
+If you have trouble getting access to interactive nodes, let me know
+and I'll discuss the situation with the RCSG staff so we can make any
+adjustments necessary. (Note: the time for RCSG to make adjustments is during
+the day, not the night before the assignment is due.)
+
+<h3>Scaling Experiments</h3>
+<p>
+To run your scaling experiments on up to 32 cores, you should run across a whole node of biou. 
+The processors have 8 cores each.  To run across all four processors,  you need to submit a job with
+--cpus-per-task=128.
+<!---
+For your scaling experiments, you can either (1) size your request by the number of hardware threads and submit requests for one socket (--cpus-per-task=32) when using up to 8 cores,
+2 sockets (--cpus-per-task=64) for 9-16 cores, 3 sockets (--cpus-per-task=96) for 17-24 cores, and 4 sockets (--cpus-per-task=128) for 25-32 cores; or (2) simply request the whole node (using --exclusive option) for each of your experiments.
+You can prepare each experiment as a separate batch job, or run
+multiple experiments in a single batch job. 
+---!>
+See the "Submitting Jobs"
+tab on the biou <a
+href=https://docs.rice.edu/confluence/display/ITDIY/Getting+Started+on+Blue+BioU>cluster
+documentation</a> 
+for details about writing a sbatch script. A draft
+script is located at the bottom of this page.
+</p>
+<p>
+
+<h2>Managing Threads and Data on BIOU</h2>
+On biou, memory is partitioned among the 4 sockets on a node. Memory
+attached to a remote socket is farther away (slower to access) than
+memory attached to a local socket. You can manage the Non-Uniform
+Memory Access (NUMA) characteristics of nodes in biou using the NUMA
+control library. See "man numactl" for more information. Some brief
+information is included below. 
+
+<p>To get some information about sockets and hardware threads are
+available to you in the partition in which you are running, you can run
+<ul>
+	numactl --show
+<br>
+	numactl --hardware
+</ul>
+
+
+<p>You can control placement of threads and data when you launch a
+program using numactl. 
+A good recipe for binding threads when using 32 of the hardware threads across 4 sockets is as follows:
+<ul>
+numactl --localalloc --physcpubind=0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124 
+</ul>
+</p>
+
+
+<p>As an alternative to relying on defaults provided by "numactl --localalloc" for data
+placement, you can use primitives in
+libnuma to programmatically control where data is allocated.
+
+Before threads are created, you can allocate data in particular
+	sockets before using libnuma's
+<ul>
+	void *numa_alloc_onnode(size_t size, int node);
+</ul>
+
+<p>After you create threads, you can have each thread allocate its own
+data in memory attached to the socket in which it is running using libnuma's 
+<ul>
+	void *numa_alloc_local(size_t size);
+</ul>
+
+Note: 
+If your program runs fine without threads bound, but deadlocks with
+threads bound, let me know. 
+For info about the libnuma interface, documentation is available both
+on a
+<a href=http://linux.die.net/man/3/numa_alloc_local>web
+page</a>,  or in <a
+href=http://developer.amd.com/wordpress/media/2012/10/LibNUMA-WP-fv1.pdf>PDF</a>.
+
+<h2>A Draft Sbatch Script</h2>
+<p>
+#!/bin/bash<br>
+#SBATCH --job-name=comp_422_pthreads<br>
+#SBATCH --nodes=1<br>
+#SBATCH --ntasks-per-node=1<br>
+#SBATCH --cpus-per-task=128<br>
+#SBATCH --mem=3G<br>
+#SBATCH --time=00:10:00<br>
+#SBATCH --export=ALL<br>
+
+ulimit -c unlimited<br>
+numactl --physcpubind=0,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124 --localalloc ./optimized_pthreads_ge 8000 32<br>
+</p>
+<hr />
+<i>27 April 2017 - posted.<br>
+<i>30 April 2017 - changed cpus-per-task=128.<br>
+<i>30 April 2017 - changed deadline to 11:59pm.<br>
+</body>
+</html>
